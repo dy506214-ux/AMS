@@ -1,6 +1,6 @@
 import React from 'react';
 import { getOverallSchoolStats, getTodayAttendanceSummary } from '@/lib/services/attendance';
-import { Users, UserSquare, ClipboardCheck, Percent, CalendarRange, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Users, UserSquare, ClipboardCheck, Percent, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 
 export const revalidate = 0; // Disable caching to fetch live data on page reload
@@ -90,8 +90,8 @@ export default async function AdminDashboard() {
         {/* Today's Summary Circular Progress Card */}
         <div className="lg:col-span-5 glass-card p-6 rounded-2xl flex flex-col gap-6">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Today's Attendance Status</h3>
-            <p className="text-xs text-slate-500 mt-1">Status of today's attendance summary</p>
+            <h3 className="text-base font-bold text-slate-900">{"Today's Attendance Status"}</h3>
+            <p className="text-xs text-slate-500 mt-1">{"Status of today's attendance summary"}</p>
           </div>
 
           <div className="flex flex-col items-center justify-center py-6">

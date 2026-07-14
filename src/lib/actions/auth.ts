@@ -5,19 +5,19 @@ import { redirect } from 'next/navigation';
 import { authenticateUser, verifyToken } from '../services/auth';
 
 export async function loginAction(
-  prevState: any,
+  prevState: unknown,
   formData: FormData
 ): Promise<{ error?: string; success?: boolean; role?: string }> {
   const identifier = formData.get('identifier') as string;
   const password = formData.get('password') as string;
-  const role = formData.get('role') as 'admin' | 'teacher' | 'student';
+  const role = formData.get('role') as 'admin' | 'teacher' | 'student' | null;
 
-  if (!identifier || !password || !role) {
-    return { error: 'Please enter all credentials and select a role.' };
+  if (!identifier || !password) {
+    return { error: 'Please enter all credentials.' };
   }
 
   try {
-    const result = await authenticateUser(identifier, password, role);
+    const result = await authenticateUser(identifier, password, role || undefined);
 
     if (!result) {
       return { error: 'Invalid credentials. Please try again.' };
@@ -33,9 +33,10 @@ export async function loginAction(
       path: '/'
     });
 
-    return { success: true, role };
-  } catch (error: any) {
-    return { error: error.message || 'An unexpected error occurred.' };
+    return { success: true, role: result.user.role };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'An unexpected error occurred.' };
   }
 }
 

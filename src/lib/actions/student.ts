@@ -20,7 +20,8 @@ export async function updateStudentProfileAction(data: {
     const result = await studentService.updateStudent(user.id, data);
     revalidatePath('/student');
     return { success: true, student: result };
-  } catch (error: any) {
-    return { error: error.message || 'Failed to update profile.' };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to update profile.' };
   }
 }

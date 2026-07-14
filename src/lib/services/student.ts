@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../db/prisma';
 import { hashPassword } from './auth';
 
@@ -109,7 +110,7 @@ export async function updateStudent(
     }
   }
 
-  const updateData: any = {};
+  const updateData: Prisma.StudentUncheckedUpdateInput = {};
   if (data.rollNumber) updateData.rollNumber = data.rollNumber;
   if (data.name) updateData.name = data.name;
   if (data.email) updateData.email = data.email;

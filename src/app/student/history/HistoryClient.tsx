@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Calendar, Search, Filter, CalendarDays, Award, AlertCircle, Clock } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { Attendance } from '@/lib/db/jsonDb';
 
 interface HistoryClientProps {

@@ -17,8 +17,9 @@ export async function createTeacherAction(data: {
     const result = await teacherService.createTeacher(data);
     revalidatePath('/admin');
     return { success: true, teacher: result };
-  } catch (error: any) {
-    return { error: error.message || 'Failed to create teacher.' };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to create teacher.' };
   }
 }
 
@@ -37,8 +38,9 @@ export async function updateTeacherAction(
     const result = await teacherService.updateTeacher(id, data);
     revalidatePath('/admin');
     return { success: true, teacher: result };
-  } catch (error: any) {
-    return { error: error.message || 'Failed to update teacher.' };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to update teacher.' };
   }
 }
 
@@ -47,8 +49,9 @@ export async function deleteTeacherAction(id: string) {
     await teacherService.deleteTeacher(id);
     revalidatePath('/admin');
     return { success: true };
-  } catch (error: any) {
-    return { error: error.message || 'Failed to delete teacher.' };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to delete teacher.' };
   }
 }
 
@@ -68,8 +71,9 @@ export async function createStudentAction(data: {
     const result = await studentService.createStudent(data);
     revalidatePath('/admin');
     return { success: true, student: result };
-  } catch (error: any) {
-    return { error: error.message || 'Failed to create student.' };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to create student.' };
   }
 }
 
@@ -91,8 +95,9 @@ export async function updateStudentAction(
     const result = await studentService.updateStudent(id, data);
     revalidatePath('/admin');
     return { success: true, student: result };
-  } catch (error: any) {
-    return { error: error.message || 'Failed to update student.' };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to update student.' };
   }
 }
 
@@ -101,8 +106,9 @@ export async function deleteStudentAction(id: string) {
     await studentService.deleteStudent(id);
     revalidatePath('/admin');
     return { success: true };
-  } catch (error: any) {
-    return { error: error.message || 'Failed to delete student.' };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to delete student.' };
   }
 }
 
@@ -111,7 +117,8 @@ export async function assignStudentAction(studentId: string, teacherId: string) 
     const result = await studentService.assignStudentToTeacher(studentId, teacherId);
     revalidatePath('/admin');
     return { success: true, student: result };
-  } catch (error: any) {
-    return { error: error.message || 'Failed to assign teacher.' };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to assign teacher.' };
   }
 }

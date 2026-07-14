@@ -38,7 +38,7 @@ export async function getAttendanceStatsForStudent(studentId: string): Promise<{
     where: { studentId }
   });
   const totalDays = records.length;
-  const presentDays = records.filter((r: any) => r.status === 'present').length;
+  const presentDays = records.filter((r) => r.status === 'present').length;
   const absentDays = totalDays - presentDays;
   const percentage = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 100;
 
@@ -55,13 +55,13 @@ export async function getAttendanceForClass(
     orderBy: { rollNumber: 'asc' }
   });
 
-  const studentIds = classStudents.map((s: any) => s.id);
+  const studentIds = classStudents.map((s) => s.id);
   const dateRecords = await prisma.attendance.findMany({
     where: { date, studentId: { in: studentIds } }
   });
 
-  return classStudents.map((student: any) => {
-    const record = dateRecords.find((r: any) => r.studentId === student.id);
+  return classStudents.map((student) => {
+    const record = dateRecords.find((r) => r.studentId === student.id);
     return {
       studentId: student.id,
       studentName: student.name,
@@ -115,8 +115,8 @@ export async function getTodayAttendanceSummary(date: string = new Date().toISOS
     where: { date }
   });
 
-  const totalPresent = todayRecords.filter((r: any) => r.status === 'present').length;
-  const totalAbsent = todayRecords.filter((r: any) => r.status === 'absent').length;
+  const totalPresent = todayRecords.filter((r) => r.status === 'present').length;
+  const totalAbsent = todayRecords.filter((r) => r.status === 'absent').length;
 
   const percentage = todayRecords.length > 0
     ? Math.round((totalPresent / todayRecords.length) * 100)

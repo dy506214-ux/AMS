@@ -26,7 +26,8 @@ export async function GET(request: NextRequest) {
   try {
     const records = await getAttendanceForClass(className, sectionName, date);
     return NextResponse.json(records);
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
+  } catch (error) {
+    const err = error as Error;
+    return NextResponse.json({ error: err.message || 'Server error' }, { status: 500 });
   }
 }

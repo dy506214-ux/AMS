@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { User, Mail, Phone, Briefcase, Lock, Loader2, Save, KeyRound, GraduationCap } from 'lucide-react';
+import { User, Mail, Phone, Lock, Loader2, Save, KeyRound, GraduationCap } from 'lucide-react';
 import { updateStudentProfileAction } from '@/lib/actions/student';
 import { useToast } from '@/context/ToastContext';
 import { Student } from '@/lib/db/jsonDb';
@@ -86,6 +86,7 @@ export default function ProfileClient({ student }: ProfileClientProps) {
         <div className="glass-card p-6 rounded-2xl flex flex-col items-center text-center gap-4">
           <div className="w-28 h-28 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 flex items-center justify-center shadow-md relative">
             {photoUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img src={photoUrl} alt={name} className="w-full h-full object-cover" />
             ) : (
               <User className="w-12 h-12 text-slate-400" />

@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
         const { payload } = await jwtVerify(token, SECRET_KEY);
         const role = payload.role as string;
         return NextResponse.redirect(new URL(`/${role}`, request.url));
-      } catch (e) {
+      } catch {
         // Token is invalid, clear it
         const response = NextResponse.next();
         response.cookies.delete('token');
@@ -48,7 +48,7 @@ export async function middleware(request: NextRequest) {
     }
 
     return NextResponse.next();
-  } catch (error) {
+  } catch {
     const response = NextResponse.redirect(new URL('/login', request.url));
     response.cookies.delete('token');
     return response;

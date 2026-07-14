@@ -71,9 +71,9 @@ export default async function TeacherDashboard() {
 
         <div className="glass-card p-6 rounded-2xl flex items-center justify-between hover-lift">
           <div className="flex flex-col gap-1.5">
-            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">Today's Presence</span>
+            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">{"Today's Presence"}</span>
             <span className="text-3xl font-extrabold text-slate-900 tracking-tight">{todayPresent} Present</span>
-            <span className="text-xs text-slate-500 font-medium">{todayAbsent} students absent today</span>
+            <span className="text-xs text-slate-500 font-medium">{"today's students absent today"}</span>
           </div>
           <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-xl">
             <ClipboardCheck className="w-6 h-6" />
@@ -82,7 +82,7 @@ export default async function TeacherDashboard() {
 
         <div className="glass-card p-6 rounded-2xl flex items-center justify-between hover-lift">
           <div className="flex flex-col gap-1.5">
-            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">Today's Rate</span>
+            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">{"Today's Rate"}</span>
             <span className="text-3xl font-extrabold text-slate-900 tracking-tight">{todayPercentage}%</span>
             <span className="text-xs text-slate-500 font-medium">Average present rate today</span>
           </div>
@@ -108,14 +108,14 @@ export default async function TeacherDashboard() {
                 </div>
               )}
               <div>
-                <h3 className="font-bold text-slate-900 text-sm">Today's Register Status</h3>
+                <h3 className="font-bold text-slate-900 text-sm">{"Today's Register Status"}</h3>
                 <span className="text-xs text-slate-400">Date: {todayDate}</span>
               </div>
             </div>
 
             <p className="text-slate-600 text-sm leading-relaxed">
               {isRegisterComplete 
-                ? "You have completed today's daily register check. You can modify the marked records at any time."
+                ? "You have completed today\u0027s daily register check. You can modify the marked records at any time."
                 : "You have pending daily student attendance registers to review and log."}
             </p>
           </div>
@@ -124,7 +124,7 @@ export default async function TeacherDashboard() {
             href="/teacher/attendance"
             className="w-full bg-sky-500 hover:bg-sky-400 text-white font-semibold py-4 rounded-xl shadow-lg shadow-sky-500/10 hover:shadow-sky-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group cursor-pointer"
           >
-            <span>{isRegisterComplete ? 'Edit Today\'s Attendance' : 'Mark Daily Attendance'}</span>
+            <span>{isRegisterComplete ? 'Edit Today\u0027s Attendance' : 'Mark Daily Attendance'}</span>
             <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>

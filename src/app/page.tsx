@@ -2,36 +2,34 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import {
   ShieldCheck,
   Users,
-  ClipboardCheck,
   UserCheck,
   ArrowRight,
-  Activity,
   Award,
   CheckCircle2,
   Menu,
   X
 } from 'lucide-react';
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: { staggerChildren: 0.15 }
   }
-} as const;
+};
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
   visible: {
     y: 0,
     opacity: 1,
     transition: { type: 'spring', stiffness: 100 }
   }
-} as const;
+};
 
 export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
@@ -223,6 +221,7 @@ export default function LandingPage() {
                     'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100',
                     'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100'
                   ].map((src, i) => (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img
                       key={i}
                       src={src}
@@ -245,6 +244,7 @@ export default function LandingPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <div className="relative rounded-[24px] overflow-hidden shadow-2xl border border-white/10 w-full max-w-[280px] sm:max-w-[340px] md:max-w-[380px] lg:max-w-[420px] mx-auto shrink-0 bg-white/5 p-1.5 backdrop-blur-md">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/founder.jpg"
                   alt="Founder DHIRENDRA YADAV"
@@ -310,7 +310,7 @@ export default function LandingPage() {
           <div className="text-center max-w-[800px] mx-auto mb-16 flex flex-col gap-4">
             <span className="text-xs text-sky-400 font-extrabold uppercase tracking-widest">Features</span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white max-w-[800px] mx-auto">
-              Everything You Need, Nothing You Don't
+              {"Everything You Need, Nothing You Don't"}
             </h2>
             <p className="text-base sm:text-lg text-slate-350 max-w-[700px] mx-auto leading-relaxed mt-2">
               A light, focused product built exclusively for school attendance. No confusing extra modules.
@@ -353,7 +353,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-bold text-white">Teacher Panel</h3>
               <p className="text-slate-355 text-sm leading-relaxed">
-                Log in to mark daily attendance in clicks. Instantly edit today's records and manage profile credentials safely.
+                {"Log in to mark daily attendance in clicks. Instantly edit today's records and manage profile credentials safely."}
               </p>
               <ul className="text-sm text-slate-400 flex flex-col gap-2 mt-2">
                 <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" /> Quick Attendance Marker</li>
@@ -420,6 +420,7 @@ export default function LandingPage() {
             {/* Right Graphics */}
             <div className="lg:col-span-7 flex items-center justify-center">
               <div className="relative rounded-[24px] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.45)] border border-white/[0.08] bg-white/[0.02] p-2 backdrop-blur-[10px] w-full max-w-[640px] mx-auto">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=800"
                   alt="Students in class"
@@ -438,6 +439,7 @@ export default function LandingPage() {
             {/* Left Graphics */}
             <div className="lg:col-span-6 grid grid-cols-12 gap-4">
               <div className="col-span-7 relative rounded-[20px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.4)] border border-white/[0.08] p-1.5 backdrop-blur-[5px]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=600"
                   alt="Kids reading"
@@ -450,6 +452,7 @@ export default function LandingPage() {
                   <span className="text-xs text-sky-355 font-medium uppercase tracking-wider mt-2">System Uptime</span>
                 </div>
                 <div className="relative rounded-[20px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.4)] border border-white/[0.08] p-1.5 backdrop-blur-[5px] mt-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=600"
                     alt="School Campus Building"

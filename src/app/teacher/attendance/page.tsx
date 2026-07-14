@@ -16,6 +16,6 @@ export default async function TeacherAttendancePage() {
   const assignedStudents = await getStudentsByTeacherId(user.id);
 
   return (
-    <AttendanceClient assignedStudents={assignedStudents} initialRecordsByClass={{}} />
+    <AttendanceClient assignedStudents={assignedStudents} />
   );
 }

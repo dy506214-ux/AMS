@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../db/prisma';
 import { hashPassword } from './auth';
 
@@ -92,7 +93,7 @@ export async function updateTeacher(
     }
   }
 
-  const updateData: any = {};
+  const updateData: Prisma.TeacherUpdateInput = {};
   if (data.employeeId) updateData.employeeId = data.employeeId;
   if (data.name) updateData.name = data.name;
   if (data.email) updateData.email = data.email;

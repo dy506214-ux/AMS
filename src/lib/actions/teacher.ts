@@ -19,8 +19,9 @@ export async function markAttendanceAction(
     revalidatePath('/teacher');
     revalidatePath('/student');
     return { success: true };
-  } catch (error: any) {
-    return { error: error.message || 'Failed to save attendance.' };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to save attendance.' };
   }
 }
 
@@ -40,7 +41,8 @@ export async function updateTeacherProfileAction(data: {
     const result = await teacherService.updateTeacher(user.id, data);
     revalidatePath('/teacher');
     return { success: true, teacher: result };
-  } catch (error: any) {
-    return { error: error.message || 'Failed to update profile.' };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to update profile.' };
   }
 }

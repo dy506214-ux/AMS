@@ -40,6 +40,7 @@ export default function Navbar({ title, userName, photoUrl }: NavbarProps) {
           </div>
           <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center shadow-inner">
             {photoUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img src={photoUrl} alt={userName} className="w-full h-full object-cover" />
             ) : (
               <User className="w-5 h-5 text-slate-400" />

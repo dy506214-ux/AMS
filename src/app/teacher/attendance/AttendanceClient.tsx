@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ClipboardCheck, Check, X, Loader2, Calendar, UserCheck2, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Check, X, Loader2, UserCheck2, AlertCircle } from 'lucide-react';
 import { markAttendanceAction } from '@/lib/actions/teacher';
 import { useToast } from '@/context/ToastContext';
 import { Student } from '@/lib/db/jsonDb';
@@ -10,10 +9,9 @@ import { StudentAttendanceState } from '@/lib/services/attendance';
 
 interface AttendanceClientProps {
   assignedStudents: Student[];
-  initialRecordsByClass: { [key: string]: StudentAttendanceState[] };
 }
 
-export default function AttendanceClient({ assignedStudents, initialRecordsByClass }: AttendanceClientProps) {
+export default function AttendanceClient({ assignedStudents }: AttendanceClientProps) {
   // Get unique classes and sections from students assigned to this teacher
   const classesAndSections = assignedStudents.reduce((acc: { class: string; section: string }[], student) => {
     const exists = acc.some(item => item.class === student.class && item.section === student.section);
@@ -30,20 +28,7 @@ export default function AttendanceClient({ assignedStudents, initialRecordsByCla
   const [records, setRecords] = useState<StudentAttendanceState[]>([]);
   const { showToast } = useToast();
 
-  // Load records for selected class/section/date
-  // In a real application, we would call an API when date/class/section changes.
-  // For our SQLite/JSON DB simulation, we can fetch them using a Client-Side route handler or pass as state.
-  // Let's implement an endpoint or use client actions to fetch data on selection!
-  // Yes, a simple client-side fetch: `fetch('/api/attendance?class=' + selectedClass + '&section=' + selectedSection + '&date=' + date)`
-  // Or we can invoke a server action that reads the DB directly! That is extremely clean and requires no API endpoints!
-  // Let's implement a Server Action `fetchAttendanceAction(class, section, date)` inside `src/app/teacher/attendance/actions.ts` or in our main action file!
-  // But wait! We can just fetch it inside `src/app/teacher/attendance/page.tsx` as server component, and if the user changes selections, they can reload the page with searchParams, OR we can write a quick Server Action that fetches data!
-  // A Server Action `fetchClassAttendance(class, section, date)` is incredibly fast, simple, and avoids full page refreshes!
-  // Let's write `fetchClassAttendance` action directly in our teacher action file and import it here.
-  // Let's make sure we declare it in `src/lib/actions/teacher.ts`.
-  // First, let's look at the fetch logic we'll add.
-
-  const loadAttendance = async () => {
+  const loadAttendance = useCallback(async () => {
     if (!selectedClass || !selectedSection || !date) return;
     setIsLoading(true);
     try {
@@ -54,16 +39,19 @@ export default function AttendanceClient({ assignedStudents, initialRecordsByCla
       } else {
         showToast('Failed to load register records.', 'error');
       }
-    } catch (err) {
+    } catch {
       showToast('Network error loading register.', 'error');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedClass, selectedSection, date, showToast]);
 
   useEffect(() => {
-    loadAttendance();
-  }, [selectedClass, selectedSection, date]);
+    const timer = setTimeout(() => {
+      loadAttendance();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [loadAttendance]);
 
   const handleStatusChange = (studentId: string, status: 'present' | 'absent') => {
     setRecords(prev => prev.map(record => {

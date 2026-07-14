@@ -224,6 +224,7 @@ export default function TeacherListClient({ initialTeachers }: TeacherListClient
                     <td className="py-3.5 px-6">
                       <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/50 flex items-center justify-center">
                         {teacher.photoUrl ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
                           <img src={teacher.photoUrl} alt={teacher.name} className="w-full h-full object-cover" />
                         ) : (
                           <User className="w-5 h-5 text-slate-400" />
@@ -557,6 +558,7 @@ export default function TeacherListClient({ initialTeachers }: TeacherListClient
               <div className="p-6 flex flex-col items-center gap-6">
                 <div className="w-24 h-24 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 flex items-center justify-center shadow-md">
                   {selectedTeacher.photoUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img src={selectedTeacher.photoUrl} alt={selectedTeacher.name} className="w-full h-full object-cover" />
                   ) : (
                     <User className="w-10 h-10 text-slate-400" />

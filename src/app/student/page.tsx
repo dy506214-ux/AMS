@@ -2,7 +2,7 @@ import React from 'react';
 import { getCurrentUser } from '@/lib/actions/auth';
 import { getAttendanceStatsForStudent, getAttendanceForStudent } from '@/lib/services/attendance';
 import { getStudentById } from '@/lib/services/student';
-import { CheckCircle, AlertCircle, Percent, ArrowUpRight, CalendarRange, Clock } from 'lucide-react';
+import { CheckCircle, AlertCircle, Percent, ArrowUpRight, Clock } from 'lucide-react';
 import Link from 'next/link';
 
 export const revalidate = 0; // Disable cache for live stats
