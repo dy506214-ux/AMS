@@ -8,11 +8,15 @@ import {
   Users,
   UserCheck,
   ArrowRight,
-  Award,
   CheckCircle2,
   Menu,
-  X
+  X,
+  Globe,
+  ChevronDown,
+  Phone,
+  User
 } from 'lucide-react';
+import { useToast } from '@/context/ToastContext';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -33,6 +37,21 @@ const itemVariants: Variants = {
 
 export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [scrolled, setScrolled] = React.useState(false);
+  const { showToast } = useToast();
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col relative text-white selection:bg-sky-500/30 overflow-hidden">
@@ -53,8 +72,12 @@ export default function LandingPage() {
       </div>
 
       {/* Top Navigation */}
-      <header className="fixed top-0 left-0 right-0 z-50 glass-nav shadow-sm bg-[#071526]/85 backdrop-blur-md border-b border-white/5 text-white">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b ${
+        scrolled 
+          ? 'bg-[#071526]/85 backdrop-blur-md border-white/10 shadow-lg py-4' 
+          : 'bg-transparent border-transparent py-6'
+      } text-white`}>
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-sky-500 rounded-xl shadow-md shadow-sky-500/20">
               <ShieldCheck className="w-6 h-6 text-white" />
@@ -67,10 +90,10 @@ export default function LandingPage() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#hero" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Home</a>
-            <a href="#features" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Features</a>
-            <a href="#workflow" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">How It Works</a>
-            <a href="#about" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">About</a>
+            <a href="#hero" className="text-sm font-medium text-slate-350 hover:text-white transition-colors">Home</a>
+            <a href="#features" className="text-sm font-medium text-slate-350 hover:text-white transition-colors">Features</a>
+            <a href="#workflow" className="text-sm font-medium text-slate-350 hover:text-white transition-colors">How It Works</a>
+            <a href="#about" className="text-sm font-medium text-slate-350 hover:text-white transition-colors">About</a>
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4">
@@ -141,7 +164,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section id="hero" className="relative w-full h-[480px] sm:h-[560px] md:h-[650px] lg:h-[680px] bg-transparent text-white overflow-hidden pt-20 flex items-center justify-center">
+      <section id="hero" className="relative w-full min-h-[550px] sm:min-h-[640px] md:min-h-[750px] lg:min-h-[820px] xl:min-h-[880px] bg-transparent text-white overflow-hidden pt-32 pb-16 flex items-center justify-center">
         {/* Full-size YouTube Video Background (Contained in Hero Box Only) */}
         <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
           <iframe
@@ -176,8 +199,8 @@ export default function LandingPage() {
         {/* Background Gradients & Decorations */}
         <div className="absolute top-0 right-0 w-[50%] h-[100%] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-sky-500/10 via-sky-600/5 to-transparent pointer-events-none z-0" />
 
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full h-full flex items-center justify-center">
-          <div className="grid grid-cols-1 lg:grid-cols-[58%_42%] xl:grid-cols-[60%_40%] gap-6 sm:gap-8 items-center justify-center w-full h-full py-4">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full flex items-center justify-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[58%_42%] xl:grid-cols-[60%_40%] gap-6 sm:gap-8 items-center justify-center w-full py-4">
             {/* Left Content */}
             <motion.div
               className="flex flex-col gap-4 sm:gap-6 text-center lg:text-left justify-center w-full max-w-[700px] mx-auto lg:mx-0"
@@ -243,28 +266,53 @@ export default function LandingPage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <div className="relative rounded-[24px] overflow-hidden shadow-2xl border border-white/10 w-full max-w-[280px] sm:max-w-[340px] md:max-w-[380px] lg:max-w-[420px] mx-auto shrink-0 bg-white/5 p-1.5 backdrop-blur-md">
+              <div className="relative rounded-[24px] overflow-hidden shadow-2xl border border-white/10 w-full max-w-[300px] sm:max-w-[360px] md:max-w-[420px] lg:max-w-[465px] xl:max-w-[500px] mx-auto shrink-0 bg-white/5 p-1.5 backdrop-blur-md">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/founder.jpg"
-                  alt="Founder DHIRENDRA YADAV"
-                  className="w-full h-32 sm:h-40 md:h-56 lg:h-[280px] xl:h-[320px] object-cover scale-105 hover:scale-100 transition-transform duration-700 rounded-[18px]"
+                  alt="Founder DHIRENDRA TECH INNOVATIVE OF INCUBATION"
+                  className="w-full h-64 sm:h-80 md:h-[380px] lg:h-[440px] xl:h-[480px] object-cover scale-100 transition-transform duration-700 rounded-[18px]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-[18px] m-1.5" />
-
-                {/* Founder Info Overlay Badge */}
-                <div className="absolute bottom-4 left-4 right-4 glass-card p-2 sm:p-3.5 rounded-xl flex items-center justify-between">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="p-1.5 sm:p-2.5 bg-sky-500/10 rounded-xl border border-sky-500/20 text-sky-600 shrink-0">
-                      <Award className="w-4 h-4 sm:w-5 sm:h-5" />
+                
+                {/* Founder Info Overlay Badge matching 3rd mockup exactly (now inside the image box with sky blue background) */}
+                <div className="absolute bottom-4 left-4 right-4 bg-[#0ea5e9]/95 backdrop-blur-xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-3 sm:p-3.5 rounded-[18px] flex items-center justify-between gap-2 sm:gap-4 z-20">
+                  <div className="flex items-center gap-2.5 sm:gap-4">
+                    {/* Square profile avatar box with AI Bulb image */}
+                    <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl border border-white/30 overflow-hidden shrink-0 shadow-inner">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img 
+                        src="https://media.istockphoto.com/id/2164746643/photo/artificial-intelligence-idea-ai-light-bulb-idea-concept.jpg?s=1024x1024&w=is&k=20&c=OeQ_698xSL0y7OzrJcqG5YUJGbXuqhYbVOjN6rZZqRM="
+                        alt="AI Light Bulb Idea"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                    <div>
-                      <span className="text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-wider block font-bold">Founder</span>
-                      <span className="text-xs sm:text-sm lg:text-base font-bold text-slate-900 leading-tight">DHIRENDRA YADAV</span>
+
+                    {/* Vertical line divider */}
+                    <div className="w-[1.5px] h-8 sm:h-11 bg-white/20 shrink-0" />
+
+                    {/* Middle Text Info */}
+                    <div className="flex flex-col text-left">
+                      <span className="text-[8px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base font-black tracking-wide text-white uppercase leading-none whitespace-nowrap">
+                        DHIRENDRA [ INNOVATIVE OF INCUBATION ]
+                      </span>
+                      <div className="w-8 sm:w-12 h-[2px] bg-white mt-1.5 sm:mt-2 rounded-full" />
+                      <div className="flex items-center flex-wrap gap-1 sm:gap-2 mt-1.5 leading-none">
+                        <span className="text-[8px] sm:text-xs text-white/90 font-semibold tracking-wide">
+                          Bachelor&apos;s of Computer Applications
+                        </span>
+                        <span className="text-[8px] sm:text-xs text-sky-100 font-extrabold tracking-wide">
+                          ( Software Engineer )
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div className="text-right bg-sky-500/10 text-sky-600 text-[8px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-sky-500/20">
-                    Leader
+
+                  {/* Web Founder Pill Button */}
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 bg-white/10 border border-white/20 text-white rounded-full shrink-0 shadow-sm">
+                    <Globe className="w-3.5 h-3.5" />
+                    <span className="text-[8px] sm:text-[9.5px] font-black uppercase tracking-widest leading-none">
+                      WEB FOUNDER
+                    </span>
                   </div>
                 </div>
               </div>
@@ -327,57 +375,153 @@ export default function LandingPage() {
             {/* Admin Panel Card */}
             <motion.div 
               variants={itemVariants} 
-              className="p-8 rounded-[24px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-sky-400/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(24,168,255,0.12)] hover:scale-[1.02] hover:-translate-y-2 transition-all duration-300 flex flex-col gap-6 group"
+              className="p-6 rounded-[28px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-sky-400/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(24,168,255,0.12)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 flex flex-col group"
             >
-              <div className="p-4 bg-sky-500/10 text-sky-400 rounded-[20px] w-fit border border-sky-500/20 shadow-[0_0_20px_rgba(24,168,255,0.25)] transition-all duration-300 group-hover:scale-110 group-hover:bg-sky-500/20">
-                <ShieldCheck className="w-8 h-8 text-sky-400" />
+              {/* Image at the top */}
+              <div className="rounded-[20px] overflow-hidden w-full h-52 sm:h-56 relative z-10 shadow-sm shrink-0 mb-6">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://images.unsplash.com/photo-1713946598467-fcf9332c56ea?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Admin managing attendance dashboard"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
               </div>
-              <h3 className="text-xl font-bold text-white">Admin Panel</h3>
-              <p className="text-slate-350 text-sm leading-relaxed">
+
+              {/* Title & Icon Row */}
+              <div className="flex items-center gap-4">
+                <div className="p-3.5 bg-sky-500/10 text-sky-400 rounded-[20px] w-fit border border-sky-500/20 shadow-[0_0_20px_rgba(24,168,255,0.25)] transition-all duration-300 group-hover:scale-110 group-hover:bg-sky-500/20 shrink-0">
+                  <ShieldCheck className="w-8 h-8 text-sky-400" />
+                </div>
+                <div className="flex flex-col text-left">
+                  <h3 className="text-2xl font-black text-white tracking-tight leading-none">Admin Panel</h3>
+                  <div className="w-8 h-[3px] bg-sky-500 mt-1.5 rounded-full" />
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-slate-350 text-sm leading-relaxed mt-4 text-left font-medium">
                 Add, edit, search, and manage Teachers and Students. Check overall summaries, active statistics, and oversee attendance.
               </p>
-              <ul className="text-sm text-slate-400 flex flex-col gap-2 mt-2">
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" /> Teacher & Student CRUD</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" /> Assign Student to Teacher</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" /> Real-time Dashboard Statistics</li>
+
+              {/* Divider Line */}
+              <div className="w-full h-[1px] bg-white/10 my-5" />
+
+              {/* Bullet Features list */}
+              <ul className="text-sm text-slate-350 font-semibold flex flex-col gap-3 text-left">
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <span>Teacher & Student CRUD</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <span>Assign Student to Teacher</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <span>Real-time Dashboard Statistics</span>
+                </li>
               </ul>
             </motion.div>
 
             {/* Teacher Panel Card */}
             <motion.div 
               variants={itemVariants} 
-              className="p-8 rounded-[24px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-sky-400/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(24,168,255,0.12)] hover:scale-[1.02] hover:-translate-y-2 transition-all duration-300 flex flex-col gap-6 group"
+              className="p-6 rounded-[28px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-sky-400/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(24,168,255,0.12)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 flex flex-col group"
             >
-              <div className="p-4 bg-sky-500/10 text-sky-400 rounded-[20px] w-fit border border-sky-500/20 shadow-[0_0_20px_rgba(24,168,255,0.25)] transition-all duration-300 group-hover:scale-110 group-hover:bg-sky-500/20">
-                <Users className="w-8 h-8 text-sky-400" />
+              {/* Image at the top */}
+              <div className="rounded-[20px] overflow-hidden w-full h-52 sm:h-56 relative z-10 shadow-sm shrink-0 mb-6">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://images.unsplash.com/photo-1601655781320-205e34c94eb1?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Teacher holding notebook"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
               </div>
-              <h3 className="text-xl font-bold text-white">Teacher Panel</h3>
-              <p className="text-slate-355 text-sm leading-relaxed">
+
+              {/* Title & Icon Row */}
+              <div className="flex items-center gap-4">
+                <div className="p-3.5 bg-sky-500/10 text-sky-400 rounded-[20px] w-fit border border-sky-500/20 shadow-[0_0_20px_rgba(24,168,255,0.25)] transition-all duration-300 group-hover:scale-110 group-hover:bg-sky-500/20 shrink-0">
+                  <Users className="w-8 h-8 text-sky-400" />
+                </div>
+                <div className="flex flex-col text-left">
+                  <h3 className="text-2xl font-black text-white tracking-tight leading-none">Teacher Panel</h3>
+                  <div className="w-8 h-[3px] bg-sky-500 mt-1.5 rounded-full" />
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-slate-350 text-sm leading-relaxed mt-4 text-left font-medium">
                 {"Log in to mark daily attendance in clicks. Instantly edit today's records and manage profile credentials safely."}
               </p>
-              <ul className="text-sm text-slate-400 flex flex-col gap-2 mt-2">
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" /> Quick Attendance Marker</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" /> Manage Assigned Student Class</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" /> Profile Password Management</li>
+
+              {/* Divider Line */}
+              <div className="w-full h-[1px] bg-white/10 my-5" />
+
+              {/* Bullet Features list */}
+              <ul className="text-sm text-slate-355 font-semibold flex flex-col gap-3 text-left">
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <span>Quick Attendance Marker</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <span>Manage Assigned Student Class</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <span>Profile Password Management</span>
+                </li>
               </ul>
             </motion.div>
 
             {/* Student Panel Card */}
             <motion.div 
               variants={itemVariants} 
-              className="p-8 rounded-[24px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-sky-400/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(24,168,255,0.12)] hover:scale-[1.02] hover:-translate-y-2 transition-all duration-300 flex flex-col gap-6 sm:col-span-2 lg:col-span-1 group"
+              className="p-6 rounded-[28px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-sky-400/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(24,168,255,0.12)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 flex flex-col sm:col-span-2 lg:col-span-1 group"
             >
-              <div className="p-4 bg-sky-500/10 text-sky-400 rounded-[20px] w-fit border border-sky-500/20 shadow-[0_0_20px_rgba(24,168,255,0.25)] transition-all duration-300 group-hover:scale-110 group-hover:bg-sky-500/20">
-                <UserCheck className="w-8 h-8 text-sky-400" />
+              {/* Image at the top */}
+              <div className="rounded-[20px] overflow-hidden w-full h-52 sm:h-56 relative z-10 shadow-sm shrink-0 mb-6">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Students studying together"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
               </div>
-              <h3 className="text-xl font-bold text-white">Student Panel</h3>
-              <p className="text-slate-355 text-sm leading-relaxed">
+
+              {/* Title & Icon Row */}
+              <div className="flex items-center gap-4">
+                <div className="p-3.5 bg-sky-500/10 text-sky-400 rounded-[20px] w-fit border border-sky-500/20 shadow-[0_0_20px_rgba(24,168,255,0.25)] transition-all duration-300 group-hover:scale-110 group-hover:bg-sky-500/20 shrink-0">
+                  <UserCheck className="w-8 h-8 text-sky-400" />
+                </div>
+                <div className="flex flex-col text-left">
+                  <h3 className="text-2xl font-black text-white tracking-tight leading-none">Student Panel</h3>
+                  <div className="w-8 h-[3px] bg-sky-500 mt-1.5 rounded-full" />
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-slate-350 text-sm leading-relaxed mt-4 text-left font-medium">
                 Immediately view updated monthly summaries, attendance percentages, and complete attendance history records.
               </p>
-              <ul className="text-sm text-slate-400 flex flex-col gap-2 mt-2">
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" /> Live Attendance Percentage</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" /> Month-by-month History logs</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" /> Transparent Attendance Data</li>
+
+              {/* Divider Line */}
+              <div className="w-full h-[1px] bg-white/10 my-5" />
+
+              {/* Bullet Features list */}
+              <ul className="text-sm text-slate-355 font-semibold flex flex-col gap-3 text-left">
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <span>Live Attendance Percentage</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <span>Month-by-month History logs</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <span>Transparent Attendance Data</span>
+                </li>
               </ul>
             </motion.div>
           </motion.div>
@@ -422,8 +566,8 @@ export default function LandingPage() {
               <div className="relative rounded-[24px] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.45)] border border-white/[0.08] bg-white/[0.02] p-2 backdrop-blur-[10px] w-full max-w-[640px] mx-auto">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=800"
-                  alt="Students in class"
+                  src="https://plus.unsplash.com/premium_photo-1663075847012-c781e0d194ce?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Tech Presentation and Classroom Incubator"
                   className="w-full h-80 sm:h-[420px] object-cover rounded-[18px]"
                 />
               </div>
@@ -496,59 +640,201 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Ready to Get Started banner */}
-      <section className="bg-[#0b1528]/80 backdrop-blur-md text-white py-20 border-y border-white/5 relative z-10">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
-            <div className="p-3.5 bg-white/5 border border-white/10 rounded-2xl shrink-0 mx-auto md:mx-0 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-              <Award className="w-8 h-8 text-sky-400" />
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold tracking-tight text-white">Ready to Get Started?</h3>
-              <p className="text-sm text-slate-350 mt-1">Join hundreds of schools using AttendancePro to manage attendance with ease.</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 shrink-0 w-full md:w-auto justify-center">
-            <Link
-              href="/login"
-              className="bg-sky-500 hover:bg-sky-400 text-white font-semibold px-6 py-3.5 rounded-xl shadow-lg shadow-sky-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all text-center flex-1 md:flex-initial"
-            >
-              Get Started
-            </Link>
-            <Link
-              href="/login"
-              className="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold px-6 py-3.5 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all text-center flex-1 md:flex-initial"
-            >
-              Login
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
-      <footer className="bg-[#071526]/95 text-slate-400 py-12 border-t border-white/5 relative z-10">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-sky-500/10 border border-sky-500/20 rounded-lg">
-                <ShieldCheck className="w-5 h-5 text-sky-400" />
+      <footer className="w-full bg-transparent pt-4 pb-1 relative z-10">
+        <div className="max-w-[1500px] mx-auto px-2 sm:px-4">
+          
+          {/* Main Footer Card Container matching target design (2nd image) with optimized padding & height */}
+          <div className="bg-[#0a1322]/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.5)] py-4 px-6 sm:px-8 lg:px-10 mb-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5 lg:gap-6 pb-2">
+              
+              {/* Left Column: Brand description & Social proof (with vertical separator on right) */}
+              <div className="lg:col-span-3 flex flex-col justify-between lg:border-r lg:border-white/10 lg:pr-8">
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-sky-500 rounded-xl shadow-md shadow-sky-500/20">
+                      <ShieldCheck className="w-5.5 h-5.5 text-white" />
+                    </div>
+                    <div>
+                      <span className="text-lg font-bold tracking-tight text-white block leading-none">AttendancePro</span>
+                      <span className="text-[8px] text-sky-400 font-extrabold tracking-wider uppercase mt-0.5">Simple • Fast • Reliable</span>
+                    </div>
+                  </div>
+                  <p className="text-slate-400 text-xs leading-relaxed font-normal">
+                    AttendancePro helps schools manage attendance efficiently with dedicated Admin, Teacher, and Student panels. Light, focused, and secure.
+                  </p>
+                </div>
+                
+                {/* Social icons pushed to bottom baseline */}
+                <div className="flex items-center gap-2 mt-3">
+                  <a 
+                    href="#"
+                    className="w-8 h-8 rounded-full bg-white/[0.03] hover:bg-sky-500 border border-white/5 hover:border-sky-400 text-slate-400 hover:text-white transition-all duration-300 flex items-center justify-center shadow-md hover:scale-105 active:scale-95"
+                  >
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" />
+                    </svg>
+                  </a>
+                  <a 
+                    href="#"
+                    className="w-8 h-8 rounded-full bg-white/[0.03] hover:bg-sky-500 border border-white/5 hover:border-sky-400 text-slate-400 hover:text-white transition-all duration-300 flex items-center justify-center shadow-md hover:scale-105 active:scale-95"
+                  >
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  </a>
+                  <a 
+                    href="#"
+                    className="w-8 h-8 rounded-full bg-white/[0.03] hover:bg-sky-500 border border-white/5 hover:border-sky-400 text-slate-400 hover:text-white transition-all duration-300 flex items-center justify-center shadow-md hover:scale-105 active:scale-95"
+                  >
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                    </svg>
+                  </a>
+                  <a 
+                    href="#"
+                    className="w-8 h-8 rounded-full bg-white/[0.03] hover:bg-sky-500 border border-white/5 hover:border-sky-400 text-slate-400 hover:text-white transition-all duration-300 flex items-center justify-center shadow-md hover:scale-105 active:scale-95"
+                  >
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.528 3.545 12 3.545 12 3.545s-7.528 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.022 0 12 0 12s0 3.978.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.86.508 9.388.508 9.388.508s7.528 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.978 24 12 24 12s0-3.978-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg>
+                  </a>
+                </div>
               </div>
-              <span className="text-lg font-bold text-white tracking-tight">AttendancePro</span>
+
+              {/* Middle Columns (4 Link Lists): PRODUCT, COMPANY, RESOURCES, LEGAL */}
+              <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-5">
+                
+                {/* Column 1: PRODUCT */}
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <span className="text-[10px] font-bold text-white tracking-widest uppercase">PRODUCT</span>
+                    <div className="w-5 h-[1.5px] bg-sky-500 mt-1.5 rounded-full" />
+                  </div>
+                  <div className="flex flex-col gap-3 text-xs font-normal text-slate-400">
+                    <a href="#features" className="hover:text-sky-400 transition-colors">Features</a>
+                    <a href="#workflow" className="hover:text-sky-400 transition-colors">How It Works</a>
+                    <a href="#" className="hover:text-sky-400 transition-colors">Pricing</a>
+                    <a href="#" className="hover:text-sky-400 transition-colors">Updates</a>
+                  </div>
+                </div>
+
+                {/* Column 2: COMPANY */}
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <span className="text-[10px] font-bold text-white tracking-widest uppercase">COMPANY</span>
+                    <div className="w-5 h-[1.5px] bg-sky-500 mt-1.5 rounded-full" />
+                  </div>
+                  <div className="flex flex-col gap-3 text-xs font-normal text-slate-400">
+                    <a href="#about" className="hover:text-sky-400 transition-colors">About Us</a>
+                    <a href="#" className="hover:text-sky-400 transition-colors">Our Mission</a>
+                    <a href="#" className="hover:text-sky-400 transition-colors">Careers</a>
+                    <a href="#" className="hover:text-sky-400 transition-colors">Blog</a>
+                  </div>
+                </div>
+
+                {/* Column 3: RESOURCES */}
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <span className="text-[10px] font-bold text-white tracking-widest uppercase">RESOURCES</span>
+                    <div className="w-5 h-[1.5px] bg-sky-500 mt-1.5 rounded-full" />
+                  </div>
+                  <div className="flex flex-col gap-3 text-xs font-normal text-slate-400">
+                    <a href="#" className="hover:text-sky-400 transition-colors">Help Center</a>
+                    <a href="#" className="hover:text-sky-400 transition-colors">Documentation</a>
+                    <a href="#" className="hover:text-sky-400 transition-colors">Guides</a>
+                    <a href="#" className="hover:text-sky-400 transition-colors">API Status</a>
+                  </div>
+                </div>
+
+                {/* Column 4: LEGAL */}
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <span className="text-[10px] font-bold text-white tracking-widest uppercase">LEGAL</span>
+                    <div className="w-5 h-[1.5px] bg-sky-500 mt-1.5 rounded-full" />
+                  </div>
+                  <div className="flex flex-col gap-3 text-xs font-normal text-slate-400">
+                    <a href="#" className="hover:text-sky-400 transition-colors">Privacy Policy</a>
+                    <a href="#" className="hover:text-sky-400 transition-colors">Terms & Conditions</a>
+                    <a href="#" className="hover:text-sky-400 transition-colors">Data Security</a>
+                    <a href="#" className="hover:text-sky-400 transition-colors">Cookie Policy</a>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Right Column: GET IN TOUCH (with vertical line separator on left) */}
+              <div className="lg:col-span-3 flex flex-col gap-3 lg:border-l lg:border-white/10 lg:pl-8">
+                <div>
+                  <span className="text-[10px] font-bold text-white tracking-widest uppercase">GET IN TOUCH</span>
+                  <div className="w-6 h-[1.5px] bg-sky-500 mt-1 rounded-full" />
+                </div>
+                <p className="text-slate-400 text-xs font-semibold leading-normal">
+                  Have any questions? Call our administration team.
+                </p>
+
+                {/* Contact Cards Container - Sleek divided panel inside */}
+                <div className="flex flex-col border border-white/10 rounded-xl divide-y divide-white/10 bg-slate-950/20 overflow-hidden shadow-inner">
+                  {[
+                    { role: 'PRINCIPAL', number: '+91 98765 43210', iconColor: 'bg-sky-500/10 border-sky-500/20 text-sky-400' },
+                    { role: 'MANAGER', number: '+91 87654 32109', iconColor: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' },
+                    { role: 'HOD', number: '+91 76543 21098', iconColor: 'bg-purple-500/10 border-purple-500/20 text-purple-400' }
+                  ].map((contact, idx) => (
+                    <div 
+                      key={idx}
+                      className="flex items-center justify-between py-2 px-3 text-white hover:bg-white/[0.02] transition-colors"
+                    >
+                      <div className="flex items-center gap-3.5">
+                        <div className={`w-7 h-7 rounded-full ${contact.iconColor} border flex items-center justify-center shrink-0 shadow-inner`}>
+                          <User className="w-3 h-3" />
+                        </div>
+                        <div>
+                          <span className="text-[8px] text-slate-500 font-bold uppercase tracking-wider block leading-tight">{contact.role}</span>
+                          <span className="text-xs font-bold text-white tracking-wide">{contact.number}</span>
+                        </div>
+                      </div>
+                      <a 
+                        href={`tel:${contact.number}`}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 border border-white/10 hover:border-sky-500 hover:bg-sky-500 text-slate-350 hover:text-white font-bold text-[8px] uppercase tracking-wider rounded-lg transition-all active:scale-95"
+                      >
+                        <Phone className="w-2.5 h-2.5" /> Call Now
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
-            <div className="flex gap-8 text-sm">
-              <a href="#hero" className="hover:text-white transition-colors">Home</a>
-              <a href="#features" className="hover:text-white transition-colors">Features</a>
-              <a href="#workflow" className="hover:text-white transition-colors">How It Works</a>
-              <a href="#about" className="hover:text-white transition-colors">About Us</a>
+
+            {/* Divider Line inside the card wrapper */}
+            <div className="border-t border-white/10 pt-3 mt-1">
+              {/* Bottom Copyright Row inside the card container */}
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-[11px] font-semibold text-slate-455">
+                <p className="order-2 md:order-1 font-medium text-slate-500">
+                  &copy; {new Date().getFullYear()} AttendancePro. All rights reserved.
+                </p>
+                <div className="order-1 md:order-2 flex items-center gap-2 text-slate-400">
+                  <div className="w-4.5 h-4.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-inner">
+                    <ShieldCheck className="w-3 h-3" />
+                  </div>
+                  <span className="text-[11px] font-bold tracking-wide">Secure</span>
+                  <span className="text-slate-600">•</span>
+                  <span className="text-[11px] font-bold tracking-wide">Reliable</span>
+                  <span className="text-slate-600">•</span>
+                  <span className="text-[11px] font-bold tracking-wide">Trusted by Schools</span>
+                </div>
+                <button
+                  onClick={() => showToast('Language selection is not configured.', 'info')}
+                  className="order-3 inline-flex items-center gap-2 px-3 py-1 bg-slate-950/40 border border-white/5 hover:border-white/10 hover:text-white transition-all text-[11px] font-bold rounded-xl shadow-lg cursor-pointer"
+                >
+                  <Globe className="w-3 h-3 text-slate-400" />
+                  English
+                  <ChevronDown className="w-3 h-3 text-slate-500" />
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 text-xs text-slate-500">
-            <p>&copy; {new Date().getFullYear()} AttendancePro. All rights reserved.</p>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-slate-400">Privacy Policy</a>
-              <a href="#" className="hover:text-slate-400">Terms & Conditions</a>
-              <a href="#" className="hover:text-slate-400">Contact Us</a>
-            </div>
+            
           </div>
         </div>
       </footer>

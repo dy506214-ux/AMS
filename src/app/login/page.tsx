@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, Lock, User, Loader2, ArrowLeft, KeyRound, Eye, EyeOff } from 'lucide-react';
+import { ShieldCheck, Lock, User, Loader2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { loginAction } from '@/lib/actions/auth';
 import { useToast } from '@/context/ToastContext';
@@ -59,40 +59,40 @@ export default function LoginPage() {
       <div className="absolute bottom-[-120px] left-[-120px] w-[350px] h-[350px] bg-gradient-to-tr from-sky-950/40 to-transparent rotate-45 pointer-events-none z-0 border border-white/5 rounded-3xl" />
       <div className="absolute bottom-[-120px] right-[-120px] w-[400px] h-[400px] bg-gradient-to-tl from-sky-900/20 to-transparent rotate-45 pointer-events-none z-0 border border-white/5 rounded-3xl" />
 
-      {/* Header */}
-      <div className="max-w-md w-full mx-auto relative z-10">
-        <Link 
-          href="/" 
-          className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium mb-8 group"
-        >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          Back to home
-        </Link>
-      </div>
+      {/* Back to Home Button (Absolute Left Corner) */}
+      <Link 
+        href="/" 
+        className="absolute top-6 left-6 sm:top-8 sm:left-8 z-20 inline-flex items-center gap-2 px-4 py-2.5 bg-sky-950/50 hover:bg-sky-950/70 border border-white/10 text-slate-300 hover:text-white transition-all text-xs sm:text-sm font-bold rounded-xl shadow-lg shadow-black/20 group"
+      >
+        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+        Back to home
+      </Link>
+
+      <div className="h-10 pointer-events-none" />
 
       {/* Main card */}
-      <div className="max-w-md w-full mx-auto relative z-10 flex flex-col items-center">
+      <div className="max-w-[490px] w-full mx-auto relative z-10 flex flex-col items-center justify-center my-auto">
         {/* Brand */}
-        <div className="flex flex-col items-center gap-3 mb-8">
-          <div className="p-3.5 bg-sky-500 rounded-[22px] shadow-2xl shadow-sky-500/25 border border-sky-400/20 hover:scale-105 transition-transform duration-300">
-            <ShieldCheck className="w-9 h-9 text-white" />
+        <div className="flex flex-col items-center gap-3 mb-6">
+          <div className="p-3 bg-sky-500 rounded-[20px] shadow-2xl shadow-sky-500/25 border border-sky-400/20 hover:scale-105 transition-transform duration-300">
+            <ShieldCheck className="w-8 h-8 text-white" />
           </div>
           <div className="text-center">
-            <h2 className="text-3xl font-extrabold tracking-tight text-white leading-none">AttendancePro</h2>
-            <p className="text-[10px] text-sky-400 font-extrabold tracking-[0.25em] uppercase mt-2">Portal Login</p>
+            <h2 className="text-2xl font-extrabold tracking-tight text-white leading-none">AttendancePro</h2>
+            <p className="text-[9px] text-sky-400 font-extrabold tracking-[0.25em] uppercase mt-2">Portal Login</p>
           </div>
         </div>
 
         {/* Form Container */}
-        <div className="w-full bg-[#0a1322]/90 backdrop-blur-xl p-8 rounded-[28px] border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
-          <div className="mb-8">
-            <h3 className="text-2xl font-bold text-white tracking-tight">Welcome back</h3>
-            <p className="text-sm text-slate-400 mt-1.5 font-medium">Sign in to continue to your dashboard.</p>
+        <div className="w-full bg-[#0a1322]/90 backdrop-blur-xl px-8 py-7 rounded-[24px] border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
+          <div className="mb-5">
+            <h3 className="text-xl font-bold text-white tracking-tight">Welcome back</h3>
+            <p className="text-xs text-slate-400 mt-1.5 font-semibold">Sign in to continue to your dashboard.</p>
           </div>
 
-          <form onSubmit={handleLogin} className="flex flex-col gap-6">
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-slate-400/80 mb-2.5">
+              <label className="block text-xs font-bold uppercase tracking-widest text-slate-400/80 mb-2">
                 Username or Email
               </label>
               <div className="relative">
@@ -105,13 +105,13 @@ export default function LoginPage() {
                   placeholder="Enter your username or email"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-slate-950/40 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all font-medium"
+                  className="w-full pl-12 pr-4 py-3 bg-slate-950/40 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all font-medium"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-slate-400/80 mb-2.5">
+              <label className="block text-xs font-bold uppercase tracking-widest text-slate-400/80 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -124,7 +124,7 @@ export default function LoginPage() {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-12 py-4 bg-slate-950/40 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all font-medium"
+                  className="w-full pl-12 pr-12 py-3 bg-slate-950/40 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all font-medium"
                 />
                 <button
                   type="button"
@@ -161,7 +161,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-4 mt-2 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-xl shadow-lg shadow-sky-500/20 hover:shadow-sky-500/35 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer text-sm tracking-wide"
+              className="w-full py-3 mt-1 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-xl shadow-lg shadow-sky-500/20 hover:shadow-sky-500/35 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer text-sm tracking-wide"
             >
               {isLoading ? (
                 <>
@@ -174,7 +174,7 @@ export default function LoginPage() {
           </form>
 
           {/* Separator */}
-          <div className="relative flex py-5 items-center mt-2">
+          <div className="relative flex py-3 items-center mt-2">
             <div className="flex-grow border-t border-white/5"></div>
             <span className="flex-shrink mx-4 text-xs font-bold tracking-widest text-slate-500">OR</span>
             <div className="flex-grow border-t border-white/5"></div>
@@ -184,7 +184,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => showToast('Google Authentication is not configured for this school portal.', 'info')}
-            className="w-full py-4 bg-slate-950/30 hover:bg-slate-950/50 text-slate-200 font-semibold rounded-xl border border-white/5 hover:border-white/10 transition-all flex items-center justify-center gap-3 cursor-pointer text-sm"
+            className="w-full py-3 bg-slate-950/30 hover:bg-slate-950/50 text-slate-200 font-semibold rounded-xl border border-white/5 hover:border-white/10 transition-all flex items-center justify-center gap-3 cursor-pointer text-sm"
           >
             {/* Google Multi-colored SVG Logo */}
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -195,42 +195,11 @@ export default function LoginPage() {
             </svg>
             Continue with Google
           </button>
-
-          {/* Quick Demo Credentials Info */}
-          <div className="mt-8 border-t border-white/5 pt-6 flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <KeyRound className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-              <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Demo Access Credentials</span>
-            </div>
-            <div className="bg-slate-950/30 border border-white/5 p-4 rounded-xl flex flex-col gap-2 text-[11px] text-slate-400 font-medium">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-slate-300">Admin (Principal):</span>
-                <div>
-                  <code className="text-white bg-white/5 px-1 py-0.5 rounded mr-1">principal@attendence.com</code>
-                  <code className="text-white bg-white/5 px-1 py-0.5 rounded">Dhirendra@2026</code>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-slate-300">Teacher:</span>
-                <div>
-                  <code className="text-white bg-white/5 px-1 py-0.5 rounded mr-1">teacher1@attendence.com</code>
-                  <code className="text-white bg-white/5 px-1 py-0.5 rounded">Teacher@2026</code>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-slate-300">Student:</span>
-                <div>
-                  <code className="text-white bg-white/5 px-1 py-0.5 rounded mr-1">student1@attendence.com</code>
-                  <code className="text-white bg-white/5 px-1 py-0.5 rounded">Student@2026</code>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="max-w-md w-full mx-auto text-center relative z-10 mt-8">
+      <div className="max-w-[490px] w-full mx-auto text-center relative z-10 mt-6">
         <p className="text-xs text-slate-500 font-medium">
           AttendancePro &copy; {new Date().getFullYear()}. All rights reserved.
         </p>
