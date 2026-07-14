@@ -1,0 +1,66 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  name         String
+  email        String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Teacher {
+  id           String   @id @default(uuid())
+  employeeId   String   @unique
+  passwordHash String
+  name         String
+  email        String   @unique
+  phone        String
+  photoUrl     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  students     Student[]
+  attendance   Attendance[]
+}
+
+model Student {
+  id           String   @id @default(uuid())
+  rollNumber   String
+  passwordHash String
+  name         String
+  email        String   @unique
+  phone        String
+  class        String
+  section      String
+  photoUrl     String
+  teacherId    String?
+  teacher      Teacher? @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  attendance   Attendance[]
+
+  @@index([teacherId])
+}
+
+model Attendance {
+  id                String   @id @default(uuid())
+  studentId         String
+  student           Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date              String   // YYYY-MM-DD
+  status            String   // "present" | "absent"
+  markedByTeacherId String
+  markedByTeacher   Teacher  @relation(fields: [markedByTeacherId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([studentId, date]) // A student can only have one attendance record per day
+  @@index([markedByTeacherId])
+}
