@@ -46,6 +46,7 @@ export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [activeSection, setActiveSection] = React.useState('hero');
   const [solutionsDropdownOpen, setSolutionsDropdownOpen] = React.useState(false);
+  const [hoveredNavItem, setHoveredNavItem] = React.useState<string | null>(null);
   const { showToast } = useToast();
 
   React.useEffect(() => {
@@ -95,9 +96,8 @@ export default function LandingPage() {
         <div className="absolute bottom-[20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-[#5B8CFF]/5 blur-[160px]" />
       </div>
 
-      {/* Top Navigation */}
-      <header className="fixed top-0 left-0 right-0 z-50 w-full text-slate-800">
-        <div className="w-full bg-white/90 border-b border-slate-200/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] px-4 sm:px-8 py-3.5 flex items-center justify-between transition-all duration-300 relative">
+      <header className="fixed top-0 left-0 right-0 z-50 w-full text-black">
+        <div className="w-full bg-white/90 border-b border-slate-200/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4 lg:gap-8 transition-all duration-300 relative">
           
           {/* Logo Brand Segment */}
           <div className="flex items-center gap-3">
@@ -110,29 +110,33 @@ export default function LandingPage() {
             </div>
             
             {/* Brand Name */}
-            <span className="text-lg font-black tracking-tight text-slate-900 uppercase">AMS</span>
+            <span className="text-lg font-black tracking-tight text-black uppercase">AMS</span>
             
             {/* Vertical Divider */}
-            <div className="w-[1px] h-5 bg-slate-200 hidden lg:block" />
+            <div className="w-[1px] h-5 bg-slate-200 hidden 2xl:block" />
             
             {/* Sub-label */}
-            <span className="text-slate-550 text-xs font-semibold tracking-wide hidden lg:block uppercase">
+            <span className="text-black text-xs font-semibold tracking-wide hidden 2xl:block uppercase whitespace-nowrap">
               Attendance Management System
             </span>
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden xl:flex items-center gap-6">
+          <nav className="hidden xl:flex items-center gap-4 2xl:gap-8">
             {/* Home */}
             <a 
               href="#hero" 
-              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 ${
-                activeSection === 'hero' ? 'text-[#0066fe] font-bold' : 'text-slate-600 hover:text-slate-900'
+              onMouseEnter={() => setHoveredNavItem('hero')}
+              onMouseLeave={() => setHoveredNavItem(null)}
+              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 whitespace-nowrap ${
+                (hoveredNavItem === 'hero' || (hoveredNavItem === null && activeSection === 'hero'))
+                  ? 'text-[#0066fe] font-bold' 
+                  : 'text-black hover:text-[#0066fe]'
               }`}
             >
               <Home className="w-4 h-4" />
               <span>Home</span>
-              {activeSection === 'hero' && (
+              {(hoveredNavItem === 'hero' || (hoveredNavItem === null && activeSection === 'hero')) && (
                 <motion.div 
                   layoutId="activeNavLine" 
                   className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
@@ -143,13 +147,17 @@ export default function LandingPage() {
             {/* Features */}
             <a 
               href="#features" 
-              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 ${
-                activeSection === 'features' ? 'text-[#0066fe] font-bold' : 'text-slate-600 hover:text-slate-900'
+              onMouseEnter={() => setHoveredNavItem('features')}
+              onMouseLeave={() => setHoveredNavItem(null)}
+              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 whitespace-nowrap ${
+                (hoveredNavItem === 'features' || (hoveredNavItem === null && activeSection === 'features'))
+                  ? 'text-[#0066fe] font-bold' 
+                  : 'text-black hover:text-[#0066fe]'
               }`}
             >
               <LayoutGrid className="w-4 h-4" />
               <span>Features</span>
-              {activeSection === 'features' && (
+              {(hoveredNavItem === 'features' || (hoveredNavItem === null && activeSection === 'features')) && (
                 <motion.div 
                   layoutId="activeNavLine" 
                   className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
@@ -160,16 +168,30 @@ export default function LandingPage() {
             {/* Solutions Dropdown */}
             <div 
               className="relative group"
-              onMouseEnter={() => setSolutionsDropdownOpen(true)}
-              onMouseLeave={() => setSolutionsDropdownOpen(false)}
+              onMouseEnter={() => {
+                setSolutionsDropdownOpen(true);
+                setHoveredNavItem('solutions');
+              }}
+              onMouseLeave={() => {
+                setSolutionsDropdownOpen(false);
+                setHoveredNavItem(null);
+              }}
             >
               <button 
-                className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all py-2"
+                className={`flex items-center gap-2 text-sm font-semibold transition-all py-2 relative whitespace-nowrap ${
+                  (hoveredNavItem === 'solutions' || solutionsDropdownOpen) ? 'text-[#0066fe] font-bold' : 'text-black hover:text-[#0066fe]'
+                }`}
                 onClick={() => setSolutionsDropdownOpen(!solutionsDropdownOpen)}
               >
                 <Layers className="w-4 h-4" />
                 <span>Solutions</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${solutionsDropdownOpen ? 'rotate-180 text-slate-900' : 'text-slate-600'}`} />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${solutionsDropdownOpen ? 'rotate-180 text-[#0066fe]' : 'text-black'}`} />
+                {(hoveredNavItem === 'solutions' || solutionsDropdownOpen) && (
+                  <motion.div 
+                    layoutId="activeNavLine" 
+                    className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                  />
+                )}
               </button>
               
               <AnimatePresence>
@@ -225,13 +247,17 @@ export default function LandingPage() {
             {/* How It Works */}
             <a 
               href="#workflow" 
-              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 ${
-                activeSection === 'workflow' ? 'text-[#0066fe] font-bold' : 'text-slate-600 hover:text-slate-900'
+              onMouseEnter={() => setHoveredNavItem('workflow')}
+              onMouseLeave={() => setHoveredNavItem(null)}
+              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 whitespace-nowrap ${
+                (hoveredNavItem === 'workflow' || (hoveredNavItem === null && activeSection === 'workflow'))
+                  ? 'text-[#0066fe] font-bold' 
+                  : 'text-black hover:text-[#0066fe]'
               }`}
             >
               <Settings className="w-4 h-4" />
               <span>How It Works</span>
-              {activeSection === 'workflow' && (
+              {(hoveredNavItem === 'workflow' || (hoveredNavItem === null && activeSection === 'workflow')) && (
                 <motion.div 
                   layoutId="activeNavLine" 
                   className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
@@ -242,29 +268,50 @@ export default function LandingPage() {
             {/* Pricing */}
             <a 
               href="#about" 
+              onMouseEnter={() => setHoveredNavItem('pricing')}
+              onMouseLeave={() => setHoveredNavItem(null)}
               onClick={(e) => {
                 e.preventDefault();
                 const el = document.getElementById('about');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
                 showToast('Pricing details are tailored for your school. Contact support to get a quote!', 'info');
               }}
-              className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all py-2 px-1"
+              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 whitespace-nowrap ${
+                hoveredNavItem === 'pricing' ? 'text-[#0066fe] font-bold' : 'text-black hover:text-[#0066fe]'
+              }`}
             >
               <Tag className="w-4 h-4" />
               <span>Pricing</span>
+              {hoveredNavItem === 'pricing' && (
+                <motion.div 
+                  layoutId="activeNavLine" 
+                  className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                />
+              )}
             </a>
 
             {/* Contact */}
             <a 
-              href="#workflow" 
+              href="#footer" 
+              onMouseEnter={() => setHoveredNavItem('contact')}
+              onMouseLeave={() => setHoveredNavItem(null)}
               onClick={(e) => {
                 e.preventDefault();
-                showToast('Thank you for choosing AMS. Support contact: support@ams-pro.edu', 'success');
+                const el = document.getElementById('footer');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all py-2 px-1"
+              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 whitespace-nowrap ${
+                hoveredNavItem === 'contact' ? 'text-[#0066fe] font-bold' : 'text-black hover:text-[#0066fe]'
+              }`}
             >
               <Mail className="w-4 h-4" />
               <span>Contact</span>
+              {hoveredNavItem === 'contact' && (
+                <motion.div 
+                  layoutId="activeNavLine" 
+                  className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                />
+              )}
             </a>
           </nav>
 
@@ -273,16 +320,16 @@ export default function LandingPage() {
             {/* Login Button */}
             <Link
               href="/login"
-              className="hidden sm:flex items-center gap-2 text-sm font-semibold px-4 py-2.5 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-[0.98]"
+              className="hidden sm:flex items-center gap-2 text-sm font-semibold px-4 py-2.5 border border-black/20 rounded-xl text-black hover:bg-slate-50 hover:border-black/30 transition-all active:scale-[0.98] whitespace-nowrap"
             >
-              <User className="w-4 h-4 text-slate-500" />
+              <User className="w-4 h-4 text-black" />
               <span>Login</span>
             </Link>
             
             {/* Get Started Button */}
             <Link
               href="/login"
-              className="hidden sm:flex items-center gap-2 text-sm font-semibold bg-[#0066fe] hover:bg-blue-600 px-5 py-2.5 rounded-xl text-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md shadow-blue-500/20"
+              className="hidden sm:flex items-center gap-2 text-sm font-semibold bg-[#0066fe] hover:bg-blue-600 px-5 py-2.5 rounded-xl text-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md shadow-blue-500/20 whitespace-nowrap"
             >
               <Rocket className="w-4 h-4 text-white" />
               <span>Get Started</span>
@@ -291,7 +338,7 @@ export default function LandingPage() {
             {/* Mobile Hamburger menu toggle button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="xl:hidden p-2.5 text-slate-600 hover:text-slate-900 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none transition-all"
+              className="xl:hidden p-2.5 text-black hover:text-[#0066fe] rounded-xl bg-slate-50 border border-slate-200 focus:outline-none transition-all"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -384,11 +431,12 @@ export default function LandingPage() {
                   <span>Pricing</span>
                 </a>
                 <a
-                  href="#workflow"
+                  href="#footer"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsMobileMenuOpen(false);
-                    showToast('Thank you for choosing AMS. Support contact: support@ams-pro.edu', 'success');
+                    const el = document.getElementById('footer');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }}
                   className="flex items-center gap-3 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors py-2.5"
                 >
@@ -909,7 +957,7 @@ export default function LandingPage() {
 
 
       {/* Footer */}
-      <footer className="w-full bg-transparent pt-4 pb-1 relative z-10">
+      <footer id="footer" className="w-full bg-transparent pt-4 pb-1 relative z-10">
         <div className="max-w-[1500px] mx-auto px-2 sm:px-4">
           
           {/* Main Footer Card Container matching target design (2nd image) with optimized padding & height */}
