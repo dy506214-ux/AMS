@@ -6,7 +6,6 @@ import { motion, AnimatePresence, Variants } from 'framer-motion';
 import {
   ShieldCheck,
   Users,
-  UserCheck,
   ArrowRight,
   CheckCircle2,
   Menu,
@@ -14,7 +13,15 @@ import {
   Globe,
   ChevronDown,
   Phone,
-  User
+  User,
+  GraduationCap,
+  Home,
+  LayoutGrid,
+  Layers,
+  Settings,
+  Tag,
+  Mail,
+  Rocket
 } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 
@@ -37,20 +44,37 @@ const itemVariants: Variants = {
 
 export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const [scrolled, setScrolled] = React.useState(false);
+  const [activeSection, setActiveSection] = React.useState('hero');
+  const [solutionsDropdownOpen, setSolutionsDropdownOpen] = React.useState(false);
   const { showToast } = useToast();
 
   React.useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+    const sections = ['hero', 'features', 'workflow', 'about'];
+    const observers = sections.map((sectionId) => {
+      const el = document.getElementById(sectionId);
+      if (!el) return null;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setActiveSection(sectionId);
+          }
+        },
+        {
+          rootMargin: '-30% 0px -60% 0px', // Trigger when section occupies the main viewport area
+        }
+      );
+      observer.observe(el);
+      return { observer, el };
+    });
+
+    return () => {
+      observers.forEach((obs) => {
+        if (obs) {
+          obs.observer.unobserve(obs.el);
+        }
+      });
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
@@ -72,49 +96,204 @@ export default function LandingPage() {
       </div>
 
       {/* Top Navigation */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b ${
-        scrolled 
-          ? 'bg-[#071526]/85 backdrop-blur-md border-white/10 shadow-lg py-4' 
-          : 'bg-transparent border-transparent py-6'
-      } text-white`}>
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <header className="fixed top-4 left-0 right-0 z-50 w-full px-4 sm:px-6 lg:px-8 max-w-[1500px] mx-auto text-white">
+        <div className="w-full bg-[#040D21]/60 border border-white/[0.08] backdrop-blur-xl shadow-[0_30px_80px_rgba(0,0,0,0.5)] rounded-[24px] px-4 sm:px-6 py-3 flex items-center justify-between transition-all duration-300 relative">
+          
+          {/* Logo Brand Segment */}
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-sky-500 rounded-xl shadow-md shadow-sky-500/20">
-              <ShieldCheck className="w-6 h-6 text-white" />
+            {/* Hexagon shape with SVG and People Icon */}
+            <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full text-[#0066fe] fill-current drop-shadow-[0_0_8px_rgba(0,102,254,0.35)]">
+                <path d="M50 2.5 L93.3 27.5 L93.3 77.5 L50 97.5 L6.7 77.5 L6.7 27.5 Z" />
+              </svg>
+              <Users className="w-4.5 h-4.5 text-white relative z-10" />
             </div>
-            <div>
-              <span className="text-xl font-bold tracking-tight text-white block leading-none">AttendancePro</span>
-              <span className="text-[10px] text-sky-400 font-semibold tracking-wider uppercase hidden sm:block mt-1">Simple • Fast • Reliable</span>
-            </div>
+            
+            {/* Brand Name */}
+            <span className="text-lg font-black tracking-tight text-white uppercase">AMS</span>
+            
+            {/* Vertical Divider */}
+            <div className="w-[1px] h-5 bg-white/20 hidden lg:block" />
+            
+            {/* Sub-label */}
+            <span className="text-slate-400 text-xs font-semibold tracking-wide hidden lg:block uppercase">
+              Attendance Management System
+            </span>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#hero" className="text-sm font-medium text-slate-350 hover:text-white transition-colors">Home</a>
-            <a href="#features" className="text-sm font-medium text-slate-350 hover:text-white transition-colors">Features</a>
-            <a href="#workflow" className="text-sm font-medium text-slate-350 hover:text-white transition-colors">How It Works</a>
-            <a href="#about" className="text-sm font-medium text-slate-350 hover:text-white transition-colors">About</a>
+          {/* Desktop Navigation Links */}
+          <nav className="hidden xl:flex items-center gap-6">
+            {/* Home */}
+            <a 
+              href="#hero" 
+              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 ${
+                activeSection === 'hero' ? 'text-white font-bold' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+              {activeSection === 'hero' && (
+                <motion.div 
+                  layoutId="activeNavLine" 
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                />
+              )}
+            </a>
+
+            {/* Features */}
+            <a 
+              href="#features" 
+              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 ${
+                activeSection === 'features' ? 'text-white font-bold' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <LayoutGrid className="w-4 h-4" />
+              <span>Features</span>
+              {activeSection === 'features' && (
+                <motion.div 
+                  layoutId="activeNavLine" 
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                />
+              )}
+            </a>
+
+            {/* Solutions Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => setSolutionsDropdownOpen(true)}
+              onMouseLeave={() => setSolutionsDropdownOpen(false)}
+            >
+              <button 
+                className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-all py-2"
+                onClick={() => setSolutionsDropdownOpen(!solutionsDropdownOpen)}
+              >
+                <Layers className="w-4 h-4" />
+                <span>Solutions</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${solutionsDropdownOpen ? 'rotate-180 text-white' : 'text-slate-400'}`} />
+              </button>
+              
+              <AnimatePresence>
+                {solutionsDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 15 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 p-3 bg-[#040D21]/95 border border-white/[0.08] backdrop-blur-2xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 flex flex-col gap-1"
+                  >
+                    <Link
+                      href="/admin"
+                      className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-blue-500/10 hover:border-blue-500/20 border border-transparent transition-all group/item text-left"
+                    >
+                      <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 group-hover/item:bg-blue-500/20 shrink-0">
+                        <ShieldCheck className="w-4.5 h-4.5" />
+                      </div>
+                      <div>
+                        <h5 className="text-xs font-bold text-white leading-tight">Admin Portal</h5>
+                        <p className="text-[10px] text-slate-400 leading-normal mt-0.5">Manage teachers, students & dashboard stats.</p>
+                      </div>
+                    </Link>
+                    <Link
+                      href="/teacher"
+                      className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/20 border border-transparent transition-all group/item text-left"
+                    >
+                      <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover/item:bg-emerald-500/20 shrink-0">
+                        <Users className="w-4.5 h-4.5" />
+                      </div>
+                      <div>
+                        <h5 className="text-xs font-bold text-white leading-tight">Teacher Portal</h5>
+                        <p className="text-[10px] text-slate-400 leading-normal mt-0.5">Mark daily attendance and track sections.</p>
+                      </div>
+                    </Link>
+                    <Link
+                      href="/student"
+                      className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-orange-500/10 hover:border-orange-500/20 border border-transparent transition-all group/item text-left"
+                    >
+                      <div className="p-1.5 rounded-lg bg-orange-500/10 text-orange-400 group-hover/item:bg-orange-500/20 shrink-0">
+                        <GraduationCap className="w-4.5 h-4.5" />
+                      </div>
+                      <div>
+                        <h5 className="text-xs font-bold text-white leading-tight">Student Portal</h5>
+                        <p className="text-[10px] text-slate-400 leading-normal mt-0.5">View your attendance logs & monthly histories.</p>
+                      </div>
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* How It Works */}
+            <a 
+              href="#workflow" 
+              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 ${
+                activeSection === 'workflow' ? 'text-white font-bold' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Settings className="w-4 h-4" />
+              <span>How It Works</span>
+              {activeSection === 'workflow' && (
+                <motion.div 
+                  layoutId="activeNavLine" 
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                />
+              )}
+            </a>
+
+            {/* Pricing */}
+            <a 
+              href="#about" 
+              onClick={(e) => {
+                e.preventDefault();
+                const el = document.getElementById('about');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                showToast('Pricing details are tailored for your school. Contact support to get a quote!', 'info');
+              }}
+              className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-all py-2 px-1"
+            >
+              <Tag className="w-4 h-4" />
+              <span>Pricing</span>
+            </a>
+
+            {/* Contact */}
+            <a 
+              href="#workflow" 
+              onClick={(e) => {
+                e.preventDefault();
+                showToast('Thank you for choosing AMS. Support contact: support@ams-pro.edu', 'success');
+              }}
+              className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-all py-2 px-1"
+            >
+              <Mail className="w-4 h-4" />
+              <span>Contact</span>
+            </a>
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-4">
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3">
+            {/* Login Button */}
             <Link
               href="/login"
-              className="text-xs sm:text-sm font-semibold px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-white/10 text-white hover:bg-white/5 hover:border-white/20 transition-all"
+              className="hidden sm:flex items-center gap-2 text-sm font-semibold px-4 py-2.5 border border-white/10 rounded-xl text-white hover:bg-white/5 hover:border-white/20 transition-all active:scale-[0.98]"
             >
-              Login
+              <User className="w-4 h-4 text-slate-400" />
+              <span>Login</span>
             </Link>
+            
+            {/* Get Started Button */}
             <Link
               href="/login"
-              className="hidden sm:inline-flex text-xs sm:text-sm font-semibold bg-sky-500 text-white px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl hover:bg-sky-400 shadow-md shadow-sky-500/10 hover:shadow-sky-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="hidden sm:flex items-center gap-2 text-sm font-semibold bg-[#0066fe] hover:bg-blue-600 px-5 py-2.5 rounded-xl text-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md shadow-blue-500/20"
             >
-              Get Started
+              <Rocket className="w-4 h-4 text-white" />
+              <span>Get Started</span>
             </Link>
+
             {/* Mobile Hamburger menu toggle button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-slate-300 hover:text-white rounded-lg focus:outline-none ml-1"
+              className="xl:hidden p-2.5 text-slate-300 hover:text-white rounded-xl bg-white/5 border border-white/10 focus:outline-none transition-all"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -123,40 +302,119 @@ export default function LandingPage() {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-[#071526]/95 border-b border-white/10 text-white absolute top-20 left-0 right-0 z-40 overflow-hidden"
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="xl:hidden absolute top-full left-0 right-0 mt-4 mx-4 p-6 bg-[#040D21]/95 border border-white/[0.08] backdrop-blur-2xl rounded-3xl shadow-[0_30px_80px_rgba(0,0,0,0.6)] z-40 overflow-hidden flex flex-col gap-6"
             >
-              <div className="px-4 py-6 flex flex-col gap-4">
+              {/* Main Links */}
+              <div className="flex flex-col gap-4">
                 <a
                   href="#hero"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-sm font-medium text-slate-300 hover:text-white transition-colors py-2 border-b border-white/5"
+                  className="flex items-center gap-3 text-sm font-semibold text-slate-300 hover:text-white transition-colors py-2.5 border-b border-white/5"
                 >
-                  Home
+                  <Home className="w-4.5 h-4.5 text-sky-400" />
+                  <span>Home</span>
                 </a>
                 <a
                   href="#features"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-sm font-medium text-slate-300 hover:text-white transition-colors py-2 border-b border-white/5"
+                  className="flex items-center gap-3 text-sm font-semibold text-slate-300 hover:text-white transition-colors py-2.5 border-b border-white/5"
                 >
-                  Features
+                  <LayoutGrid className="w-4.5 h-4.5 text-sky-400" />
+                  <span>Features</span>
                 </a>
+                
+                {/* Solutions collapsable list for mobile */}
+                <div className="flex flex-col border-b border-white/5 py-2.5">
+                  <div className="flex items-center gap-3 text-sm font-semibold text-slate-300 py-1">
+                    <Layers className="w-4.5 h-4.5 text-sky-400" />
+                    <span>Solutions</span>
+                  </div>
+                  <div className="pl-8 flex flex-col gap-3 mt-3">
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-2.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                      <span>Admin Portal</span>
+                    </Link>
+                    <Link
+                      href="/teacher"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-2.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      <span>Teacher Portal</span>
+                    </Link>
+                    <Link
+                      href="/student"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-2.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                      <span>Student Portal</span>
+                    </Link>
+                  </div>
+                </div>
+
                 <a
                   href="#workflow"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-sm font-medium text-slate-300 hover:text-white transition-colors py-2 border-b border-white/5"
+                  className="flex items-center gap-3 text-sm font-semibold text-slate-300 hover:text-white transition-colors py-2.5 border-b border-white/5"
                 >
-                  How It Works
+                  <Settings className="w-4.5 h-4.5 text-sky-400" />
+                  <span>How It Works</span>
                 </a>
                 <a
                   href="#about"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-sm font-medium text-slate-300 hover:text-white transition-colors py-2"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsMobileMenuOpen(false);
+                    const el = document.getElementById('about');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    showToast('Pricing details are tailored for your school. Contact support to get a quote!', 'info');
+                  }}
+                  className="flex items-center gap-3 text-sm font-semibold text-slate-300 hover:text-white transition-colors py-2.5 border-b border-white/5"
                 >
-                  About
+                  <Tag className="w-4.5 h-4.5 text-sky-400" />
+                  <span>Pricing</span>
                 </a>
+                <a
+                  href="#workflow"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsMobileMenuOpen(false);
+                    showToast('Thank you for choosing AMS. Support contact: support@ams-pro.edu', 'success');
+                  }}
+                  className="flex items-center gap-3 text-sm font-semibold text-slate-300 hover:text-white transition-colors py-2.5"
+                >
+                  <Mail className="w-4.5 h-4.5 text-sky-400" />
+                  <span>Contact</span>
+                </a>
+              </div>
+
+              {/* Action Buttons for Mobile */}
+              <div className="flex flex-col gap-3 mt-2">
+                <Link
+                  href="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 border border-white/10 rounded-xl text-white hover:bg-white/5 hover:border-white/20 transition-all active:scale-[0.98]"
+                >
+                  <User className="w-4 h-4 text-slate-400" />
+                  <span>Login</span>
+                </Link>
+                <Link
+                  href="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 text-sm font-semibold bg-[#0066fe] hover:bg-blue-600 px-4 py-3 rounded-xl text-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md shadow-blue-500/20"
+                >
+                  <Rocket className="w-4 h-4 text-white" />
+                  <span>Get Started</span>
+                </Link>
               </div>
             </motion.div>
           )}
@@ -165,8 +423,8 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section id="hero" className="relative w-full min-h-[550px] sm:min-h-[640px] md:min-h-[750px] lg:min-h-[820px] xl:min-h-[880px] bg-transparent text-white overflow-hidden pt-32 pb-16 flex items-center justify-center">
-        {/* Full-size YouTube Video Background (Contained in Hero Box Only) */}
-        <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
+        {/* Full-size YouTube Video Background (Contained in Hero Box Only - Hidden on mobile/tablet for performance) */}
+        <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0 hidden md:block">
           <iframe
             className="absolute"
             src="https://www.youtube.com/embed/NG-d6To9tl8?autoplay=1&mute=1&loop=1&playlist=NG-d6To9tl8&controls=0&showinfo=0&rel=0&playsinline=1&enablejsapi=1"
@@ -275,10 +533,10 @@ export default function LandingPage() {
                 />
                 
                 {/* Founder Info Overlay Badge matching 3rd mockup exactly (now inside the image box with sky blue background) */}
-                <div className="absolute bottom-4 left-4 right-4 bg-[#0ea5e9]/95 backdrop-blur-xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-3 sm:p-3.5 rounded-[18px] flex items-center justify-between gap-2 sm:gap-4 z-20">
-                  <div className="flex items-center gap-2.5 sm:gap-4">
+                <div className="absolute bottom-4 left-4 right-4 bg-[#0ea5e9]/95 backdrop-blur-xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2.5 sm:p-3.5 rounded-[18px] flex items-center justify-between gap-1.5 sm:gap-4 z-20 overflow-hidden">
+                  <div className="flex items-center gap-2 sm:gap-4 overflow-hidden">
                     {/* Square profile avatar box with AI Bulb image */}
-                    <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl border border-white/30 overflow-hidden shrink-0 shadow-inner">
+                    <div className="w-9 h-9 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl border border-white/30 overflow-hidden shrink-0 shadow-inner">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img 
                         src="https://media.istockphoto.com/id/2164746643/photo/artificial-intelligence-idea-ai-light-bulb-idea-concept.jpg?s=1024x1024&w=is&k=20&c=OeQ_698xSL0y7OzrJcqG5YUJGbXuqhYbVOjN6rZZqRM="
@@ -288,19 +546,19 @@ export default function LandingPage() {
                     </div>
 
                     {/* Vertical line divider */}
-                    <div className="w-[1.5px] h-8 sm:h-11 bg-white/20 shrink-0" />
+                    <div className="w-[1px] sm:w-[1.5px] h-6 sm:h-11 bg-white/20 shrink-0" />
 
                     {/* Middle Text Info */}
-                    <div className="flex flex-col text-left">
-                      <span className="text-[8px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base font-black tracking-wide text-white uppercase leading-none whitespace-nowrap">
-                        DHIRENDRA [ INNOVATIVE OF INCUBATION ]
+                    <div className="flex flex-col text-left overflow-hidden">
+                      <span className="text-[8px] xs:text-[9px] sm:text-xs md:text-sm lg:text-base font-black tracking-wide text-white uppercase leading-tight max-w-[120px] xs:max-w-[180px] sm:max-w-none block truncate sm:whitespace-normal">
+                        DHIRENDRA <span className="hidden xs:inline">[ INNOVATIVE OF INCUBATION ]</span>
                       </span>
-                      <div className="w-8 sm:w-12 h-[2px] bg-white mt-1.5 sm:mt-2 rounded-full" />
-                      <div className="flex items-center flex-wrap gap-1 sm:gap-2 mt-1.5 leading-none">
-                        <span className="text-[8px] sm:text-xs text-white/90 font-semibold tracking-wide">
+                      <div className="w-8 sm:w-12 h-[1px] sm:h-[2px] bg-white mt-1 sm:mt-2 rounded-full" />
+                      <div className="flex items-center flex-wrap gap-1 sm:gap-2 mt-1 sm:mt-1.5 leading-none">
+                        <span className="text-[7px] sm:text-xs text-white/90 font-semibold tracking-wide">
                           Bachelor&apos;s of Computer Applications
                         </span>
-                        <span className="text-[8px] sm:text-xs text-sky-100 font-extrabold tracking-wide">
+                        <span className="text-[7px] sm:text-xs text-sky-100 font-extrabold tracking-wide">
                           ( Software Engineer )
                         </span>
                       </div>
@@ -308,9 +566,9 @@ export default function LandingPage() {
                   </div>
 
                   {/* Web Founder Pill Button */}
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 bg-white/10 border border-white/20 text-white rounded-full shrink-0 shadow-sm">
-                    <Globe className="w-3.5 h-3.5" />
-                    <span className="text-[8px] sm:text-[9.5px] font-black uppercase tracking-widest leading-none">
+                  <div className="inline-flex items-center gap-1 px-1.5 py-1 sm:px-3 sm:py-2 bg-white/10 border border-white/20 text-white rounded-full shrink-0 shadow-sm">
+                    <Globe className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" />
+                    <span className="text-[6px] sm:text-[9.5px] font-black uppercase tracking-widest leading-none">
                       WEB FOUNDER
                     </span>
                   </div>
@@ -360,7 +618,7 @@ export default function LandingPage() {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white max-w-[800px] mx-auto">
               {"Everything You Need, Nothing You Don't"}
             </h2>
-            <p className="text-base sm:text-lg text-slate-350 max-w-[700px] mx-auto leading-relaxed mt-2">
+            <p className="text-base sm:text-lg text-slate-355 max-w-[700px] mx-auto leading-relaxed mt-2">
               A light, focused product built exclusively for school attendance. No confusing extra modules.
             </p>
           </div>
@@ -375,10 +633,10 @@ export default function LandingPage() {
             {/* Admin Panel Card */}
             <motion.div 
               variants={itemVariants} 
-              className="p-6 rounded-[28px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-sky-400/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(24,168,255,0.12)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 flex flex-col group"
+              className="p-6 rounded-[32px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-blue-500/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(0,102,254,0.12)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 flex flex-col group"
             >
-              {/* Image at the top */}
-              <div className="rounded-[20px] overflow-hidden w-full h-52 sm:h-56 relative z-10 shadow-sm shrink-0 mb-6">
+              {/* Image Container */}
+              <div className="w-full h-56 sm:h-64 relative rounded-[24px] overflow-hidden mb-6 shadow-sm shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://images.unsplash.com/photo-1713946598467-fcf9332c56ea?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -387,19 +645,22 @@ export default function LandingPage() {
                 />
               </div>
 
-              {/* Title & Icon Row */}
-              <div className="flex items-center gap-4">
-                <div className="p-3.5 bg-sky-500/10 text-sky-400 rounded-[20px] w-fit border border-sky-500/20 shadow-[0_0_20px_rgba(24,168,255,0.25)] transition-all duration-300 group-hover:scale-110 group-hover:bg-sky-500/20 shrink-0">
-                  <ShieldCheck className="w-8 h-8 text-sky-400" />
+              {/* Header Title Row */}
+              <div className="flex items-center gap-4.5 mb-5">
+                {/* Glass Icon container */}
+                <div className="w-16 h-16 rounded-[20px] bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0 border border-blue-500/20 shadow-[0_0_20px_rgba(0,102,254,0.15)] transition-all duration-300 group-hover:scale-105 group-hover:bg-blue-500/20">
+                  <ShieldCheck className="w-8 h-8 text-blue-400" />
                 </div>
+                
+                {/* Title Container */}
                 <div className="flex flex-col text-left">
                   <h3 className="text-2xl font-black text-white tracking-tight leading-none">Admin Panel</h3>
-                  <div className="w-8 h-[3px] bg-sky-500 mt-1.5 rounded-full" />
+                  <div className="w-8 h-[3px] bg-blue-500 mt-2 rounded-full" />
                 </div>
               </div>
 
               {/* Description */}
-              <p className="text-slate-350 text-sm leading-relaxed mt-4 text-left font-medium">
+              <p className="text-slate-350 text-sm leading-relaxed text-left flex-1">
                 Add, edit, search, and manage Teachers and Students. Check overall summaries, active statistics, and oversee attendance.
               </p>
 
@@ -407,17 +668,17 @@ export default function LandingPage() {
               <div className="w-full h-[1px] bg-white/10 my-5" />
 
               {/* Bullet Features list */}
-              <ul className="text-sm text-slate-350 font-semibold flex flex-col gap-3 text-left">
+              <ul className="text-sm text-slate-355 font-semibold flex flex-col gap-3.5 text-left">
                 <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0" />
                   <span>Teacher & Student CRUD</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0" />
                   <span>Assign Student to Teacher</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0" />
                   <span>Real-time Dashboard Statistics</span>
                 </li>
               </ul>
@@ -426,10 +687,10 @@ export default function LandingPage() {
             {/* Teacher Panel Card */}
             <motion.div 
               variants={itemVariants} 
-              className="p-6 rounded-[28px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-sky-400/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(24,168,255,0.12)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 flex flex-col group"
+              className="p-6 rounded-[32px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-emerald-500/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(16,185,129,0.12)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 flex flex-col group"
             >
-              {/* Image at the top */}
-              <div className="rounded-[20px] overflow-hidden w-full h-52 sm:h-56 relative z-10 shadow-sm shrink-0 mb-6">
+              {/* Image Container */}
+              <div className="w-full h-56 sm:h-64 relative rounded-[24px] overflow-hidden mb-6 shadow-sm shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://images.unsplash.com/photo-1601655781320-205e34c94eb1?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -438,19 +699,22 @@ export default function LandingPage() {
                 />
               </div>
 
-              {/* Title & Icon Row */}
-              <div className="flex items-center gap-4">
-                <div className="p-3.5 bg-sky-500/10 text-sky-400 rounded-[20px] w-fit border border-sky-500/20 shadow-[0_0_20px_rgba(24,168,255,0.25)] transition-all duration-300 group-hover:scale-110 group-hover:bg-sky-500/20 shrink-0">
-                  <Users className="w-8 h-8 text-sky-400" />
+              {/* Header Title Row */}
+              <div className="flex items-center gap-4.5 mb-5">
+                {/* Glass Icon container */}
+                <div className="w-16 h-16 rounded-[20px] bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all duration-300 group-hover:scale-105 group-hover:bg-emerald-500/20">
+                  <Users className="w-8 h-8 text-emerald-400" />
                 </div>
+                
+                {/* Title Container */}
                 <div className="flex flex-col text-left">
                   <h3 className="text-2xl font-black text-white tracking-tight leading-none">Teacher Panel</h3>
-                  <div className="w-8 h-[3px] bg-sky-500 mt-1.5 rounded-full" />
+                  <div className="w-8 h-[3px] bg-[#10b981] mt-2 rounded-full" />
                 </div>
               </div>
 
               {/* Description */}
-              <p className="text-slate-350 text-sm leading-relaxed mt-4 text-left font-medium">
+              <p className="text-slate-350 text-sm leading-relaxed text-left flex-1">
                 {"Log in to mark daily attendance in clicks. Instantly edit today's records and manage profile credentials safely."}
               </p>
 
@@ -458,17 +722,17 @@ export default function LandingPage() {
               <div className="w-full h-[1px] bg-white/10 my-5" />
 
               {/* Bullet Features list */}
-              <ul className="text-sm text-slate-355 font-semibold flex flex-col gap-3 text-left">
+              <ul className="text-sm text-slate-355 font-semibold flex flex-col gap-3.5 text-left">
                 <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                   <span>Quick Attendance Marker</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                   <span>Manage Assigned Student Class</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                   <span>Profile Password Management</span>
                 </li>
               </ul>
@@ -477,10 +741,10 @@ export default function LandingPage() {
             {/* Student Panel Card */}
             <motion.div 
               variants={itemVariants} 
-              className="p-6 rounded-[28px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-sky-400/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(24,168,255,0.12)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 flex flex-col sm:col-span-2 lg:col-span-1 group"
+              className="p-6 rounded-[32px] border border-white/[0.08] bg-white/[0.05] backdrop-blur-[25px] hover:border-orange-500/[0.3] hover:bg-white/[0.07] shadow-[0_30px_80px_rgba(0,0,0,0.35)] hover:shadow-[0_20px_50px_rgba(234,88,12,0.12)] hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 flex flex-col sm:col-span-2 lg:col-span-1 group"
             >
-              {/* Image at the top */}
-              <div className="rounded-[20px] overflow-hidden w-full h-52 sm:h-56 relative z-10 shadow-sm shrink-0 mb-6">
+              {/* Image Container */}
+              <div className="w-full h-56 sm:h-64 relative rounded-[24px] overflow-hidden mb-6 shadow-sm shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -489,19 +753,22 @@ export default function LandingPage() {
                 />
               </div>
 
-              {/* Title & Icon Row */}
-              <div className="flex items-center gap-4">
-                <div className="p-3.5 bg-sky-500/10 text-sky-400 rounded-[20px] w-fit border border-sky-500/20 shadow-[0_0_20px_rgba(24,168,255,0.25)] transition-all duration-300 group-hover:scale-110 group-hover:bg-sky-500/20 shrink-0">
-                  <UserCheck className="w-8 h-8 text-sky-400" />
+              {/* Header Title Row */}
+              <div className="flex items-center gap-4.5 mb-5">
+                {/* Glass Icon container */}
+                <div className="w-16 h-16 rounded-[20px] bg-orange-500/10 text-orange-400 flex items-center justify-center shrink-0 border border-orange-500/20 shadow-[0_0_20px_rgba(234,88,12,0.15)] transition-all duration-300 group-hover:scale-105 group-hover:bg-orange-500/20">
+                  <GraduationCap className="w-8 h-8 text-orange-400" />
                 </div>
+                
+                {/* Title Container */}
                 <div className="flex flex-col text-left">
                   <h3 className="text-2xl font-black text-white tracking-tight leading-none">Student Panel</h3>
-                  <div className="w-8 h-[3px] bg-sky-500 mt-1.5 rounded-full" />
+                  <div className="w-8 h-[3px] bg-[#ea580c] mt-2 rounded-full" />
                 </div>
               </div>
 
               {/* Description */}
-              <p className="text-slate-350 text-sm leading-relaxed mt-4 text-left font-medium">
+              <p className="text-slate-350 text-sm leading-relaxed text-left flex-1">
                 Immediately view updated monthly summaries, attendance percentages, and complete attendance history records.
               </p>
 
@@ -509,17 +776,17 @@ export default function LandingPage() {
               <div className="w-full h-[1px] bg-white/10 my-5" />
 
               {/* Bullet Features list */}
-              <ul className="text-sm text-slate-355 font-semibold flex flex-col gap-3 text-left">
+              <ul className="text-sm text-slate-355 font-semibold flex flex-col gap-3.5 text-left">
                 <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-orange-400 shrink-0" />
                   <span>Live Attendance Percentage</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-orange-400 shrink-0" />
                   <span>Month-by-month History logs</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4.5 h-4.5 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-orange-400 shrink-0" />
                   <span>Transparent Attendance Data</span>
                 </li>
               </ul>
