@@ -96,8 +96,8 @@ export default function LandingPage() {
       </div>
 
       {/* Top Navigation */}
-      <header className="fixed top-4 left-0 right-0 z-50 w-full px-4 sm:px-6 lg:px-8 max-w-[1500px] mx-auto text-white">
-        <div className="w-full bg-[#040D21]/60 border border-white/[0.08] backdrop-blur-xl shadow-[0_30px_80px_rgba(0,0,0,0.5)] rounded-[24px] px-4 sm:px-6 py-3 flex items-center justify-between transition-all duration-300 relative">
+      <header className="fixed top-0 left-0 right-0 z-50 w-full text-slate-800">
+        <div className="w-full bg-white/90 border-b border-slate-200/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] px-4 sm:px-8 py-3.5 flex items-center justify-between transition-all duration-300 relative">
           
           {/* Logo Brand Segment */}
           <div className="flex items-center gap-3">
@@ -110,13 +110,13 @@ export default function LandingPage() {
             </div>
             
             {/* Brand Name */}
-            <span className="text-lg font-black tracking-tight text-white uppercase">AMS</span>
+            <span className="text-lg font-black tracking-tight text-slate-900 uppercase">AMS</span>
             
             {/* Vertical Divider */}
-            <div className="w-[1px] h-5 bg-white/20 hidden lg:block" />
+            <div className="w-[1px] h-5 bg-slate-200 hidden lg:block" />
             
             {/* Sub-label */}
-            <span className="text-slate-400 text-xs font-semibold tracking-wide hidden lg:block uppercase">
+            <span className="text-slate-550 text-xs font-semibold tracking-wide hidden lg:block uppercase">
               Attendance Management System
             </span>
           </div>
@@ -127,7 +127,7 @@ export default function LandingPage() {
             <a 
               href="#hero" 
               className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 ${
-                activeSection === 'hero' ? 'text-white font-bold' : 'text-slate-400 hover:text-white'
+                activeSection === 'hero' ? 'text-[#0066fe] font-bold' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Home className="w-4 h-4" />
@@ -135,7 +135,7 @@ export default function LandingPage() {
               {activeSection === 'hero' && (
                 <motion.div 
                   layoutId="activeNavLine" 
-                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                  className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
                 />
               )}
             </a>
@@ -144,7 +144,7 @@ export default function LandingPage() {
             <a 
               href="#features" 
               className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 ${
-                activeSection === 'features' ? 'text-white font-bold' : 'text-slate-400 hover:text-white'
+                activeSection === 'features' ? 'text-[#0066fe] font-bold' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <LayoutGrid className="w-4 h-4" />
@@ -152,7 +152,7 @@ export default function LandingPage() {
               {activeSection === 'features' && (
                 <motion.div 
                   layoutId="activeNavLine" 
-                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                  className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
                 />
               )}
             </a>
@@ -164,12 +164,12 @@ export default function LandingPage() {
               onMouseLeave={() => setSolutionsDropdownOpen(false)}
             >
               <button 
-                className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-all py-2"
+                className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all py-2"
                 onClick={() => setSolutionsDropdownOpen(!solutionsDropdownOpen)}
               >
                 <Layers className="w-4 h-4" />
                 <span>Solutions</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${solutionsDropdownOpen ? 'rotate-180 text-white' : 'text-slate-400'}`} />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${solutionsDropdownOpen ? 'rotate-180 text-slate-900' : 'text-slate-600'}`} />
               </button>
               
               <AnimatePresence>
@@ -179,42 +179,42 @@ export default function LandingPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 15 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 p-3 bg-[#040D21]/95 border border-white/[0.08] backdrop-blur-2xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 flex flex-col gap-1"
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 p-3 bg-white/95 border border-slate-200/80 backdrop-blur-2xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] z-50 flex flex-col gap-1"
                   >
                     <Link
                       href="/admin"
                       className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-blue-500/10 hover:border-blue-500/20 border border-transparent transition-all group/item text-left"
                     >
-                      <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 group-hover/item:bg-blue-500/20 shrink-0">
+                      <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500 group-hover/item:bg-blue-500/20 shrink-0">
                         <ShieldCheck className="w-4.5 h-4.5" />
                       </div>
                       <div>
-                        <h5 className="text-xs font-bold text-white leading-tight">Admin Portal</h5>
-                        <p className="text-[10px] text-slate-400 leading-normal mt-0.5">Manage teachers, students & dashboard stats.</p>
+                        <h5 className="text-xs font-bold text-slate-800 leading-tight">Admin Portal</h5>
+                        <p className="text-[10px] text-slate-500 leading-normal mt-0.5">Manage teachers, students & dashboard stats.</p>
                       </div>
                     </Link>
                     <Link
                       href="/teacher"
                       className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/20 border border-transparent transition-all group/item text-left"
                     >
-                      <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover/item:bg-emerald-500/20 shrink-0">
+                      <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 group-hover/item:bg-emerald-500/20 shrink-0">
                         <Users className="w-4.5 h-4.5" />
                       </div>
                       <div>
-                        <h5 className="text-xs font-bold text-white leading-tight">Teacher Portal</h5>
-                        <p className="text-[10px] text-slate-400 leading-normal mt-0.5">Mark daily attendance and track sections.</p>
+                        <h5 className="text-xs font-bold text-slate-800 leading-tight">Teacher Portal</h5>
+                        <p className="text-[10px] text-slate-500 leading-normal mt-0.5">Mark daily attendance and track sections.</p>
                       </div>
                     </Link>
                     <Link
                       href="/student"
                       className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-orange-500/10 hover:border-orange-500/20 border border-transparent transition-all group/item text-left"
                     >
-                      <div className="p-1.5 rounded-lg bg-orange-500/10 text-orange-400 group-hover/item:bg-orange-500/20 shrink-0">
+                      <div className="p-1.5 rounded-lg bg-orange-500/10 text-orange-500 group-hover/item:bg-orange-500/20 shrink-0">
                         <GraduationCap className="w-4.5 h-4.5" />
                       </div>
                       <div>
-                        <h5 className="text-xs font-bold text-white leading-tight">Student Portal</h5>
-                        <p className="text-[10px] text-slate-400 leading-normal mt-0.5">View your attendance logs & monthly histories.</p>
+                        <h5 className="text-xs font-bold text-slate-800 leading-tight">Student Portal</h5>
+                        <p className="text-[10px] text-slate-500 leading-normal mt-0.5">View your attendance logs & monthly histories.</p>
                       </div>
                     </Link>
                   </motion.div>
@@ -226,7 +226,7 @@ export default function LandingPage() {
             <a 
               href="#workflow" 
               className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 ${
-                activeSection === 'workflow' ? 'text-white font-bold' : 'text-slate-400 hover:text-white'
+                activeSection === 'workflow' ? 'text-[#0066fe] font-bold' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Settings className="w-4 h-4" />
@@ -234,7 +234,7 @@ export default function LandingPage() {
               {activeSection === 'workflow' && (
                 <motion.div 
                   layoutId="activeNavLine" 
-                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                  className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
                 />
               )}
             </a>
@@ -248,7 +248,7 @@ export default function LandingPage() {
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
                 showToast('Pricing details are tailored for your school. Contact support to get a quote!', 'info');
               }}
-              className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-all py-2 px-1"
+              className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all py-2 px-1"
             >
               <Tag className="w-4 h-4" />
               <span>Pricing</span>
@@ -261,7 +261,7 @@ export default function LandingPage() {
                 e.preventDefault();
                 showToast('Thank you for choosing AMS. Support contact: support@ams-pro.edu', 'success');
               }}
-              className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-all py-2 px-1"
+              className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all py-2 px-1"
             >
               <Mail className="w-4 h-4" />
               <span>Contact</span>
@@ -273,9 +273,9 @@ export default function LandingPage() {
             {/* Login Button */}
             <Link
               href="/login"
-              className="hidden sm:flex items-center gap-2 text-sm font-semibold px-4 py-2.5 border border-white/10 rounded-xl text-white hover:bg-white/5 hover:border-white/20 transition-all active:scale-[0.98]"
+              className="hidden sm:flex items-center gap-2 text-sm font-semibold px-4 py-2.5 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-[0.98]"
             >
-              <User className="w-4 h-4 text-slate-400" />
+              <User className="w-4 h-4 text-slate-500" />
               <span>Login</span>
             </Link>
             
@@ -291,7 +291,7 @@ export default function LandingPage() {
             {/* Mobile Hamburger menu toggle button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="xl:hidden p-2.5 text-slate-300 hover:text-white rounded-xl bg-white/5 border border-white/10 focus:outline-none transition-all"
+              className="xl:hidden p-2.5 text-slate-600 hover:text-slate-900 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none transition-all"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -306,38 +306,38 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="xl:hidden absolute top-full left-0 right-0 mt-4 mx-4 p-6 bg-[#040D21]/95 border border-white/[0.08] backdrop-blur-2xl rounded-3xl shadow-[0_30px_80px_rgba(0,0,0,0.6)] z-40 overflow-hidden flex flex-col gap-6"
+              className="xl:hidden absolute top-full left-0 right-0 mt-2 mx-0 p-6 bg-white border border-slate-200/80 backdrop-blur-2xl rounded-b-3xl shadow-[0_30px_80px_rgba(0,0,0,0.1)] z-40 overflow-hidden flex flex-col gap-6"
             >
               {/* Main Links */}
               <div className="flex flex-col gap-4">
                 <a
                   href="#hero"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 text-sm font-semibold text-slate-300 hover:text-white transition-colors py-2.5 border-b border-white/5"
+                  className="flex items-center gap-3 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors py-2.5 border-b border-slate-100"
                 >
-                  <Home className="w-4.5 h-4.5 text-sky-400" />
+                  <Home className="w-4.5 h-4.5 text-blue-500" />
                   <span>Home</span>
                 </a>
                 <a
                   href="#features"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 text-sm font-semibold text-slate-300 hover:text-white transition-colors py-2.5 border-b border-white/5"
+                  className="flex items-center gap-3 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors py-2.5 border-b border-slate-100"
                 >
-                  <LayoutGrid className="w-4.5 h-4.5 text-sky-400" />
+                  <LayoutGrid className="w-4.5 h-4.5 text-blue-500" />
                   <span>Features</span>
                 </a>
                 
                 {/* Solutions collapsable list for mobile */}
-                <div className="flex flex-col border-b border-white/5 py-2.5">
-                  <div className="flex items-center gap-3 text-sm font-semibold text-slate-300 py-1">
-                    <Layers className="w-4.5 h-4.5 text-sky-400" />
+                <div className="flex flex-col border-b border-slate-100 py-2.5">
+                  <div className="flex items-center gap-3 text-sm font-semibold text-slate-700 py-1">
+                    <Layers className="w-4.5 h-4.5 text-blue-500" />
                     <span>Solutions</span>
                   </div>
                   <div className="pl-8 flex flex-col gap-3 mt-3">
                     <Link
                       href="/admin"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-2.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+                      className="flex items-center gap-2.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                       <span>Admin Portal</span>
@@ -345,7 +345,7 @@ export default function LandingPage() {
                     <Link
                       href="/teacher"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-2.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+                      className="flex items-center gap-2.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                       <span>Teacher Portal</span>
@@ -353,7 +353,7 @@ export default function LandingPage() {
                     <Link
                       href="/student"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-2.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+                      className="flex items-center gap-2.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
                       <span>Student Portal</span>
@@ -364,9 +364,9 @@ export default function LandingPage() {
                 <a
                   href="#workflow"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 text-sm font-semibold text-slate-300 hover:text-white transition-colors py-2.5 border-b border-white/5"
+                  className="flex items-center gap-3 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors py-2.5 border-b border-slate-100"
                 >
-                  <Settings className="w-4.5 h-4.5 text-sky-400" />
+                  <Settings className="w-4.5 h-4.5 text-blue-500" />
                   <span>How It Works</span>
                 </a>
                 <a
@@ -378,9 +378,9 @@ export default function LandingPage() {
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                     showToast('Pricing details are tailored for your school. Contact support to get a quote!', 'info');
                   }}
-                  className="flex items-center gap-3 text-sm font-semibold text-slate-300 hover:text-white transition-colors py-2.5 border-b border-white/5"
+                  className="flex items-center gap-3 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors py-2.5 border-b border-slate-100"
                 >
-                  <Tag className="w-4.5 h-4.5 text-sky-400" />
+                  <Tag className="w-4.5 h-4.5 text-blue-500" />
                   <span>Pricing</span>
                 </a>
                 <a
@@ -390,9 +390,9 @@ export default function LandingPage() {
                     setIsMobileMenuOpen(false);
                     showToast('Thank you for choosing AMS. Support contact: support@ams-pro.edu', 'success');
                   }}
-                  className="flex items-center gap-3 text-sm font-semibold text-slate-300 hover:text-white transition-colors py-2.5"
+                  className="flex items-center gap-3 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors py-2.5"
                 >
-                  <Mail className="w-4.5 h-4.5 text-sky-400" />
+                  <Mail className="w-4.5 h-4.5 text-blue-500" />
                   <span>Contact</span>
                 </a>
               </div>
@@ -402,9 +402,9 @@ export default function LandingPage() {
                 <Link
                   href="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 border border-white/10 rounded-xl text-white hover:bg-white/5 hover:border-white/20 transition-all active:scale-[0.98]"
+                  className="w-full flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 hover:border-slate-350 transition-all active:scale-[0.98]"
                 >
-                  <User className="w-4 h-4 text-slate-400" />
+                  <User className="w-4 h-4 text-slate-500" />
                   <span>Login</span>
                 </Link>
                 <Link
