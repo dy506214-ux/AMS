@@ -98,7 +98,7 @@ export async function updateStudent(
   }
 
   if (data.rollNumber && data.rollNumber !== student.rollNumber) {
-    const duplicateRoll = await prisma.student.findUnique({ where: { rollNumber: data.rollNumber } });
+    const duplicateRoll = await prisma.student.findFirst({ where: { rollNumber: data.rollNumber } });
     if (duplicateRoll) {
       throw new Error('Roll Number already in use.');
     }
