@@ -95,3 +95,19 @@ body {
 .premium-heading-shadow {
   text-shadow: 0 2px 10px rgba(11, 21, 40, 0.08), 0 4px 20px rgba(11, 21, 40, 0.04);
 }
+
+/* Seamless Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee-seamless {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}

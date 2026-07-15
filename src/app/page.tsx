@@ -21,7 +21,8 @@ import {
   Settings,
   Tag,
   Mail,
-  Rocket
+  Rocket,
+  MapPin
 } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 
@@ -47,7 +48,15 @@ export default function LandingPage() {
   const [activeSection, setActiveSection] = React.useState('hero');
   const [solutionsDropdownOpen, setSolutionsDropdownOpen] = React.useState(false);
   const [hoveredNavItem, setHoveredNavItem] = React.useState<string | null>(null);
+  const [activeSlide, setActiveSlide] = React.useState(0);
   const { showToast } = useToast();
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % 3);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   React.useEffect(() => {
     const sections = ['hero', 'features', 'workflow', 'about'];
@@ -97,6 +106,28 @@ export default function LandingPage() {
       </div>
 
       <header className="fixed top-0 left-0 right-0 z-50 w-full text-black">
+        {/* Scrolling Ticker at the absolute top of the landing page */}
+        <div className="w-full bg-white border-b border-slate-200/60 py-1.5 overflow-hidden z-10 relative">
+          <div className="overflow-hidden whitespace-nowrap w-full block">
+            <div className="flex animate-marquee-seamless text-red-700 font-sans font-extrabold text-[9px] sm:text-[11px] uppercase tracking-widest select-none">
+              {/* First half */}
+              <div className="flex gap-16 pr-16 shrink-0">
+                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
+                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
+                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
+                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
+              </div>
+              {/* Second half (identical for seamless loop) */}
+              <div className="flex gap-16 pr-16 shrink-0">
+                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
+                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
+                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
+                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="w-full bg-white/90 border-b border-slate-200/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4 lg:gap-8 transition-all duration-300 relative">
           
           {/* Logo Brand Segment */}
@@ -956,203 +987,488 @@ export default function LandingPage() {
       </section>
 
 
-      {/* Footer */}
-      <footer id="footer" className="w-full bg-transparent pt-4 pb-1 relative z-10">
-        <div className="max-w-[1500px] mx-auto px-2 sm:px-4">
+      {/* Dynamic CTA Slider Section */}
+      <section className="pt-10 pb-3 bg-transparent relative z-10">
+        <div className="max-w-[1600px] mx-auto px-2 sm:px-4">
           
-          {/* Main Footer Card Container matching target design (2nd image) with optimized padding & height */}
-          <div className="bg-[#0a1322]/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.5)] py-4 px-6 sm:px-8 lg:px-10 mb-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5 lg:gap-6 pb-2">
-              
-              {/* Left Column: Brand description & Social proof (with vertical separator on right) */}
-              <div className="lg:col-span-3 flex flex-col justify-between lg:border-r lg:border-white/10 lg:pr-8">
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-sky-500 rounded-xl shadow-md shadow-sky-500/20">
-                      <ShieldCheck className="w-5.5 h-5.5 text-white" />
-                    </div>
-                    <div>
-                      <span className="text-lg font-bold tracking-tight text-white block leading-none">AttendancePro</span>
-                      <span className="text-[8px] text-sky-400 font-extrabold tracking-wider uppercase mt-0.5">Simple • Fast • Reliable</span>
-                    </div>
-                  </div>
-                  <p className="text-slate-400 text-xs leading-relaxed font-normal">
-                    AttendancePro helps schools manage attendance efficiently with dedicated Admin, Teacher, and Student panels. Light, focused, and secure.
-                  </p>
-                </div>
-                
-                {/* Social icons pushed to bottom baseline */}
-                <div className="flex items-center gap-2 mt-3">
-                  <a 
-                    href="#"
-                    className="w-8 h-8 rounded-full bg-white/[0.03] hover:bg-sky-500 border border-white/5 hover:border-sky-400 text-slate-400 hover:text-white transition-all duration-300 flex items-center justify-center shadow-md hover:scale-105 active:scale-95"
-                  >
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" />
-                    </svg>
-                  </a>
-                  <a 
-                    href="#"
-                    className="w-8 h-8 rounded-full bg-white/[0.03] hover:bg-sky-500 border border-white/5 hover:border-sky-400 text-slate-400 hover:text-white transition-all duration-300 flex items-center justify-center shadow-md hover:scale-105 active:scale-95"
-                  >
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg>
-                  </a>
-                  <a 
-                    href="#"
-                    className="w-8 h-8 rounded-full bg-white/[0.03] hover:bg-sky-500 border border-white/5 hover:border-sky-400 text-slate-400 hover:text-white transition-all duration-300 flex items-center justify-center shadow-md hover:scale-105 active:scale-95"
-                  >
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                    </svg>
-                  </a>
-                  <a 
-                    href="#"
-                    className="w-8 h-8 rounded-full bg-white/[0.03] hover:bg-sky-500 border border-white/5 hover:border-sky-400 text-slate-400 hover:text-white transition-all duration-300 flex items-center justify-center shadow-md hover:scale-105 active:scale-95"
-                  >
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.528 3.545 12 3.545 12 3.545s-7.528 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.022 0 12 0 12s0 3.978.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.86.508 9.388.508 9.388.508s7.528 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.978 24 12 24 12s0-3.978-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
+          {/* Pagination dots above the card */}
+          <div className="flex justify-center items-center gap-2.5 mb-5">
+            {[
+              { title: "Ready to Modernize Your Attendance Management?", desc: "Join hundreds of schools and colleges using AMS to save time and improve accuracy.", primaryBtnText: "Get Started Free", secondaryBtnText: "Request Demo", primaryBtnHref: "/login", secondaryBtnHref: "#footer", graphicType: "clipboard" },
+              { title: "100% Secure & Compliant Cloud Storage", desc: "All attendance records are securely encrypted and backed up automatically every single day.", primaryBtnText: "Learn More", secondaryBtnText: "Security Policy", primaryBtnHref: "/login", secondaryBtnHref: "#footer", graphicType: "security" },
+              { title: "Automated Student & Teacher Analytics", desc: "Instantly analyze monthly trends, monitor low attendance rates, and download PDF reports in one click.", primaryBtnText: "View Analytics", secondaryBtnText: "Sample Report", primaryBtnHref: "/login", secondaryBtnHref: "#footer", graphicType: "analytics" }
+            ].map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveSlide(idx)}
+                className={`h-2.5 rounded-full transition-all duration-500 ${
+                  activeSlide === idx 
+                    ? 'w-7 bg-[#0066fe] shadow-[0_0_10px_rgba(0,102,254,0.5)]' 
+                    : 'w-2.5 bg-slate-600 hover:bg-slate-400'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
 
-              {/* Middle Columns (4 Link Lists): PRODUCT, COMPANY, RESOURCES, LEGAL */}
-              <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-5">
-                
-                {/* Column 1: PRODUCT */}
-                <div className="flex flex-col gap-3">
-                  <div>
-                    <span className="text-[10px] font-bold text-white tracking-widest uppercase">PRODUCT</span>
-                    <div className="w-5 h-[1.5px] bg-sky-500 mt-1.5 rounded-full" />
-                  </div>
-                  <div className="flex flex-col gap-3 text-xs font-normal text-slate-400">
-                    <a href="#features" className="hover:text-sky-400 transition-colors">Features</a>
-                    <a href="#workflow" className="hover:text-sky-400 transition-colors">How It Works</a>
-                    <a href="#" className="hover:text-sky-400 transition-colors">Pricing</a>
-                    <a href="#" className="hover:text-sky-400 transition-colors">Updates</a>
-                  </div>
-                </div>
+          {/* Carousel Slider Card Container */}
+          <div className="relative rounded-[32px] overflow-hidden border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.5)] bg-gradient-to-r from-[#030712] via-[#09152b] to-[#030712]">
+            {/* Ambient Background Glows */}
+            <div className="absolute top-[-50%] left-[-20%] w-[500px] h-[500px] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-[-50%] right-[-20%] w-[500px] h-[500px] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none" />
 
-                {/* Column 2: COMPANY */}
-                <div className="flex flex-col gap-3">
-                  <div>
-                    <span className="text-[10px] font-bold text-white tracking-widest uppercase">COMPANY</span>
-                    <div className="w-5 h-[1.5px] bg-sky-500 mt-1.5 rounded-full" />
+            <div className="relative z-10 py-4 px-6 sm:py-5 sm:px-12 lg:py-5.5 lg:px-14">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeSlide}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.4, ease: 'easeInOut' }}
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-center"
+                >
+                  {/* Left Column: Graphic */}
+                  <div className="lg:col-span-3 flex justify-center lg:justify-start">
+                    {activeSlide === 0 && <ClipboardGraphic />}
+                    {activeSlide === 1 && <SecurityGraphic />}
+                    {activeSlide === 2 && <AnalyticsGraphic />}
                   </div>
-                  <div className="flex flex-col gap-3 text-xs font-normal text-slate-400">
-                    <a href="#about" className="hover:text-sky-400 transition-colors">About Us</a>
-                    <a href="#" className="hover:text-sky-400 transition-colors">Our Mission</a>
-                    <a href="#" className="hover:text-sky-400 transition-colors">Careers</a>
-                    <a href="#" className="hover:text-sky-400 transition-colors">Blog</a>
-                  </div>
-                </div>
 
-                {/* Column 3: RESOURCES */}
-                <div className="flex flex-col gap-3">
-                  <div>
-                    <span className="text-[10px] font-bold text-white tracking-widest uppercase">RESOURCES</span>
-                    <div className="w-5 h-[1.5px] bg-sky-500 mt-1.5 rounded-full" />
+                  {/* Middle Column: Text content */}
+                  <div className="lg:col-span-6 flex flex-col gap-4 text-center lg:text-left">
+                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight">
+                      {activeSlide === 0 && "Ready to Modernize Your Attendance Management?"}
+                      {activeSlide === 1 && "100% Secure & Compliant Cloud Storage"}
+                      {activeSlide === 2 && "Automated Student & Teacher Analytics"}
+                    </h3>
+                    <p className="text-slate-350 text-sm sm:text-base leading-relaxed font-normal">
+                      {activeSlide === 0 && "Join hundreds of schools and colleges using AMS to save time and improve accuracy."}
+                      {activeSlide === 1 && "All attendance records are securely encrypted and backed up automatically every single day."}
+                      {activeSlide === 2 && "Instantly analyze monthly trends, monitor low attendance rates, and download PDF reports in one click."}
+                    </p>
                   </div>
-                  <div className="flex flex-col gap-3 text-xs font-normal text-slate-400">
-                    <a href="#" className="hover:text-sky-400 transition-colors">Help Center</a>
-                    <a href="#" className="hover:text-sky-400 transition-colors">Documentation</a>
-                    <a href="#" className="hover:text-sky-400 transition-colors">Guides</a>
-                    <a href="#" className="hover:text-sky-400 transition-colors">API Status</a>
-                  </div>
-                </div>
 
-                {/* Column 4: LEGAL */}
-                <div className="flex flex-col gap-3">
-                  <div>
-                    <span className="text-[10px] font-bold text-white tracking-widest uppercase">LEGAL</span>
-                    <div className="w-5 h-[1.5px] bg-sky-500 mt-1.5 rounded-full" />
-                  </div>
-                  <div className="flex flex-col gap-3 text-xs font-normal text-slate-400">
-                    <a href="#" className="hover:text-sky-400 transition-colors">Privacy Policy</a>
-                    <a href="#" className="hover:text-sky-400 transition-colors">Terms & Conditions</a>
-                    <a href="#" className="hover:text-sky-400 transition-colors">Data Security</a>
-                    <a href="#" className="hover:text-sky-400 transition-colors">Cookie Policy</a>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Right Column: GET IN TOUCH (with vertical line separator on left) */}
-              <div className="lg:col-span-3 flex flex-col gap-3 lg:border-l lg:border-white/10 lg:pl-8">
-                <div>
-                  <span className="text-[10px] font-bold text-white tracking-widest uppercase">GET IN TOUCH</span>
-                  <div className="w-6 h-[1.5px] bg-sky-500 mt-1 rounded-full" />
-                </div>
-                <p className="text-slate-400 text-xs font-semibold leading-normal">
-                  Have any questions? Call our administration team.
-                </p>
-
-                {/* Contact Cards Container - Sleek divided panel inside */}
-                <div className="flex flex-col border border-white/10 rounded-xl divide-y divide-white/10 bg-slate-950/20 overflow-hidden shadow-inner">
-                  {[
-                    { role: 'PRINCIPAL', number: '+91 98765 43210', iconColor: 'bg-sky-500/10 border-sky-500/20 text-sky-400' },
-                    { role: 'MANAGER', number: '+91 87654 32109', iconColor: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' },
-                    { role: 'HOD', number: '+91 76543 21098', iconColor: 'bg-purple-500/10 border-purple-500/20 text-purple-400' }
-                  ].map((contact, idx) => (
-                    <div 
-                      key={idx}
-                      className="flex items-center justify-between py-2 px-3 text-white hover:bg-white/[0.02] transition-colors"
+                  {/* Right Column: Buttons */}
+                  <div className="lg:col-span-3 flex flex-col sm:flex-row lg:flex-col gap-4 justify-center items-stretch sm:items-center lg:items-stretch w-full max-w-sm mx-auto lg:mx-0">
+                    <Link
+                      href="/login"
+                      className="inline-flex items-center justify-center gap-2 text-sm font-semibold bg-[#0066fe] hover:bg-blue-600 px-6 py-3.5 rounded-xl text-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-blue-500/25 text-center w-full"
                     >
-                      <div className="flex items-center gap-3.5">
-                        <div className={`w-7 h-7 rounded-full ${contact.iconColor} border flex items-center justify-center shrink-0 shadow-inner`}>
-                          <User className="w-3 h-3" />
-                        </div>
-                        <div>
-                          <span className="text-[8px] text-slate-500 font-bold uppercase tracking-wider block leading-tight">{contact.role}</span>
-                          <span className="text-xs font-bold text-white tracking-wide">{contact.number}</span>
-                        </div>
-                      </div>
-                      <a 
-                        href={`tel:${contact.number}`}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 border border-white/10 hover:border-sky-500 hover:bg-sky-500 text-slate-350 hover:text-white font-bold text-[8px] uppercase tracking-wider rounded-lg transition-all active:scale-95"
-                      >
-                        <Phone className="w-2.5 h-2.5" /> Call Now
-                      </a>
-                    </div>
+                      <span>
+                        {activeSlide === 0 && "Get Started Free"}
+                        {activeSlide === 1 && "Learn More"}
+                        {activeSlide === 2 && "View Analytics"}
+                      </span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                    <a
+                      href="#footer"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const el = document.getElementById('footer');
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                        if (activeSlide === 0) {
+                          showToast('Requesting demo callback. Our support team will reach out to you shortly!', 'success');
+                        } else if (activeSlide === 1) {
+                          showToast('Redirecting to the privacy and security policy documentation...', 'info');
+                        } else {
+                          showToast('Downloading demo analytics report sheet...', 'success');
+                        }
+                      }}
+                      className="inline-flex items-center justify-center gap-2 text-sm font-semibold border border-white/20 hover:border-white/40 hover:bg-white/5 px-6 py-3.5 rounded-xl text-white active:scale-[0.98] transition-all text-center w-full"
+                    >
+                      <span>
+                        {activeSlide === 0 && "Request Demo"}
+                        {activeSlide === 1 && "Security Policy"}
+                        {activeSlide === 2 && "Sample Report"}
+                      </span>
+                    </a>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* Redesigned Footer matching 2nd Mockup Image */}
+      <footer id="footer" className="w-full bg-[#030712] pt-4 pb-4 border-t border-white/10 relative z-10">
+        <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 pb-4">
+            
+            {/* Column 1: Brand description & Social Icons */}
+            <div className="lg:col-span-4 flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                {/* Hexagon shape with SVG and Users Icon */}
+                <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
+                  <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full text-[#0066fe] fill-current drop-shadow-[0_0_8px_rgba(0,102,254,0.35)]">
+                    <path d="M50 2.5 L93.3 27.5 L93.3 77.5 L50 97.5 L6.7 77.5 L6.7 27.5 Z" />
+                  </svg>
+                  <Users className="w-4.5 h-4.5 text-white relative z-10" />
+                </div>
+                <div>
+                  <span className="text-lg font-black tracking-tight text-white block leading-none uppercase">AMS</span>
+                  <span className="text-[9px] text-slate-400 font-extrabold tracking-wider uppercase mt-1">Attendance Management System</span>
+                </div>
+              </div>
+              <p className="text-slate-400 text-xs sm:text-sm leading-relaxed font-normal max-w-sm">
+                A modern, secure and smart attendance management solution for educational institutions.
+              </p>
+              
+              {/* Social icons */}
+              <div className="flex items-center gap-3 mt-0.5">
+                {[
+                  { icon: <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/></svg>, href: '#', name: 'Facebook' },
+                  { icon: <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>, href: '#', name: 'Twitter' },
+                  { icon: <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>, href: '#', name: 'LinkedIn' },
+                  { icon: <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.528 3.545 12 3.545 12 3.545s-7.528 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.022 0 12 0 12s0 3.978.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.86.508 9.388.508 9.388.508s7.528 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.978 24 12 24 12s0-3.978-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>, href: '#', name: 'YouTube' }
+                ].map((social, idx) => (
+                  <a 
+                    key={idx}
+                    href={social.href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      showToast(`${social.name} page is not configured.`, 'info');
+                    }}
+                    className="w-9 h-9 rounded-full bg-slate-900 border border-white/5 hover:border-sky-500 hover:bg-[#0066fe]/15 text-slate-400 hover:text-sky-400 transition-all duration-300 flex items-center justify-center shadow-md hover:scale-105 active:scale-95"
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Columns 2-4: Links */}
+            <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-6">
+              
+              {/* Column 2: Quick Links */}
+              <div className="flex flex-col gap-2">
+                <div>
+                  <span className="text-[11px] font-bold text-white tracking-widest uppercase">Quick Links</span>
+                  <div className="w-6 h-[1.5px] bg-[#0066fe] mt-1 rounded-full" />
+                </div>
+                <div className="flex flex-col gap-1.5 text-xs sm:text-sm font-normal text-slate-405">
+                  <a 
+                    href="#hero" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById('hero');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="hover:text-[#0066fe] transition-colors"
+                  >
+                    Home
+                  </a>
+                  <a 
+                    href="#features" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById('features');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="hover:text-[#0066fe] transition-colors"
+                  >
+                    Features
+                  </a>
+                  <a 
+                    href="#workflow" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById('workflow');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="hover:text-[#0066fe] transition-colors"
+                  >
+                    How It Works
+                  </a>
+                  <a 
+                    href="#about" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById('about');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                      showToast('Pricing details are tailored for your school. Contact support to get a quote!', 'info');
+                    }}
+                    className="hover:text-[#0066fe] transition-colors"
+                  >
+                    Pricing
+                  </a>
+                  <a 
+                    href="#footer" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById('footer');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="hover:text-[#0066fe] transition-colors"
+                  >
+                    Contact
+                  </a>
+                </div>
+              </div>
+
+              {/* Column 3: Solutions */}
+              <div className="flex flex-col gap-2">
+                <div>
+                  <span className="text-[11px] font-bold text-white tracking-widest uppercase">Solutions</span>
+                  <div className="w-6 h-[1.5px] bg-[#0066fe] mt-1 rounded-full" />
+                </div>
+                <div className="flex flex-col gap-1.5 text-xs sm:text-sm font-normal text-slate-405">
+                  {['For Schools', 'For Colleges', 'For Universities', 'For Training Institutes'].map((sol, idx) => (
+                    <a 
+                      key={idx} 
+                      href="#" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        showToast(`AMS is fully optimized for ${sol.toLowerCase().substring(4)}. Contact support to initiate deployment.`, 'success');
+                      }}
+                      className="hover:text-[#0066fe] transition-colors"
+                    >
+                      {sol}
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Column 4: Resources */}
+              <div className="flex flex-col gap-2">
+                <div>
+                  <span className="text-[11px] font-bold text-white tracking-widest uppercase">Resources</span>
+                  <div className="w-6 h-[1.5px] bg-[#0066fe] mt-1 rounded-full" />
+                </div>
+                <div className="flex flex-col gap-1.5 text-xs sm:text-sm font-normal text-slate-405">
+                  {['Blog', 'Documentation', 'Help Center', 'Privacy Policy', 'Terms & Conditions'].map((res, idx) => (
+                    <a 
+                      key={idx} 
+                      href="#" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        showToast(`Access to ${res} is currently limited to verified accounts.`, 'info');
+                      }}
+                      className="hover:text-[#0066fe] transition-colors"
+                    >
+                      {res}
+                    </a>
                   ))}
                 </div>
               </div>
 
             </div>
 
-            {/* Divider Line inside the card wrapper */}
-            <div className="border-t border-white/10 pt-3 mt-1">
-              {/* Bottom Copyright Row inside the card container */}
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-[11px] font-semibold text-slate-455">
-                <p className="order-2 md:order-1 font-medium text-slate-500">
-                  &copy; {new Date().getFullYear()} AttendancePro. All rights reserved.
-                </p>
-                <div className="order-1 md:order-2 flex items-center gap-2 text-slate-400">
-                  <div className="w-4.5 h-4.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-inner">
-                    <ShieldCheck className="w-3 h-3" />
-                  </div>
-                  <span className="text-[11px] font-bold tracking-wide">Secure</span>
-                  <span className="text-slate-600">•</span>
-                  <span className="text-[11px] font-bold tracking-wide">Reliable</span>
-                  <span className="text-slate-600">•</span>
-                  <span className="text-[11px] font-bold tracking-wide">Trusted by Schools</span>
-                </div>
-                <button
-                  onClick={() => showToast('Language selection is not configured.', 'info')}
-                  className="order-3 inline-flex items-center gap-2 px-3 py-1 bg-slate-950/40 border border-white/5 hover:border-white/10 hover:text-white transition-all text-[11px] font-bold rounded-xl shadow-lg cursor-pointer"
+            {/* Column 5: Contact Us */}
+            <div className="lg:col-span-3 flex flex-col gap-2">
+              <div>
+                <span className="text-[11px] font-bold text-white tracking-widest uppercase">Contact Us</span>
+                <div className="w-6 h-[1.5px] bg-[#0066fe] mt-1 rounded-full" />
+              </div>
+              <div className="flex flex-col gap-1.5 text-xs sm:text-sm font-normal text-slate-405 mt-1">
+                <a 
+                  href="tel:+919876543210"
+                  className="flex items-center gap-3 hover:text-white transition-colors"
                 >
-                  <Globe className="w-3 h-3 text-slate-400" />
-                  English
-                  <ChevronDown className="w-3 h-3 text-slate-500" />
-                </button>
+                  <Phone className="w-4 h-4 text-[#0066fe] shrink-0" />
+                  <span>+91 98765 43210</span>
+                </a>
+                <a 
+                  href="mailto:support@ams.com"
+                  className="flex items-center gap-3 hover:text-white transition-colors"
+                >
+                  <Mail className="w-4 h-4 text-[#0066fe] shrink-0" />
+                  <span>support@ams.com</span>
+                </a>
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-4 h-4 text-[#0066fe] shrink-0 mt-0.5" />
+                  <span className="leading-relaxed">123 Education Street, Knowledge City, India</span>
+                </div>
               </div>
             </div>
-            
+
           </div>
+
+          {/* Bottom Copyright Line */}
+          <div className="border-t border-white/10 pt-3 mt-1.5">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-semibold text-slate-500">
+              <p className="order-2 md:order-1 font-medium text-slate-500">
+                &copy; {new Date().getFullYear()} Attendance Management System (AMS). All rights reserved.
+              </p>
+              <div className="order-1 md:order-2 flex items-center gap-2 text-slate-400">
+                <div className="w-4.5 h-4.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                  <ShieldCheck className="w-3 h-3" />
+                </div>
+                <span className="text-xs font-bold tracking-wide">Secure</span>
+                <span className="text-slate-700">•</span>
+                <span className="text-xs font-bold tracking-wide">Reliable</span>
+                <span className="text-slate-700">•</span>
+                <span className="text-xs font-bold tracking-wide">Trusted by Schools</span>
+              </div>
+            </div>
+          </div>
+          
         </div>
       </footer>
+    </div>
+  );
+}
+
+// Clipboard 3D-like graphic SVG
+function ClipboardGraphic() {
+  return (
+    <div className="relative select-none">
+      <svg className="w-40 h-40 drop-shadow-[0_15px_30px_rgba(24,168,255,0.35)]" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Clipboard base */}
+        <rect x="50" y="40" width="100" height="130" rx="18" fill="url(#clipBg)" stroke="white" strokeOpacity="0.08" strokeWidth="1.5"/>
+        {/* Metal Clip */}
+        <rect x="80" y="22" width="40" height="25" rx="8" fill="url(#metalClip)" stroke="white" strokeOpacity="0.15" strokeWidth="1.5"/>
+        <circle cx="100" cy="34" r="4" fill="#38bdf8" />
+        {/* Lines and checkmarks */}
+        <g className="translate-x-[20px] translate-y-[20px]">
+          {/* Check 1 */}
+          <rect x="42" y="45" width="60" height="5" rx="2.5" fill="white" fillOpacity="0.15"/>
+          <circle cx="30" cy="47" r="7" fill="#0066fe" fillOpacity="0.2" stroke="#38bdf8" strokeWidth="1.5"/>
+          <path d="M27 47l2 2 3-3" stroke="#38bdf8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+
+          {/* Check 2 */}
+          <rect x="42" y="65" width="50" height="5" rx="2.5" fill="white" fillOpacity="0.15"/>
+          <circle cx="30" cy="67" r="7" fill="#0066fe" fillOpacity="0.2" stroke="#38bdf8" strokeWidth="1.5"/>
+          <path d="M27 67l2 2 3-3" stroke="#38bdf8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+
+          {/* Check 3 */}
+          <rect x="42" y="85" width="55" height="5" rx="2.5" fill="white" fillOpacity="0.15"/>
+          <circle cx="30" cy="87" r="7" fill="#0066fe" fillOpacity="0.2" stroke="#38bdf8" strokeWidth="1.5"/>
+          <path d="M27 87l2 2 3-3" stroke="#38bdf8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </g>
+        
+        {/* Floating spheres */}
+        <circle cx="35" cy="65" r="10" fill="url(#orbGrad1)" className="animate-bounce" style={{ animationDuration: '3.5s' }} />
+        <circle cx="165" cy="115" r="14" fill="url(#orbGrad2)" className="animate-bounce" style={{ animationDuration: '4.5s' }} />
+        <circle cx="155" cy="55" r="7" fill="url(#orbGrad3)" className="animate-bounce" style={{ animationDuration: '2.8s' }} />
+        
+        {/* Gradients */}
+        <defs>
+          <linearGradient id="clipBg" x1="50" y1="40" x2="150" y2="170" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#1e293b"/>
+            <stop offset="100%" stopColor="#0f172a"/>
+          </linearGradient>
+          <linearGradient id="metalClip" x1="80" y1="22" x2="120" y2="47" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#475569"/>
+            <stop offset="100%" stopColor="#1e293b"/>
+          </linearGradient>
+          <radialGradient id="orbGrad1" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.85"/>
+            <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.15"/>
+          </radialGradient>
+          <radialGradient id="orbGrad2" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.85"/>
+            <stop offset="100%" stopColor="#6d28d9" stopOpacity="0.15"/>
+          </radialGradient>
+          <radialGradient id="orbGrad3" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.85"/>
+            <stop offset="100%" stopColor="#0369a1" stopOpacity="0.15"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+}
+
+// Security 3D-like graphic SVG
+function SecurityGraphic() {
+  return (
+    <div className="relative select-none">
+      <svg className="w-40 h-40 drop-shadow-[0_15px_30px_rgba(167,139,250,0.35)]" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Shield outline */}
+        <path d="M100 35c24 0 45-12 45-12s5 35-5 65c-8 23-25 38-40 47-15-9-32-24-40-47-10-30-5-65-5-65s21 12 45 12z" fill="url(#shieldBg)" stroke="white" strokeOpacity="0.08" strokeWidth="1.5"/>
+        {/* Orbit circle */}
+        <circle cx="100" cy="85" r="62" stroke="#a78bfa" strokeDasharray="6 6" strokeOpacity="0.25" className="animate-spin" style={{ animationDuration: '25s' }} />
+        {/* Inner lock icon */}
+        <g className="translate-x-[75px] translate-y-[62px]">
+          <rect x="8" y="20" width="34" height="24" rx="6" fill="#a78bfa" fillOpacity="0.9" />
+          <path d="M15 20v-5a10 10 0 0120 0v5" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none"/>
+          <circle cx="25" cy="30" r="3.5" fill="white" />
+          <path d="M25 33v5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+        </g>
+        {/* Floating spheres */}
+        <circle cx="35" cy="120" r="11" fill="url(#orbGrad4)" className="animate-bounce" style={{ animationDuration: '3.3s' }} />
+        <circle cx="165" cy="55" r="13" fill="url(#orbGrad5)" className="animate-bounce" style={{ animationDuration: '4.3s' }} />
+        
+        <defs>
+          <linearGradient id="shieldBg" x1="55" y1="23" x2="145" y2="135" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#1e1b4b"/>
+            <stop offset="100%" stopColor="#2e1065"/>
+          </linearGradient>
+          <radialGradient id="orbGrad4" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" stopColor="#c084fc" stopOpacity="0.85"/>
+            <stop offset="100%" stopColor="#581c87" stopOpacity="0.15"/>
+          </radialGradient>
+          <radialGradient id="orbGrad5" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" stopColor="#f472b6" stopOpacity="0.85"/>
+            <stop offset="100%" stopColor="#be185d" stopOpacity="0.15"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+}
+
+// Analytics 3D-like graphic SVG
+function AnalyticsGraphic() {
+  return (
+    <div className="relative select-none">
+      <svg className="w-40 h-40 drop-shadow-[0_15px_30px_rgba(56,189,248,0.35)]" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Glass card panel */}
+        <rect x="40" y="45" width="120" height="110" rx="18" fill="url(#glassCardBg)" stroke="white" strokeOpacity="0.08" strokeWidth="1.5"/>
+        {/* Chart Bars */}
+        <g className="translate-x-[25px] translate-y-[20px]">
+          {/* Bar 1 */}
+          <rect x="35" y="70" width="14" height="45" rx="4" fill="url(#barGrad1)" />
+          {/* Bar 2 */}
+          <rect x="55" y="45" width="14" height="70" rx="4" fill="url(#barGrad2)" />
+          {/* Bar 3 */}
+          <rect x="75" y="25" width="14" height="90" rx="4" fill="url(#barGrad3)" />
+          {/* Bar 4 */}
+          <rect x="95" y="55" width="14" height="60" rx="4" fill="url(#barGrad4)" />
+        </g>
+        {/* Sparkle line over the bars */}
+        <path d="M55 110l20-25 20-20 20 30 20-45" stroke="#38bdf8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="135" cy="50" r="4.5" fill="white" stroke="#38bdf8" strokeWidth="1.5" />
+        {/* Floating spheres */}
+        <circle cx="35" cy="50" r="9" fill="url(#orbGrad6)" className="animate-bounce" style={{ animationDuration: '3.4s' }} />
+        <circle cx="165" cy="135" r="14" fill="url(#orbGrad7)" className="animate-bounce" style={{ animationDuration: '2.9s' }} />
+
+        <defs>
+          <linearGradient id="glassCardBg" x1="40" y1="45" x2="160" y2="155" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#0f172a" stopOpacity="0.85"/>
+            <stop offset="100%" stopColor="#1e293b" stopOpacity="0.65"/>
+          </linearGradient>
+          <linearGradient id="barGrad1" x1="35" y1="70" x2="35" y2="115" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#38bdf8"/>
+            <stop offset="100%" stopColor="#0284c7"/>
+          </linearGradient>
+          <linearGradient id="barGrad2" x1="55" y1="45" x2="55" y2="115" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#34d399"/>
+            <stop offset="100%" stopColor="#059669"/>
+          </linearGradient>
+          <linearGradient id="barGrad3" x1="75" y1="25" x2="75" y2="115" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#fbbf24"/>
+            <stop offset="100%" stopColor="#d97706"/>
+          </linearGradient>
+          <linearGradient id="barGrad4" x1="95" y1="55" x2="95" y2="115" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#f472b6"/>
+            <stop offset="100%" stopColor="#db2777"/>
+          </linearGradient>
+          <radialGradient id="orbGrad6" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" stopColor="#fb7185" stopOpacity="0.85"/>
+            <stop offset="100%" stopColor="#e11d48" stopOpacity="0.15"/>
+          </radialGradient>
+          <radialGradient id="orbGrad7" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.85"/>
+            <stop offset="100%" stopColor="#0284c7" stopOpacity="0.15"/>
+          </radialGradient>
+        </defs>
+      </svg>
     </div>
   );
 }

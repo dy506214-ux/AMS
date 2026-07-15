@@ -50,10 +50,10 @@ export default function LoginPage() {
       {/* Dynamic Background Image Layer with Clean Tint Overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0 pointer-events-none bg-fixed"
-        style={{ backgroundImage: 'url("/bg-waves.jpg")' }}
+        style={{ backgroundImage: 'url("https://plus.unsplash.com/premium_photo-1661635810041-5e4d06e92715?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")' }}
       />
       {/* Light overlay to maintain text legibility while keeping the background clear and clean */}
-      <div className="absolute inset-0 bg-[#071526]/35 z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/10 z-0 pointer-events-none" />
 
       {/* Geometric background shapes to match the 1st image */}
       <div className="absolute bottom-[-120px] left-[-120px] w-[350px] h-[350px] bg-gradient-to-tr from-sky-950/40 to-transparent rotate-45 pointer-events-none z-0 border border-white/5 rounded-3xl" />
@@ -84,7 +84,7 @@ export default function LoginPage() {
         </div>
 
         {/* Form Container */}
-        <div className="w-full bg-[#0a1322]/90 backdrop-blur-xl px-8 py-7 rounded-[24px] border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
+        <div className="w-full bg-[#071526]/50 backdrop-blur-xl px-8 py-7 rounded-[24px] border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
           <div className="mb-5">
             <h3 className="text-xl font-bold text-white tracking-tight">Welcome back</h3>
             <p className="text-xs text-slate-400 mt-1.5 font-semibold">Sign in to continue to your dashboard.</p>
