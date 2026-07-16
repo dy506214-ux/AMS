@@ -4,8 +4,9 @@ export interface Attendance {
   id: string;
   studentId: string;
   date: string;
-  status: 'present' | 'absent';
+  status: 'present' | 'absent' | 'late' | 'leave' | 'medical';
   markedByTeacherId: string;
+  slotId?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -16,7 +17,7 @@ export interface StudentAttendanceState {
   rollNumber: string;
   class: string;
   section: string;
-  status: 'present' | 'absent' | 'unmarked';
+  status: 'present' | 'absent' | 'late' | 'leave' | 'medical' | 'unmarked';
   attendanceId?: string;
 }
 
@@ -68,23 +69,24 @@ export async function getAttendanceForClass(
       rollNumber: student.rollNumber,
       class: student.class,
       section: student.section,
-      status: record ? (record.status as 'present' | 'absent') : 'unmarked',
+      status: record ? (record.status as 'present' | 'absent' | 'late' | 'leave' | 'medical') : 'unmarked',
       attendanceId: record?.id
     };
   });
 }
 
 export async function markAttendance(
-  records: { studentId: string; status: 'present' | 'absent' }[],
+  records: { studentId: string; status: 'present' | 'absent' | 'late' | 'leave' | 'medical' }[],
   date: string,
   teacherId: string
 ): Promise<void> {
   const upserts = records.map((record) => {
     return prisma.attendance.upsert({
       where: {
-        studentId_date: {
+        studentId_date_slotId: {
           studentId: record.studentId,
-          date
+          date,
+          slotId: null as any
         }
       },
       update: {
@@ -96,12 +98,62 @@ export async function markAttendance(
         studentId: record.studentId,
         date,
         status: record.status,
-        markedByTeacherId: teacherId
+        markedByTeacherId: teacherId,
+        slotId: null
       }
     });
   });
 
   await prisma.$transaction(upserts);
+}
+
+export async function markAttendanceForSlot(
+  slotId: string,
+  records: { studentId: string; status: 'present' | 'absent' | 'late' | 'leave' | 'medical' }[],
+  teacherId: string
+): Promise<void> {
+  const slot = await prisma.attendanceSlot.findUnique({
+    where: { id: slotId }
+  });
+
+  if (!slot) {
+    throw new Error('Attendance slot not found.');
+  }
+
+  const upserts = records.map((record) => {
+    return prisma.attendance.upsert({
+      where: {
+        studentId_date_slotId: {
+          studentId: record.studentId,
+          date: slot.date,
+          slotId: slotId
+        }
+      },
+      update: {
+        status: record.status,
+        markedByTeacherId: teacherId,
+        updatedAt: new Date()
+      },
+      create: {
+        studentId: record.studentId,
+        date: slot.date,
+        status: record.status,
+        markedByTeacherId: teacherId,
+        slotId: slotId
+      }
+    });
+  });
+
+  await prisma.$transaction(upserts);
+
+  // Update slot status to completed
+  await prisma.attendanceSlot.update({
+    where: { id: slotId },
+    data: {
+      status: 'completed',
+      updatedAt: new Date()
+    }
+  });
 }
 
 export async function getTodayAttendanceSummary(date: string = new Date().toISOString().split('T')[0]): Promise<{
@@ -153,3 +205,4 @@ export async function getOverallSchoolStats(): Promise<{
     averageAttendancePercentage
   };
 }
+

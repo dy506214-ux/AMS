@@ -74,12 +74,14 @@ export default function LoginPage() {
       <div className="max-w-[490px] w-full mx-auto relative z-10 flex flex-col items-center justify-center my-auto">
         {/* Brand */}
         <div className="flex flex-col items-center gap-3 mb-6">
-          <div className="p-3 bg-sky-500 rounded-[20px] shadow-2xl shadow-sky-500/25 border border-sky-400/20 hover:scale-105 transition-transform duration-300">
-            <ShieldCheck className="w-8 h-8 text-white" />
-          </div>
+          <img 
+            src="/ams-logo-icon.png" 
+            alt="AMS Logo" 
+            className="w-16 h-16 object-contain hover:scale-105 transition-transform duration-300 filter drop-shadow-[0_0_12px_rgba(0,102,254,0.3)]" 
+          />
           <div className="text-center">
-            <h2 className="text-2xl font-extrabold tracking-tight text-white leading-none">AttendancePro</h2>
-            <p className="text-[9px] text-sky-400 font-extrabold tracking-[0.25em] uppercase mt-2">Portal Login</p>
+            <h2 className="text-2xl font-extrabold tracking-tight text-white leading-none">AMS</h2>
+            <p className="text-[9px] text-sky-400 font-extrabold tracking-[0.25em] uppercase mt-2">Attendance Management System</p>
           </div>
         </div>
 
@@ -201,7 +203,7 @@ export default function LoginPage() {
       {/* Footer */}
       <div className="max-w-[490px] w-full mx-auto text-center relative z-10 mt-6">
         <p className="text-xs text-slate-500 font-medium">
-          AttendancePro &copy; {new Date().getFullYear()}. All rights reserved.
+          AMS &copy; {new Date().getFullYear()}. All rights reserved.
         </p>
       </div>
     </div>

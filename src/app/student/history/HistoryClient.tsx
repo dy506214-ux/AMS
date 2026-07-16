@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Clock } from 'lucide-react';
-import { Attendance } from '@/lib/db/jsonDb';
+import { Attendance } from '@/lib/services/attendance';
 
 interface HistoryClientProps {
   logs: Attendance[];
@@ -119,7 +119,9 @@ export default function HistoryClient({ logs }: HistoryClientProps) {
                           <span className={`inline-flex px-2.5 py-1 text-xs font-bold rounded-full uppercase border ${
                             log.status === 'present'
                               ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600'
-                              : 'bg-rose-500/10 border-rose-500/20 text-rose-600'
+                              : log.status === 'absent'
+                              ? 'bg-rose-500/10 border-rose-500/20 text-rose-600'
+                              : 'bg-slate-100 border-slate-200 text-slate-500'
                           }`}>
                             {log.status}
                           </span>

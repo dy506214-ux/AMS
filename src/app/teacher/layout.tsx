@@ -22,7 +22,7 @@ export default async function TeacherLayout({
   return (
     <div className="min-h-screen bg-slate-50/50 backdrop-blur-md flex">
       {/* Sidebar Navigation */}
-      <Sidebar role="teacher" userName={user.name} />
+      <Sidebar role="teacher" userName={user.name} photoUrl={photoUrl} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col md:pl-64 min-h-screen">

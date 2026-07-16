@@ -8,7 +8,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "AttendancePro - Simple, Fast, Reliable School Attendance Management",
+  title: "AMS - Attendance Management System",
   description: "Simple, Fast, and Reliable Attendance Management system with role-based panels for Admin, Teacher, and Student.",
   icons: {
     icon: "/favicon.ico",

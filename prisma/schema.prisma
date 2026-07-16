@@ -18,17 +18,18 @@ model Admin {
 }
 
 model Teacher {
-  id           String   @id @default(uuid())
-  employeeId   String   @unique
-  passwordHash String
-  name         String
-  email        String   @unique
-  phone        String
-  photoUrl     String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  students     Student[]
-  attendance   Attendance[]
+  id              String           @id @default(uuid())
+  employeeId      String           @unique
+  passwordHash    String
+  name            String
+  email           String           @unique
+  phone           String
+  photoUrl        String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  students        Student[]
+  attendance      Attendance[]
+  attendanceSlots AttendanceSlot[]
 }
 
 model Student {
@@ -51,16 +52,50 @@ model Student {
 }
 
 model Attendance {
-  id                String   @id @default(uuid())
+  id                String          @id @default(uuid())
   studentId         String
-  student           Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  date              String   // YYYY-MM-DD
-  status            String   // "present" | "absent"
+  student           Student         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date              String          // YYYY-MM-DD
+  status            String          // "present" | "absent" | "late" | "leave" | "medical"
   markedByTeacherId String
-  markedByTeacher   Teacher  @relation(fields: [markedByTeacherId], references: [id], onDelete: Cascade)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  markedByTeacher   Teacher         @relation(fields: [markedByTeacherId], references: [id], onDelete: Cascade)
+  slotId            String?
+  slot              AttendanceSlot? @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
-  @@unique([studentId, date]) // A student can only have one attendance record per day
+  @@unique([studentId, date, slotId]) // Unique student, date, and slot
   @@index([markedByTeacherId])
+  @@index([slotId])
 }
+
+model AttendanceSlot {
+  id          String       @id @default(uuid())
+  createdBy   String       // Teacher's name or ID
+  teacherId   String
+  teacher     Teacher      @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  classId     String       // e.g. "1" (corresponding to class on Student)
+  sectionId   String       // e.g. "B" (corresponding to section on Student)
+  date        String       // YYYY-MM-DD
+  time        String       // e.g. "09:00 AM"
+  duration    Int          @default(30) // duration in minutes
+  type        String       // e.g. Morning, Afternoon, Evening, Extra Class, Practical, etc.
+  status      String       @default("active") // "active" | "completed"
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  attendances Attendance[]
+
+  @@unique([teacherId, classId, sectionId, date, time])
+  @@index([teacherId])
+}
+
+model Announcement {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  category  String   // e.g. "PTM", "Holiday", "Event"
+  dateInfo  String   // e.g. "July 20, 2026"
+  createdAt DateTime @default(now())
+}
+
+

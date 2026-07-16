@@ -131,26 +131,13 @@ export default function LandingPage() {
         <div className="w-full bg-white/90 border-b border-slate-200/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4 lg:gap-8 transition-all duration-300 relative">
           
           {/* Logo Brand Segment */}
-          <div className="flex items-center gap-3">
-            {/* Hexagon shape with SVG and People Icon */}
-            <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
-              <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full text-[#0066fe] fill-current drop-shadow-[0_0_8px_rgba(0,102,254,0.35)]">
-                <path d="M50 2.5 L93.3 27.5 L93.3 77.5 L50 97.5 L6.7 77.5 L6.7 27.5 Z" />
-              </svg>
-              <Users className="w-4.5 h-4.5 text-white relative z-10" />
-            </div>
-            
-            {/* Brand Name */}
-            <span className="text-lg font-black tracking-tight text-black uppercase">AMS</span>
-            
-            {/* Vertical Divider */}
-            <div className="w-[1px] h-5 bg-slate-200 hidden 2xl:block" />
-            
-            {/* Sub-label */}
-            <span className="text-black text-xs font-semibold tracking-wide hidden 2xl:block uppercase whitespace-nowrap">
-              Attendance Management System
-            </span>
-          </div>
+          <Link href="/" className="flex items-center gap-3 shrink-0">
+            <img 
+              src="/ams-logo-transparent.png" 
+              alt="AMS Attendance Management System" 
+              className="h-10 sm:h-12 w-auto object-contain" 
+            />
+          </Link>
 
           {/* Desktop Navigation Links */}
           <nav className="hidden xl:flex items-center gap-4 2xl:gap-8">
@@ -555,7 +542,7 @@ export default function LandingPage() {
                 for Schools
               </h1>
               <p className="hidden md:block text-sm sm:text-base lg:text-lg text-slate-200 max-w-[600px] mx-auto lg:mx-0">
-                AttendancePro helps schools manage attendance efficiently with dedicated Admin, Teacher, and Student panels. Light, focused, and secure.
+                AMS helps schools manage attendance efficiently with dedicated Admin, Teacher, and Student panels. Light, focused, and secure.
               </p>
               <div className="flex flex-col xs:flex-row items-center justify-center lg:justify-start gap-3 w-full xs:w-auto mt-2">
                 <Link
@@ -959,7 +946,7 @@ export default function LandingPage() {
                 Built for Schools, <br />Designed for Simplicity
               </h2>
               <p className="text-slate-300 leading-relaxed text-sm sm:text-base">
-                AttendancePro is designed to simplify attendance management for schools with a clean, lightweight, and powerful interface. No bloated modules, no heavy setup. Just simple, fast, and reliable attendance records.
+                AMS is designed to simplify attendance management for schools with a clean, lightweight, and powerful interface. No bloated modules, no heavy setup. Just simple, fast, and reliable attendance records.
               </p>
 
               {/* Statistics Grid */}
@@ -1102,13 +1089,11 @@ export default function LandingPage() {
             {/* Column 1: Brand description & Social Icons */}
             <div className="lg:col-span-4 flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                {/* Hexagon shape with SVG and Users Icon */}
-                <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
-                  <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full text-[#0066fe] fill-current drop-shadow-[0_0_8px_rgba(0,102,254,0.35)]">
-                    <path d="M50 2.5 L93.3 27.5 L93.3 77.5 L50 97.5 L6.7 77.5 L6.7 27.5 Z" />
-                  </svg>
-                  <Users className="w-4.5 h-4.5 text-white relative z-10" />
-                </div>
+                <img 
+                  src="/ams-logo-icon.png" 
+                  alt="AMS Logo" 
+                  className="w-10 h-10 object-contain shrink-0" 
+                />
                 <div>
                   <span className="text-lg font-black tracking-tight text-white block leading-none uppercase">AMS</span>
                   <span className="text-[9px] text-slate-400 font-extrabold tracking-wider uppercase mt-1">Attendance Management System</span>

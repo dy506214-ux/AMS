@@ -145,7 +145,9 @@ export default async function StudentDashboard() {
                     <span className={`px-2.5 py-1 text-xs font-bold rounded-full uppercase border ${
                       log.status === 'present'
                         ? 'bg-emerald-50/10 border-emerald-500/20 text-emerald-600'
-                        : 'bg-rose-50/10 border-rose-500/20 text-rose-600'
+                        : log.status === 'absent'
+                        ? 'bg-rose-50/10 border-rose-500/20 text-rose-600'
+                        : 'bg-slate-50 border-slate-200 text-slate-500'
                     }`}>
                       {log.status}
                     </span>
