@@ -63,6 +63,17 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
 
   const [selectedClass, setSelectedClass] = useState(classesAndSections[0]?.class || '');
   const [selectedSection, setSelectedSection] = useState(classesAndSections[0]?.section || '');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const paramClass = params.get('class');
+      const paramSection = params.get('section');
+      if (paramClass) setSelectedClass(paramClass);
+      if (paramSection) setSelectedSection(paramSection);
+    }
+  }, []);
+
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [time, setTime] = useState('09:00');
   const [duration, setDuration] = useState(30);

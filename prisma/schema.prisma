@@ -30,6 +30,7 @@ model Teacher {
   students        Student[]
   attendance      Attendance[]
   attendanceSlots AttendanceSlot[]
+  announcements   Announcement[]
 }
 
 model Student {
@@ -90,12 +91,27 @@ model AttendanceSlot {
 }
 
 model Announcement {
-  id        String   @id @default(uuid())
-  title     String
-  content   String
-  category  String   // e.g. "PTM", "Holiday", "Event"
-  dateInfo  String   // e.g. "July 20, 2026"
-  createdAt DateTime @default(now())
+  id            String    @id @default(uuid())
+  title         String
+  content       String    // description
+  category      String    // e.g. "PTM", "Holiday", "Event", "General"
+  dateInfo      String    // e.g. "July 20, 2026"
+  priority      String    @default("Normal") // "Normal" | "High" | "Low"
+  status        String    @default("published") // "draft" | "published" | "scheduled"
+  publishDate   String?   // YYYY-MM-DD
+  expiryDate    String?   // YYYY-MM-DD
+  audienceType  String    @default("All Students") // "All Students" | "Specific Class" | "Specific Section" | "Specific Students"
+  classId       String?
+  sectionId     String?
+  studentIds    String?   // comma-separated list
+  attachmentUrl String?
+  thumbnail     String?
+  isDeleted     Boolean   @default(false)
+  deletedAt     DateTime?
+  teacherId     String?   // links to Teacher who created it
+  teacher       Teacher?  @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
 }
 
 

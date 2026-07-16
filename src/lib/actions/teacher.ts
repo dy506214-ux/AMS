@@ -54,6 +54,16 @@ export async function createAnnouncementAction(data: {
   content: string;
   category: string;
   dateInfo: string;
+  priority?: string;
+  status?: string;
+  publishDate?: string;
+  expiryDate?: string;
+  audienceType?: string;
+  classId?: string;
+  sectionId?: string;
+  studentIds?: string;
+  attachmentUrl?: string;
+  thumbnail?: string;
 }) {
   const user = await getCurrentUser();
   if (!user || user.role !== 'teacher') {
@@ -67,6 +77,17 @@ export async function createAnnouncementAction(data: {
         content: data.content,
         category: data.category,
         dateInfo: data.dateInfo,
+        priority: data.priority || 'Normal',
+        status: data.status || 'published',
+        publishDate: data.publishDate || null,
+        expiryDate: data.expiryDate || null,
+        audienceType: data.audienceType || 'All Students',
+        classId: data.classId || null,
+        sectionId: data.sectionId || null,
+        studentIds: data.studentIds || null,
+        attachmentUrl: data.attachmentUrl || null,
+        thumbnail: data.thumbnail || null,
+        teacherId: user.id
       }
     });
     revalidatePath('/teacher');
@@ -77,6 +98,110 @@ export async function createAnnouncementAction(data: {
     return { error: err.message || 'Failed to create announcement.' };
   }
 }
+
+export async function updateAnnouncementAction(
+  id: string,
+  data: {
+    title: string;
+    content: string;
+    category: string;
+    dateInfo: string;
+    priority?: string;
+    status?: string;
+    publishDate?: string;
+    expiryDate?: string;
+    audienceType?: string;
+    classId?: string;
+    sectionId?: string;
+    studentIds?: string;
+    attachmentUrl?: string;
+    thumbnail?: string;
+  }
+) {
+  const user = await getCurrentUser();
+  if (!user || (user.role !== 'teacher' && user.role !== 'admin')) {
+    return { error: 'Unauthorized.' };
+  }
+
+  try {
+    const announcement = await prisma.announcement.findUnique({
+      where: { id }
+    });
+
+    if (!announcement) {
+      return { error: 'Announcement not found.' };
+    }
+
+    if (user.role !== 'admin' && announcement.teacherId !== user.id) {
+      return { error: 'Unauthorized to update this announcement.' };
+    }
+
+    const updated = await prisma.announcement.update({
+      where: { id },
+      data: {
+        title: data.title,
+        content: data.content,
+        category: data.category,
+        dateInfo: data.dateInfo,
+        priority: data.priority,
+        status: data.status,
+        publishDate: data.publishDate,
+        expiryDate: data.expiryDate,
+        audienceType: data.audienceType,
+        classId: data.classId,
+        sectionId: data.sectionId,
+        studentIds: data.studentIds,
+        attachmentUrl: data.attachmentUrl,
+        thumbnail: data.thumbnail
+      }
+    });
+
+    revalidatePath('/teacher');
+    revalidatePath('/teacher/announcements');
+    return { success: true, announcement: updated };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to update announcement.' };
+  }
+}
+
+export async function deleteAnnouncementAction(id: string) {
+  const user = await getCurrentUser();
+  if (!user || (user.role !== 'teacher' && user.role !== 'admin')) {
+    return { error: 'Unauthorized.' };
+  }
+
+  try {
+    const announcement = await prisma.announcement.findUnique({
+      where: { id }
+    });
+
+    if (!announcement) {
+      return { error: 'Announcement not found.' };
+    }
+
+    if (user.role !== 'admin' && announcement.teacherId !== user.id) {
+      return { error: 'Unauthorized to delete this announcement.' };
+    }
+
+    // Soft Delete
+    await prisma.announcement.update({
+      where: { id },
+      data: {
+        isDeleted: true,
+        deletedAt: new Date()
+      }
+    });
+
+    revalidatePath('/teacher');
+    revalidatePath('/teacher/announcements');
+    return { success: true };
+  } catch (error) {
+    const err = error as Error;
+    return { error: err.message || 'Failed to delete announcement.' };
+  }
+}
+
 
 export async function createAttendanceSlotAction(data: {
   classId: string;

@@ -104,6 +104,10 @@ export default async function TeacherDashboard() {
 
   // Recent announcements (take 3)
   const recentAnnouncements = await prisma.announcement.findMany({
+    where: {
+      isDeleted: false,
+      status: 'published'
+    },
     orderBy: { createdAt: 'desc' },
     take: 3
   });

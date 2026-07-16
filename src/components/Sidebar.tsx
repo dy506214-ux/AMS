@@ -20,7 +20,8 @@ import {
   Calendar,
   ChevronDown,
   ChevronUp,
-  User
+  User,
+  FileText
 } from 'lucide-react';
 import { logoutAction } from '@/lib/actions/auth';
 
@@ -56,6 +57,8 @@ export default function Sidebar({ role, userName, photoUrl }: SidebarProps) {
         return [
           { name: 'Dashboard', href: '/student', icon: LayoutDashboard },
           { name: 'Attendance History', href: '/student/history', icon: History },
+          { name: 'Examinations', href: '/student/examinations', icon: FileText },
+          { name: 'Announcements', href: '/student/announcements', icon: Megaphone },
           { name: 'My Profile', href: '/student/profile', icon: User }
         ];
       default:
