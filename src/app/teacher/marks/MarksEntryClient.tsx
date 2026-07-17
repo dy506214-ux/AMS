@@ -204,6 +204,39 @@ export default function MarksEntryClient({ assignedStudents }: MarksEntryClientP
     }));
   };
 
+  // Mark all students on the current page as Present
+  const markAllPresent = () => {
+    if (paginatedStudents.length === 0) return;
+    const pageStudentIds = new Set(paginatedStudents.map(s => s.studentId));
+    setStudents(prev => prev.map(s => {
+      if (pageStudentIds.has(s.studentId)) {
+        return {
+          ...s,
+          attendanceStatus: 'present'
+        };
+      }
+      return s;
+    }));
+    showToast('Marked all students on the current page as Present!', 'success');
+  };
+
+  // Mark all students on the current page as Absent
+  const markAllAbsent = () => {
+    if (paginatedStudents.length === 0) return;
+    const pageStudentIds = new Set(paginatedStudents.map(s => s.studentId));
+    setStudents(prev => prev.map(s => {
+      if (pageStudentIds.has(s.studentId)) {
+        return {
+          ...s,
+          attendanceStatus: 'absent',
+          marksObtained: ''
+        };
+      }
+      return s;
+    }));
+    showToast('Marked all students on the current page as Absent!', 'info');
+  };
+
 
   // Handle Remarks Change
   const handleRemarksChange = (studentId: string, value: string) => {
@@ -453,7 +486,27 @@ export default function MarksEntryClient({ assignedStudents }: MarksEntryClientP
                   <th className="py-4 px-6 min-w-[200px]">Student Name</th>
                   <th className="py-4 px-6 min-w-[220px]">Email ID</th>
                   <th className="py-4 px-6 w-44 text-center">Marks Obtained (Max: {maxMarks})</th>
-                  <th className="py-4 px-6 w-56 text-center">Status</th>
+                  <th className="py-3 px-6 w-64 text-center">
+                    <div className="flex flex-col items-center gap-1.5">
+                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">Status</span>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <button
+                          type="button"
+                          onClick={markAllPresent}
+                          className="px-2.5 py-1.5 rounded-xl border border-emerald-200 text-emerald-600 bg-emerald-50/50 hover:bg-emerald-100/50 text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer shadow-3xs active:scale-95 hover:-translate-y-0.5"
+                        >
+                          All Present
+                        </button>
+                        <button
+                          type="button"
+                          onClick={markAllAbsent}
+                          className="px-2.5 py-1.5 rounded-xl border border-rose-200 text-rose-600 bg-rose-50/50 hover:bg-rose-100/50 text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer shadow-3xs active:scale-95 hover:-translate-y-0.5"
+                        >
+                          All Absent
+                        </button>
+                      </div>
+                    </div>
+                  </th>
                   <th className="py-4 px-6 w-20 text-center">Actions</th>
                 </tr>
               </thead>
