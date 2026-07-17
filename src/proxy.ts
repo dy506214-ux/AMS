@@ -10,20 +10,8 @@ export async function proxy(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
   const { pathname } = request.nextUrl;
 
-  // 1. If trying to access login page, check if already authenticated
+  // 1. If trying to access login page, always allow access without auto-redirects
   if (pathname === '/login') {
-    if (token) {
-      try {
-        const { payload } = await jwtVerify(token, SECRET_KEY);
-        const role = payload.role as string;
-        return NextResponse.redirect(new URL(`/${role}`, request.url));
-      } catch {
-        // Token is invalid, clear it
-        const response = NextResponse.next();
-        response.cookies.delete('token');
-        return response;
-      }
-    }
     return NextResponse.next();
   }
 
