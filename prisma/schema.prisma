@@ -117,18 +117,19 @@ model Announcement {
 }
 
 model Mark {
-  id            String   @id @default(uuid())
-  studentId     String
-  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  subject       String
-  examName      String
-  marksObtained Float
-  maxMarks      Float    @default(100)
-  remarks       String?
-  teacherId     String
-  teacher       Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id               String   @id @default(uuid())
+  studentId        String
+  student          Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  subject          String
+  examName         String
+  marksObtained    Float    @default(0)
+  maxMarks         Float    @default(100)
+  attendanceStatus String   @default("present")
+  remarks          String?
+  teacherId        String
+  teacher          Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   @@unique([studentId, subject, examName])
   @@index([studentId])

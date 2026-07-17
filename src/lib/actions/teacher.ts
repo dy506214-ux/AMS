@@ -320,7 +320,7 @@ export async function saveMarksAction(data: {
   subject: string;
   examName: string;
   maxMarks: number;
-  records: { studentId: string; marksObtained: number; remarks?: string }[];
+  records: { studentId: string; marksObtained: number; attendanceStatus?: string; remarks?: string }[];
 }) {
   const user = await getCurrentUser();
   if (!user || user.role !== 'teacher') return { error: 'Unauthorized.' };
@@ -338,6 +338,7 @@ export async function saveMarksAction(data: {
         update: {
           marksObtained: record.marksObtained,
           maxMarks: data.maxMarks,
+          attendanceStatus: record.attendanceStatus || 'present',
           remarks: record.remarks || null,
           teacherId: user.id
         },
@@ -347,6 +348,7 @@ export async function saveMarksAction(data: {
           examName: data.examName,
           marksObtained: record.marksObtained,
           maxMarks: data.maxMarks,
+          attendanceStatus: record.attendanceStatus || 'present',
           remarks: record.remarks || null,
           teacherId: user.id
         }
