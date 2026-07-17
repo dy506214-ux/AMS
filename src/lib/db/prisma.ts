@@ -9,7 +9,7 @@ if (globalForPrisma.prisma) {
   prismaInstance = globalForPrisma.prisma;
 } else {
   const adapter = new PrismaLibSql({
-    url: process.env.DATABASE_URL || 'file:./dev.db'
+    url: 'file:./dev.db'
   });
   prismaInstance = new PrismaClient({ adapter });
 }
