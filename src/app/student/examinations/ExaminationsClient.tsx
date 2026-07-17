@@ -16,6 +16,15 @@ interface Student {
   photoUrl: string;
 }
 
+interface DBMark {
+  id: string;
+  subject: string;
+  examName: string;
+  marksObtained: number;
+  maxMarks: number;
+  remarks: string;
+}
+
 interface Exam {
   id: string;
   title: string;
@@ -28,13 +37,16 @@ interface Exam {
   room: string;
   status: 'Upcoming' | 'Ongoing' | 'Completed';
   syllabus: string;
+  obtainedMarks?: number;
+  remarks?: string;
 }
 
 interface ExaminationsClientProps {
   student: Student;
+  marks?: DBMark[];
 }
 
-export default function ExaminationsClient({ student }: ExaminationsClientProps) {
+export default function ExaminationsClient({ student, marks = [] }: ExaminationsClientProps) {
   const { showToast } = useToast();
   
   // Search & Filter state
@@ -101,23 +113,69 @@ export default function ExaminationsClient({ student }: ExaminationsClientProps)
     }
   ], []);
 
+  // Merge static roster with database marks
+  const mergedExams = useMemo(() => {
+    const matchedIds = new Set<string>();
+    
+    // Map static roster
+    const mappedStatic = examRoster.map(exam => {
+      const dbMark = marks?.find(
+        m => m.subject.toLowerCase() === exam.subject.toLowerCase() && 
+             m.examName.toLowerCase() === exam.title.toLowerCase()
+      );
+
+      if (dbMark) {
+        matchedIds.add(dbMark.id);
+        return {
+          ...exam,
+          status: 'Completed' as const,
+          maxMarks: dbMark.maxMarks,
+          obtainedMarks: dbMark.marksObtained,
+          remarks: dbMark.remarks
+        };
+      }
+      return exam;
+    });
+
+    // Add unmatched db marks
+    const unmatched = (marks || [])
+      .filter(m => !matchedIds.has(m.id))
+      .map((m, idx) => ({
+        id: `db-exam-${idx}`,
+        title: m.examName,
+        subject: m.subject,
+        date: new Date().toISOString().split('T')[0],
+        time: 'N/A',
+        duration: 'N/A',
+        maxMarks: m.maxMarks,
+        passingMarks: Math.round(m.maxMarks * 0.33),
+        room: 'Online/N/A',
+        status: 'Completed' as const,
+        syllabus: 'Academic performance review.',
+        obtainedMarks: m.marksObtained,
+        remarks: m.remarks
+      }));
+
+    return [...mappedStatic, ...unmatched];
+  }, [examRoster, marks]);
+
   // Filtered roster
   const filteredExams = useMemo(() => {
-    return examRoster.filter(exam => {
+    return mergedExams.filter(exam => {
       const matchesSearch = exam.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             exam.subject.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter === 'all' || exam.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-  }, [examRoster, searchQuery, statusFilter]);
+  }, [mergedExams, searchQuery, statusFilter]);
 
   // Statistics
   const stats = useMemo(() => {
-    const total = examRoster.length;
-    const upcoming = examRoster.filter(e => e.status === 'Upcoming').length;
-    const completed = examRoster.filter(e => e.status === 'Completed').length;
+    const total = mergedExams.length;
+    const upcoming = mergedExams.filter(e => e.status === 'Upcoming').length;
+    const completed = mergedExams.filter(e => e.status === 'Completed').length;
     return { total, upcoming, completed };
-  }, [examRoster]);
+  }, [mergedExams]);
 
   // Print Hall Ticket trigger
   const handlePrintHallTicket = () => {
@@ -249,6 +307,32 @@ export default function ExaminationsClient({ student }: ExaminationsClientProps)
                   <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-slate-400" /> {exam.room}</span>
                   <span className="flex items-center gap-1.5"><FileText className="w-3.5 h-3.5 text-slate-400" /> {exam.maxMarks} Marks</span>
                 </div>
+
+                {/* Database Marks details if available */}
+                {exam.obtainedMarks !== undefined && (
+                  <div className="flex flex-col gap-2 bg-emerald-500/5 border border-emerald-500/15 p-3.5 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-emerald-600" />
+                        <span className="text-xs font-extrabold text-slate-800">
+                          Score: {exam.obtainedMarks} / {exam.maxMarks} Marks
+                        </span>
+                      </div>
+                      <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                        Number(exam.obtainedMarks) >= exam.passingMarks 
+                          ? 'bg-emerald-100 text-emerald-700' 
+                          : 'bg-rose-100 text-rose-700'
+                      }`}>
+                        {Number(exam.obtainedMarks) >= exam.passingMarks ? 'PASSED' : 'FAILED'}
+                      </span>
+                    </div>
+                    {exam.remarks && (
+                      <p className="text-[10px] text-slate-500 font-semibold italic mt-0.5 leading-snug">
+                        Teacher Remarks: {exam.remarks}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div className="flex items-center justify-between border-t border-slate-50 pt-3">
                   <button

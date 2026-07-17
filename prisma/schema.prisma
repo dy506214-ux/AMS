@@ -1,5 +1,5 @@
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 generator client {
@@ -31,6 +31,7 @@ model Teacher {
   attendance      Attendance[]
   attendanceSlots AttendanceSlot[]
   announcements   Announcement[]
+  marks           Mark[]
 }
 
 model Student {
@@ -48,6 +49,7 @@ model Student {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   attendance   Attendance[]
+  marks        Mark[]
 
   @@index([teacherId])
 }
@@ -112,6 +114,25 @@ model Announcement {
   teacher       Teacher?  @relation(fields: [teacherId], references: [id], onDelete: SetNull)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now()) @updatedAt
+}
+
+model Mark {
+  id            String   @id @default(uuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  subject       String
+  examName      String
+  marksObtained Float
+  maxMarks      Float    @default(100)
+  remarks       String?
+  teacherId     String
+  teacher       Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([studentId, subject, examName])
+  @@index([studentId])
+  @@index([teacherId])
 }
 
 

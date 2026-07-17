@@ -1,6 +1,5 @@
-import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
-import { Pool } from 'pg';
+import { PrismaLibSql } from '@prisma/adapter-libsql';
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
@@ -9,14 +8,9 @@ let prismaInstance: PrismaClient;
 if (globalForPrisma.prisma) {
   prismaInstance = globalForPrisma.prisma;
 } else {
-  const connectionString = process.env.DATABASE_URL;
-  const pool = new Pool({
-    connectionString,
-    ssl: {
-      rejectUnauthorized: false
-    }
+  const adapter = new PrismaLibSql({
+    url: process.env.DATABASE_URL || 'file:./dev.db'
   });
-  const adapter = new PrismaPg(pool);
   prismaInstance = new PrismaClient({ adapter });
 }
 

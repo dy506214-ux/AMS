@@ -286,3 +286,77 @@ export async function deleteAttendanceSlotAction(slotId: string) {
     return { error: err.message || 'Failed to delete slot.' };
   }
 }
+
+export async function getStudentsForMarksAction(data: {
+  classId: string;
+  sectionId: string;
+  subject: string;
+  examName: string;
+}) {
+  const user = await getCurrentUser();
+  if (!user || user.role !== 'teacher') return { error: 'Unauthorized.' };
+
+  try {
+    const students = await prisma.student.findMany({
+      where: { class: data.classId, section: data.sectionId },
+      orderBy: { rollNumber: 'asc' }
+    });
+
+    const marks = await (prisma as any).mark.findMany({
+      where: {
+        subject: data.subject,
+        examName: data.examName,
+        studentId: { in: students.map(s => s.id) }
+      }
+    });
+
+    return { success: true, students, marks };
+  } catch (error: any) {
+    return { error: error.message || 'Failed to fetch students or marks.' };
+  }
+}
+
+export async function saveMarksAction(data: {
+  subject: string;
+  examName: string;
+  maxMarks: number;
+  records: { studentId: string; marksObtained: number; remarks?: string }[];
+}) {
+  const user = await getCurrentUser();
+  if (!user || user.role !== 'teacher') return { error: 'Unauthorized.' };
+
+  try {
+    const upserts = data.records.map(record => {
+      return (prisma as any).mark.upsert({
+        where: {
+          studentId_subject_examName: {
+            studentId: record.studentId,
+            subject: data.subject,
+            examName: data.examName
+          }
+        },
+        update: {
+          marksObtained: record.marksObtained,
+          maxMarks: data.maxMarks,
+          remarks: record.remarks || null,
+          teacherId: user.id
+        },
+        create: {
+          studentId: record.studentId,
+          subject: data.subject,
+          examName: data.examName,
+          marksObtained: record.marksObtained,
+          maxMarks: data.maxMarks,
+          remarks: record.remarks || null,
+          teacherId: user.id
+        }
+      });
+    });
+
+    await prisma.$transaction(upserts);
+    revalidatePath('/student/examinations');
+    return { success: true };
+  } catch (error: any) {
+    return { error: error.message || 'Failed to save marks.' };
+  }
+}
