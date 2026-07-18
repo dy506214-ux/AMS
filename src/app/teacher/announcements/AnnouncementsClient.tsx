@@ -180,8 +180,17 @@ export default function AnnouncementsClient({
     setCategory(ann.category);
     setPriority(ann.priority);
     setAudienceType(ann.audienceType);
-    setTargetClass(ann.classId || classesAndSections[0]?.class || '');
-    setTargetSection(ann.sectionId || classesAndSections[0]?.section || '');
+    let cls = ann.classId || '';
+    let sec = ann.sectionId || '';
+    if (ann.audienceType === 'Specific Students' && ann.studentIds && (!cls || !sec)) {
+      const student = assignedStudents.find(s => s.id === ann.studentIds);
+      if (student) {
+        cls = student.class;
+        sec = student.section;
+      }
+    }
+    setTargetClass(cls || classesAndSections[0]?.class || '');
+    setTargetSection(sec || classesAndSections[0]?.section || '');
     setSelectedStudentId(ann.studentIds || '');
     setExpiryDate(ann.expiryDate || '');
     setStatus(ann.status);
@@ -214,8 +223,8 @@ export default function AnnouncementsClient({
       publishDate: status === 'scheduled' ? publishDate : new Date().toISOString().split('T')[0],
       expiryDate: expiryDate || undefined,
       audienceType,
-      classId: audienceType === 'Specific Class' || audienceType === 'Specific Section' ? targetClass : undefined,
-      sectionId: audienceType === 'Specific Section' ? targetSection : undefined,
+      classId: audienceType === 'Specific Class' || audienceType === 'Specific Section' || audienceType === 'Specific Students' ? targetClass : undefined,
+      sectionId: audienceType === 'Specific Section' || audienceType === 'Specific Students' ? targetSection : undefined,
       studentIds: audienceType === 'Specific Students' ? selectedStudentId : undefined
     };
 
@@ -539,18 +548,59 @@ export default function AnnouncementsClient({
 
             {/* Specific Student Select */}
             {audienceType === 'Specific Students' && (
-              <div className="flex flex-col gap-1 animate-fadeIn">
-                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Select Student</label>
-                <select
-                  value={selectedStudentId}
-                  onChange={e => setSelectedStudentId(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-250 rounded-lg text-xs font-bold"
-                >
-                  <option value="">Choose Student</option>
-                  {assignedStudents.map(s => (
-                    <option key={s.id} value={s.id}>{s.name} ({s.rollNumber})</option>
-                  ))}
-                </select>
+              <div className="flex flex-col gap-3 animate-fadeIn">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Select Class</label>
+                    <select
+                      value={targetClass}
+                      onChange={e => {
+                        setTargetClass(e.target.value);
+                        setSelectedStudentId('');
+                      }}
+                      className="w-full px-3 py-2 border border-slate-250 rounded-lg text-xs font-bold bg-slate-50 cursor-pointer"
+                    >
+                      {Array.from(new Set(classesAndSections.map(c => c.class))).map(cls => (
+                        <option key={cls} value={cls}>Class {cls}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Select Section</label>
+                    <select
+                      value={targetSection}
+                      onChange={e => {
+                        setTargetSection(e.target.value);
+                        setSelectedStudentId('');
+                      }}
+                      className="w-full px-3 py-2 border border-slate-250 rounded-lg text-xs font-bold bg-slate-50 cursor-pointer"
+                    >
+                      {classesAndSections
+                        .filter(c => c.class === targetClass)
+                        .map(c => (
+                          <option key={c.section} value={c.section}>Section {c.section}</option>
+                        ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Select Student</label>
+                  <select
+                    value={selectedStudentId}
+                    onChange={e => setSelectedStudentId(e.target.value)}
+                    required
+                    className="w-full px-3 py-2 border border-slate-250 rounded-lg text-xs font-bold bg-slate-50 cursor-pointer"
+                  >
+                    <option value="">Choose Student</option>
+                    {assignedStudents
+                      .filter(s => s.class === targetClass && s.section === targetSection)
+                      .map(s => (
+                        <option key={s.id} value={s.id}>{s.name} ({s.rollNumber})</option>
+                      ))}
+                  </select>
+                </div>
               </div>
             )}
 

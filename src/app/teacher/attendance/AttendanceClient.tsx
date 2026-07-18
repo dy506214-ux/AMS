@@ -47,9 +47,10 @@ interface StudentAttendanceState {
 
 interface AttendanceClientProps {
   assignedStudents: Student[];
+  initialServerDate: string;
 }
 
-export default function AttendanceClient({ assignedStudents }: AttendanceClientProps) {
+export default function AttendanceClient({ assignedStudents, initialServerDate }: AttendanceClientProps) {
   // Unique classes and sections assigned to this teacher
   const classesAndSections = useMemo(() => {
     const list = assignedStudents.reduce((acc: { class: string; section: string }[], student) => {
@@ -84,8 +85,8 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
     }
   }, []);
 
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [todayDate, setTodayDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(initialServerDate);
+  const [todayDate, setTodayDate] = useState(initialServerDate);
   const [time, setTime] = useState('09:00');
   const [duration, setDuration] = useState(30);
   const [slotType, setSlotType] = useState('Morning');
@@ -204,15 +205,23 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
     loadTodaySlots();
   }, [loadTodaySlots]);
 
-  // Monitor system date change and rollover automatically
+  // Monitor system date change and rollover automatically using server date
   useEffect(() => {
-    const checkDate = () => {
-      const currentToday = new Date().toISOString().split('T')[0];
-      if (currentToday !== todayDate) {
-        setTodayDate(currentToday);
-        setDate(currentToday); // reset setup form date
-        setActiveSlot(null);
-        setStudents([]);
+    const checkDate = async () => {
+      try {
+        const res = await fetch('/api/attendance/server-date');
+        if (res.ok) {
+          const data = await res.json();
+          const currentToday = data.serverDate;
+          if (currentToday && currentToday !== todayDate) {
+            setTodayDate(currentToday);
+            setDate(currentToday); // reset setup form date
+            setActiveSlot(null);
+            setStudents([]);
+          }
+        }
+      } catch (e) {
+        console.error('Failed to sync server date:', e);
       }
     };
     const interval = setInterval(checkDate, 5000);
@@ -223,6 +232,22 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
   const handleCreateSlot = async () => {
     if (!selectedClass || !selectedSection || !date || !time) {
       showToast('Please select all slot details.', 'error');
+      return;
+    }
+
+    if (date !== todayDate) {
+      showToast("Attendance slots can only be created for today's date.", 'error');
+      return;
+    }
+
+    // Client-side duplicate check
+    const duplicate = todaySlots.find(
+      s => s.classId === selectedClass && 
+           s.sectionId === selectedSection && 
+           s.type === slotType
+    );
+    if (duplicate) {
+      showToast(`Attendance has already been completed for Class ${selectedClass} - Section ${selectedSection} today.`, 'error');
       return;
     }
 
@@ -251,7 +276,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
         handleSelectSlot(data);
       } else {
         if (res.status === 409) {
-          showToast(`Attendance for Class ${selectedClass} - Section ${selectedSection} (${slotType} Slot) has already been created for today.`, 'error');
+          showToast(`Attendance has already been completed for Class ${selectedClass} - Section ${selectedSection} today.`, 'error');
         } else {
           showToast(data.error || 'Failed to create slot.', 'error');
         }
@@ -302,6 +327,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
   // Handle Student Status Toggle
   const handleStatusChange = (studentId: string, status: 'present' | 'absent') => {
     if (activeSlot?.status === 'completed' || activeSlot?.status === 'SAVED') return; // Locked mode
+    if (activeSlot?.date !== todayDate) return; // Locked mode for old dates
     setStudents(prev => prev.map(student => {
       if (student.studentId === studentId) {
         return { ...student, status };
@@ -313,6 +339,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
   // Toggle all students to same status
   const handleToggleAll = (status: 'present' | 'absent') => {
     if (activeSlot?.status === 'completed' || activeSlot?.status === 'SAVED') return;
+    if (activeSlot?.date !== todayDate) return;
     setStudents(prev => prev.map(student => ({ ...student, status })));
     showToast(`Marked all as ${status.toUpperCase()}.`, 'info');
   };
@@ -320,6 +347,10 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
   // Save Attendance Submit
   const handleSaveAttendance = async () => {
     if (!activeSlot) return;
+    if (activeSlot.date !== todayDate) {
+      showToast("Only today's attendance can be saved.", 'error');
+      return;
+    }
     if (isSavingAttendance) return; // Prevent duplicate clicks
 
     const unmarked = students.some(s => s.status === 'unmarked');
@@ -486,8 +517,8 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
             <input
               type="date"
               value={date}
-              onChange={e => setDate(e.target.value)}
-              className="w-full border border-slate-150 rounded-xl px-3.5 py-2 bg-white text-slate-800 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 transition-all"
+              readOnly
+              className="w-full border border-slate-150 rounded-xl px-3.5 py-2 bg-slate-50 text-slate-500 text-xs font-bold focus:outline-none cursor-not-allowed pointer-events-none select-none"
             />
           </div>
 
@@ -821,15 +852,17 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
                 <div className="flex items-center gap-2 mt-1">
                   <button
                     onClick={() => handleToggleAll('present')}
+                    disabled={activeSlot.date !== todayDate}
                     title="Mark all students as Present"
-                    className="px-4 py-1.5 border border-emerald-250 bg-white hover:bg-emerald-50/20 text-emerald-600 font-extrabold text-[10px] rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+                    className="px-4 py-1.5 border border-emerald-250 bg-white hover:bg-emerald-50/20 text-emerald-600 font-extrabold text-[10px] rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Check className="w-3.5 h-3.5" /> All Present
                   </button>
                   <button
                     onClick={() => handleToggleAll('absent')}
+                    disabled={activeSlot.date !== todayDate}
                     title="Mark all students as Absent"
-                    className="px-4 py-1.5 border border-rose-250 bg-white hover:bg-rose-50/20 text-rose-600 font-extrabold text-[10px] rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+                    className="px-4 py-1.5 border border-rose-250 bg-white hover:bg-rose-50/20 text-rose-600 font-extrabold text-[10px] rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <X className="w-3.5 h-3.5" /> All Absent
                   </button>
@@ -837,6 +870,13 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
               )}
             </div>
           </div>
+
+          {activeSlot.date !== todayDate && (
+            <div className="bg-rose-50 border border-rose-150 p-4 rounded-xl flex items-center gap-3 text-rose-800 text-xs font-bold shadow-xs">
+              <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" />
+              <span>Attendance editing is allowed only on the current date.</span>
+            </div>
+          )}
 
           {/* Student Table Register Grid */}
           <div className="border border-slate-150 rounded-2xl overflow-hidden shadow-xs relative min-h-[200px]">
@@ -908,22 +948,24 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
                                 {/* Present Button */}
                                 <button
                                   onClick={() => handleStatusChange(student.studentId, 'present')}
+                                  disabled={activeSlot.date !== todayDate}
                                   className={`w-9 h-9 rounded-xl flex items-center justify-center border font-extrabold text-xs transition-all active:scale-90 cursor-pointer ${
                                     student.status === 'present'
                                       ? 'bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/10'
                                       : 'bg-white border-slate-200 text-slate-400 hover:bg-slate-50'
-                                  }`}
+                                  } disabled:opacity-50 disabled:cursor-not-allowed`}
                                 >
                                   P
                                 </button>
                                 {/* Absent Button */}
                                 <button
                                   onClick={() => handleStatusChange(student.studentId, 'absent')}
+                                  disabled={activeSlot.date !== todayDate}
                                   className={`w-9 h-9 rounded-xl flex items-center justify-center border font-extrabold text-xs transition-all active:scale-90 cursor-pointer ${
                                     student.status === 'absent'
                                       ? 'bg-rose-500 border-rose-500 text-white shadow-md shadow-rose-500/10'
                                       : 'bg-white border-slate-200 text-slate-400 hover:bg-slate-50'
-                                  }`}
+                                  } disabled:opacity-50 disabled:cursor-not-allowed`}
                                 >
                                   A
                                 </button>
@@ -1054,8 +1096,8 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
               {activeSlot.status !== 'completed' && activeSlot.status !== 'SAVED' ? (
                 <button
                   onClick={handleSaveAttendance}
-                  disabled={isSavingAttendance}
-                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-blue-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer text-xs"
+                  disabled={isSavingAttendance || activeSlot.date !== todayDate}
+                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-blue-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer text-xs disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSavingAttendance ? (
                     <>

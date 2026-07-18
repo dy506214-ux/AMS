@@ -31,7 +31,7 @@ export async function createAttendanceSlot(data: CreateSlotInput) {
   });
 
   if (duplicate) {
-    throw new Error('Attendance already exists for this class and section today.');
+    throw new Error(`Attendance has already been completed for Class ${data.classId} - Section ${data.sectionId} today.`);
   }
 
   // Insert into AttendanceSlot table
