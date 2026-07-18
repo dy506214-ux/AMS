@@ -1,3 +1,4 @@
+// Student Classes page wrapper
 import React from 'react';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/actions/auth';
