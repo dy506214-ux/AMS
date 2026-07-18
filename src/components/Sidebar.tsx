@@ -48,11 +48,11 @@ export default function Sidebar({ role, userName, photoUrl }: SidebarProps) {
       case 'teacher':
         return [
           { name: 'Dashboard', href: '/teacher', icon: LayoutDashboard },
+          { name: 'Calendar', href: '/teacher/calendar', icon: Calendar },
           { name: 'Mark Attendance', href: '/teacher/attendance', icon: ClipboardCheck },
           { name: 'Marks Entry', href: '/teacher/marks', icon: FileText },
           { name: 'Classes', href: '/teacher/classes', icon: BookOpen },
           { name: 'Announcements', href: '/teacher/announcements', icon: Megaphone },
-          { name: 'Calendar', href: '/teacher/calendar', icon: Calendar },
           { name: 'My Profile', href: '/teacher/profile', icon: User }
         ];
       case 'student':

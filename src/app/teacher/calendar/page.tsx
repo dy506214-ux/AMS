@@ -1,7 +1,7 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/actions/auth';
-import { getStudentsByTeacherId } from '@/lib/services/student';
+import { prisma } from '@/lib/db/prisma';
 import CalendarClient from './CalendarClient';
 
 export const revalidate = 0;
@@ -12,11 +12,16 @@ export default async function CalendarPage() {
     redirect('/login');
   }
 
-  const assignedStudents = await getStudentsByTeacherId(user.id);
-  const classesAndSections = assignedStudents.reduce((acc: { class: string; section: string }[], student) => {
-    const exists = acc.some(item => item.class === student.class && item.section === student.section);
+  // 1. Get classes and sections where this teacher is assigned
+  const homeroomStudents = await prisma.student.findMany({
+    where: { teacherId: user.id },
+    select: { class: true, section: true }
+  });
+
+  const classesAndSections = homeroomStudents.reduce((acc: { class: string; section: string }[], current) => {
+    const exists = acc.some(item => item.class === current.class && item.section === current.section);
     if (!exists) {
-      acc.push({ class: student.class, section: student.section });
+      acc.push({ class: current.class, section: current.section });
     }
     return acc;
   }, []);
