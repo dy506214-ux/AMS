@@ -265,13 +265,26 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
       {/* 1. Page Title Header */}
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl border border-slate-100 shadow-xs">
         <div>
+          {/* Breadcrumb */}
           <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">
             <Link href="/student" className="hover:text-slate-600 transition-colors">Student Portal</Link>
             <span>/</span>
-            <span className="text-slate-500">Classes</span>
+            <Link href="/student/classes" className="hover:text-slate-600 transition-colors">Classes</Link>
+            <span>/</span>
+            <span className="text-slate-500">
+              {(() => {
+                const num = parseInt(student.class);
+                const suffix = isNaN(num) ? '' : (num === 1 ? 'st' : num === 2 ? 'nd' : num === 3 ? 'rd' : 'th');
+                return `Class ${student.class}${suffix} - Section ${student.section}`;
+              })()}
+            </span>
           </div>
           <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            My Classes
+            My Classes – {(() => {
+              const num = parseInt(student.class);
+              const suffix = isNaN(num) ? '' : (num === 1 ? 'st' : num === 2 ? 'nd' : num === 3 ? 'rd' : 'th');
+              return `Class ${student.class}${suffix} (Section ${student.section})`;
+            })()}
             <Sparkles className="w-5 h-5 text-blue-500 animate-pulse" />
           </h2>
           <p className="text-xs text-slate-450 mt-1">View all your assigned classes, subjects, teachers and class schedule.</p>
