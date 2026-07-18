@@ -38,13 +38,23 @@ export default function MarksEntryClient({ assignedStudents }: MarksEntryClientP
 
   // Unique classes and sections assigned to this teacher
   const classesAndSections = useMemo(() => {
-    return assignedStudents.reduce((acc: { class: string; section: string }[], student) => {
+    const list = assignedStudents.reduce((acc: { class: string; section: string }[], student) => {
       const exists = acc.some(item => item.class === student.class && item.section === student.section);
       if (!exists) {
         acc.push({ class: student.class, section: student.section });
       }
       return acc;
     }, []);
+
+    // Sort classes numerically, then sections alphabetically
+    return list.sort((a, b) => {
+      const aClass = parseInt(a.class) || 0;
+      const bClass = parseInt(b.class) || 0;
+      if (aClass !== bClass) {
+        return aClass - bClass;
+      }
+      return a.section.localeCompare(b.section);
+    });
   }, [assignedStudents]);
 
   // Filters State
@@ -380,11 +390,17 @@ export default function MarksEntryClient({ assignedStudents }: MarksEntryClientP
             <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest leading-none">Class</label>
             <select
               value={selectedClass}
-              onChange={(e) => { setSelectedClass(e.target.value); setStudents([]); }}
+              onChange={(e) => {
+                const newClass = e.target.value;
+                setSelectedClass(newClass);
+                setStudents([]);
+                const match = classesAndSections.find(c => c.class === newClass);
+                if (match) setSelectedSection(match.section);
+              }}
               className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-700 bg-slate-50 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20 w-full transition-all"
             >
-              {classesAndSections.map((item, idx) => (
-                <option key={`class-${idx}`} value={item.class}>Class {item.class}</option>
+              {Array.from(new Set(classesAndSections.map(c => c.class))).map(cls => (
+                <option key={cls} value={cls}>Class {cls}</option>
               ))}
             </select>
           </div>

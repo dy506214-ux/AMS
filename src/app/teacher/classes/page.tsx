@@ -13,7 +13,30 @@ export default async function ClassesPage() {
     redirect('/login');
   }
 
-  const assignedStudents = await getStudentsByTeacherId(user.id);
+  // 1. Get classes and sections where this teacher is assigned
+  const homeroomStudents = await prisma.student.findMany({
+    where: { teacherId: user.id },
+    select: { class: true, section: true }
+  });
+
+  const uniqueClassesAndSections = homeroomStudents.reduce((acc: { class: string; section: string }[], current) => {
+    const exists = acc.some(item => item.class === current.class && item.section === current.section);
+    if (!exists) {
+      acc.push({ class: current.class, section: current.section });
+    }
+    return acc;
+  }, []);
+
+  // 2. Fetch all students in those classes and sections
+  let assignedStudents: any[] = [];
+  if (uniqueClassesAndSections.length > 0) {
+    assignedStudents = await prisma.student.findMany({
+      where: {
+        OR: uniqueClassesAndSections.map(cs => ({ class: cs.class, section: cs.section }))
+      },
+      orderBy: { rollNumber: 'asc' }
+    });
+  }
 
   // Fetch teacher profile
   const teacherProfile = await prisma.teacher.findUnique({
@@ -35,7 +58,14 @@ export default async function ClassesPage() {
       acc.push({ class: student.class, section: student.section });
     }
     return acc;
-  }, []);
+  }, []).sort((a, b) => {
+    const aClass = parseInt(a.class) || 0;
+    const bClass = parseInt(b.class) || 0;
+    if (aClass !== bClass) {
+      return aClass - bClass;
+    }
+    return a.section.localeCompare(b.section);
+  });
 
   const serializedTeacher = teacherProfile ? {
     id: teacherProfile.id,

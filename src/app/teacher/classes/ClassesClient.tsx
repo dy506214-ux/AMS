@@ -458,15 +458,12 @@ export default function ClassesClient({
 
                   {/* Card Footer action bar */}
                   <div className="bg-slate-50/50 p-4 border-t border-slate-100 flex items-center justify-between gap-2 relative">
-                    <button
-                      onClick={() => {
-                        setSelectedClassCard(c);
-                        setShowStudentsModal(true);
-                      }}
+                    <Link
+                      href={`/teacher/classes/view-students?class=${c.class}&section=${c.section}`}
                       className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-extrabold text-[10px] px-3.5 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1 w-full justify-center"
                     >
                       <Users className="w-3.5 h-3.5 text-blue-600" /> View Students
-                    </button>
+                    </Link>
 
                     <Link
                       href={`/teacher/attendance?class=${c.class}&section=${c.section}`}

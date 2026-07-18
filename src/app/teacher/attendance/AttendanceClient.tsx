@@ -52,13 +52,23 @@ interface AttendanceClientProps {
 export default function AttendanceClient({ assignedStudents }: AttendanceClientProps) {
   // Unique classes and sections assigned to this teacher
   const classesAndSections = useMemo(() => {
-    return assignedStudents.reduce((acc: { class: string; section: string }[], student) => {
+    const list = assignedStudents.reduce((acc: { class: string; section: string }[], student) => {
       const exists = acc.some(item => item.class === student.class && item.section === student.section);
       if (!exists) {
         acc.push({ class: student.class, section: student.section });
       }
       return acc;
     }, []);
+    
+    // Sort class numerically, and section alphabetically
+    return list.sort((a, b) => {
+      const aClass = parseInt(a.class) || 0;
+      const bClass = parseInt(b.class) || 0;
+      if (aClass !== bClass) {
+        return aClass - bClass;
+      }
+      return a.section.localeCompare(b.section);
+    });
   }, [assignedStudents]);
 
   const [selectedClass, setSelectedClass] = useState(classesAndSections[0]?.class || '');
