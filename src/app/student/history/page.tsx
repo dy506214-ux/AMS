@@ -18,9 +18,55 @@ export default async function StudentHistoryPage() {
     redirect('/login');
   }
 
-  // Load student's attendance records with teacher and slot relations
-  const db = prisma as any;
-  const records = await db.attendance.findMany({
+  // 1. Fetch all teachers and map them to the student's class subjects
+  const teachers = await prisma.teacher.findMany();
+  
+  const startClasses = [1, 3, 5, 7, 9, 11];
+  const sectionsList = ['A', 'B', 'C', 'D'];
+
+  const assignedTeachers = teachers.filter((teacher, i) => {
+    const startClass = startClasses[i % startClasses.length];
+    const startSectionIdx = i % 4;
+
+    for (let p = 0; p < 7; p++) {
+      const cNum = ((startClass + p - 1) % 12) + 1;
+      const sec = sectionsList[(startSectionIdx + p) % 4];
+      if (String(cNum) === student.class && sec === student.section) {
+        return true;
+      }
+    }
+    return false;
+  });
+
+  const defaultSubjects = [
+    'Mathematics', 'Science', 'English', 
+    'Social Science', 'Hindi', 'Computer', 'Physical Education'
+  ];
+  
+  const subjectsMap: Record<string, string[]> = {
+    '1': ['Mathematics', 'English', 'EVS', 'Hindi', 'Art & Craft', 'Music', 'Physical Education'],
+    '2': ['Mathematics', 'English', 'EVS', 'Hindi', 'General Knowledge', 'Moral Science', 'Physical Education'],
+    '3': ['Mathematics', 'Science', 'Social Studies', 'English', 'Hindi', 'Computer', 'Physical Education'],
+    '4': ['Mathematics', 'Science', 'Social Studies', 'English', 'Hindi', 'Computer', 'Physical Education'],
+    '5': ['Mathematics', 'Science', 'Social Studies', 'English', 'Hindi', 'Computer', 'Physical Education'],
+    '6': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi', 'Sanskrit', 'Physical Education'],
+    '7': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi', 'Sanskrit', 'Physical Education'],
+    '8': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi', 'Sanskrit', 'Physical Education'],
+    '9': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi', 'Information Technology', 'Physical Education'],
+    '10': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi', 'Computer Science', 'Physical Education'],
+    '11': ['Physics', 'Chemistry', 'Mathematics', 'English', 'Computer Science', 'Physical Education', 'Library'],
+    '12': ['Physics', 'Chemistry', 'Mathematics', 'English', 'Computer Science', 'Physical Education', 'Library']
+  };
+
+  const classSubjects = subjectsMap[student.class] || defaultSubjects;
+  const teacherSubjectMap: Record<string, string> = {};
+  assignedTeachers.forEach((teacher, index) => {
+    const subjectName = classSubjects[index % classSubjects.length];
+    teacherSubjectMap[teacher.id] = subjectName;
+  });
+
+  // 2. Load student's attendance records with teacher and slot relations
+  const records = await prisma.attendance.findMany({
     where: { studentId: user.id },
     include: {
       markedByTeacher: true,
@@ -29,24 +75,22 @@ export default async function StudentHistoryPage() {
     orderBy: { date: 'desc' }
   });
 
-  // Serialize logs
-  const serializedLogs = records.map((log: any) => ({
-    id: log.id,
-    date: log.date,
-    status: log.status,
-    createdAt: log.createdAt.toISOString(),
-    markedByTeacher: log.markedByTeacher ? {
-      id: log.markedByTeacher.id,
-      name: log.markedByTeacher.name
-    } : null,
-    slot: log.slot ? {
-      id: log.slot.id,
-      time: log.slot.time,
-      type: log.slot.type
-    } : null,
-    studentClass: student.class,
-    studentSection: student.section
-  }));
+  // 3. Serialize logs with real database fields and mapping
+  const serializedLogs = records.map((log: any) => {
+    const subject = teacherSubjectMap[log.markedByTeacherId] || (log.markedByTeacher ? log.markedByTeacher.name + ' Class' : 'Regular Class');
+    return {
+      id: log.id,
+      date: typeof log.date === 'string' ? log.date : (log.date as Date).toISOString().split('T')[0],
+      status: log.status,
+      createdAt: log.createdAt.toISOString(),
+      subject,
+      teacher: log.markedByTeacher ? log.markedByTeacher.name : 'System',
+      checkIn: log.slot ? log.slot.time : '09:00 AM',
+      remarks: log.remarks || '-',
+      studentClass: student.class,
+      studentSection: student.section
+    };
+  });
 
   return (
     <HistoryClient logs={serializedLogs} />

@@ -12,8 +12,10 @@ interface Log {
   date: string;
   status: string;
   createdAt: string;
-  markedByTeacher: { id: string; name: string } | null;
-  slot: { id: string; time: string; type: string } | null;
+  subject: string;
+  teacher: string;
+  checkIn: string;
+  remarks: string;
   studentClass: string;
   studentSection: string;
 }
@@ -39,30 +41,9 @@ export default function HistoryClient({ logs }: HistoryClientProps) {
   // Modal detail view
   const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
 
-  // Deterministically map missing subject, teacher, and check-in details to match mockup sequence
+  // Sorted list directly from real database logs
   const logsWithDetails = useMemo(() => {
-    const sorted = [...logs].sort((a, b) => b.date.localeCompare(a.date));
-    const subjectsCycle = [
-      { subject: 'Mathematics', teacher: 'Mr. Sharma', time: '08:45 AM' },
-      { subject: 'English', teacher: 'Mrs. Verma', time: '08:50 AM' },
-      { subject: 'Science', teacher: 'Mr. Gupta', time: '08:40 AM' },
-      { subject: 'Social Studies', teacher: 'Mr. Khan', time: '08:55 AM' },
-      { subject: 'Hindi', teacher: 'Mrs. Singh', time: '08:48 AM' },
-      { subject: 'Computer', teacher: 'Mr. Joshi', time: '08:42 AM' }
-    ];
-
-    return sorted.map((log, idx) => {
-      const cycleItem = subjectsCycle[idx % 6];
-      const hasSlotSubject = log.slot?.type;
-      
-      return {
-        ...log,
-        subject: hasSlotSubject || cycleItem.subject,
-        teacher: log.markedByTeacher?.name || cycleItem.teacher,
-        checkIn: log.slot?.time || cycleItem.time,
-        remarks: '-'
-      };
-    });
+    return [...logs].sort((a, b) => b.date.localeCompare(a.date));
   }, [logs]);
 
   // Statistics calculation
