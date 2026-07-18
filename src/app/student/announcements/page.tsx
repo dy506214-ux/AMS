@@ -12,12 +12,37 @@ export default async function StudentAnnouncementsPage() {
     redirect('/login');
   }
 
-  // Load published, non-deleted notices
-  const db = prisma as any;
-  const announcements = await db.announcement.findMany({
+  // Load student profile to get class and section
+  const student = await prisma.student.findUnique({
+    where: { id: user.id }
+  });
+  if (!student) {
+    redirect('/login');
+  }
+
+  // Load published, non-deleted notices targeted to this student
+  const announcements = await prisma.announcement.findMany({
     where: {
       status: 'published',
-      isDeleted: false
+      isDeleted: false,
+      OR: [
+        { audienceType: 'All Students' },
+        {
+          audienceType: 'Specific Class',
+          classId: student.class
+        },
+        {
+          audienceType: 'Specific Section',
+          classId: student.class,
+          sectionId: student.section
+        },
+        {
+          audienceType: 'Specific Students',
+          studentIds: {
+            contains: student.id
+          }
+        }
+      ]
     },
     orderBy: { createdAt: 'desc' }
   });

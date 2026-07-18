@@ -18,12 +18,29 @@ export default async function StudentDashboard() {
   const attendanceLogs = await getAttendanceForStudent(user.id);
   const recentLogs = attendanceLogs.slice(0, 5); // Fetch top 5 recent days
 
-  // Fetch published announcements
-  const db = prisma as any;
-  const publishedAnnouncements = await db.announcement.findMany({
+  // Fetch published announcements targeted to this student
+  const publishedAnnouncements = await prisma.announcement.findMany({
     where: {
       status: 'published',
-      isDeleted: false
+      isDeleted: false,
+      OR: [
+        { audienceType: 'All Students' },
+        {
+          audienceType: 'Specific Class',
+          classId: student.class
+        },
+        {
+          audienceType: 'Specific Section',
+          classId: student.class,
+          sectionId: student.section
+        },
+        {
+          audienceType: 'Specific Students',
+          studentIds: {
+            contains: student.id
+          }
+        }
+      ]
     },
     orderBy: { createdAt: 'desc' },
     take: 5

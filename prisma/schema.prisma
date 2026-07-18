@@ -136,4 +136,19 @@ model Mark {
   @@index([teacherId])
 }
 
+model AttendanceAudit {
+  id             String   @id @default(uuid())
+  teacherId      String
+  classId        String
+  sectionId      String
+  slotType       String
+  attendanceDate String
+  serverTime     String
+  createdAt      DateTime
+  savedAt        DateTime @default(now())
+  ipAddress      String?
+  deviceId       String?
+}
+
+
 

@@ -134,7 +134,7 @@ export default function ClassesClient({
   const getSlotStatus = (classId: string, sectionId: string): 'Active' | 'Pending' | 'Completed' => {
     const slot = todaySlots.find(s => s.classId === classId && s.sectionId === sectionId);
     if (!slot) return 'Pending';
-    return slot.status === 'completed' ? 'Completed' : 'Active';
+    return slot.status === 'completed' || slot.status === 'SAVED' ? 'Completed' : 'Active';
   };
 
   // Filtered Class Cards

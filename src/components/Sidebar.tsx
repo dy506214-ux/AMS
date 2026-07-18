@@ -42,7 +42,8 @@ export default function Sidebar({ role, userName, photoUrl }: SidebarProps) {
         return [
           { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
           { name: 'Teachers', href: '/admin/teachers', icon: Users },
-          { name: 'Students', href: '/admin/students', icon: UserSquare }
+          { name: 'Students', href: '/admin/students', icon: UserSquare },
+          { name: 'Credentials Report', href: '/admin/reports', icon: FileText }
         ];
       case 'teacher':
         return [

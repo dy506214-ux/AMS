@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "powershell -Command \"$conn = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if ($conn) { Stop-Process -Id $conn.OwningProcess -Force -ErrorAction SilentlyContinue }\" && next dev",
     "build": "prisma generate && prisma db push --accept-data-loss && npx tsx src/lib/db/seed.ts && next build",
     "start": "next start",
     "lint": "eslint"

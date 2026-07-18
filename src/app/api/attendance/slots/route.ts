@@ -40,6 +40,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required parameters.' }, { status: 400 });
     }
 
+    // Server-side validation: slot date must be current server date
+    const d = new Date();
+    const serverDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    if (date !== serverDate) {
+      return NextResponse.json(
+        { error: "Attendance can only be created and saved for today's date." },
+        { status: 403 }
+      );
+    }
+
     const slot = await createAttendanceSlot({
       teacherId: user.id,
       classId,
@@ -53,6 +63,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(slot);
   } catch (error) {
     const err = error as Error;
-    return NextResponse.json({ error: err.message || 'Failed to create slot.' }, { status: 400 });
+    const isConflict = err.message.includes('Attendance already exists');
+    return NextResponse.json(
+      { error: err.message || 'Failed to create slot.' },
+      { status: isConflict ? 409 : 400 }
+    );
   }
 }

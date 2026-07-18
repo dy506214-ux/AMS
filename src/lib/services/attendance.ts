@@ -120,6 +120,10 @@ export async function markAttendanceForSlot(
     throw new Error('Attendance slot not found.');
   }
 
+  if (slot.status === 'SAVED' || slot.status === 'completed') {
+    throw new Error('Attendance has already been saved for this slot.');
+  }
+
   const upserts = records.map((record) => {
     return prisma.attendance.upsert({
       where: {
@@ -146,11 +150,11 @@ export async function markAttendanceForSlot(
 
   await prisma.$transaction(upserts);
 
-  // Update slot status to completed
+  // Update slot status to SAVED
   await prisma.attendanceSlot.update({
     where: { id: slotId },
     data: {
-      status: 'completed',
+      status: 'SAVED',
       updatedAt: new Date()
     }
   });
