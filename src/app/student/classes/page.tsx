@@ -3,7 +3,7 @@ import React from 'react';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/actions/auth';
 import { prisma } from '@/lib/db/prisma';
-import StudentClassesClient from './client';
+import StudentClassesClient from './StudentClassesClient';
 
 export const revalidate = 0; // Fresh classes data on load
 

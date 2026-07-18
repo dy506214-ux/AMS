@@ -287,7 +287,7 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
             })()}
             <Sparkles className="w-5 h-5 text-blue-500 animate-pulse" />
           </h2>
-          <p className="text-xs text-slate-450 mt-1">View all your assigned classes, subjects, teachers and class schedule.</p>
+          <p className="text-xs text-slate-455 mt-1">View all your assigned classes, subjects, teachers and class schedule.</p>
         </div>
       </div>
 
@@ -350,7 +350,7 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
           </div>
           <div>
             <h3 className="text-sm font-black text-slate-800">Class Information</h3>
-            <p className="text-xs text-slate-450 mt-1 flex flex-wrap gap-x-2 font-semibold">
+            <p className="text-xs text-slate-455 mt-1 flex flex-wrap gap-x-2 font-semibold">
               <span>Class {student.class} – Section {student.section}</span>
               <span className="text-slate-200">•</span>
               <span>Academic Year 2026</span>
@@ -375,7 +375,7 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
           className={`px-6 py-2.5 text-xs font-black uppercase tracking-wider border-b-2 cursor-pointer transition-all ${
             activeTab === 'grid' 
               ? 'border-blue-600 text-blue-600' 
-              : 'border-transparent text-slate-400 hover:text-slate-600'
+              : 'border-transparent text-slate-450 hover:text-slate-600'
           }`}
         >
           Timetable Overview
@@ -385,7 +385,7 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
           className={`px-6 py-2.5 text-xs font-black uppercase tracking-wider border-b-2 cursor-pointer transition-all ${
             activeTab === 'cards' 
               ? 'border-blue-600 text-blue-600' 
-              : 'border-transparent text-slate-400 hover:text-slate-600'
+              : 'border-transparent text-slate-450 hover:text-slate-600'
           }`}
         >
           Subject Cards
@@ -412,7 +412,7 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
               <select
                 value={dayFilter}
                 onChange={e => setDayFilter(e.target.value as any)}
-                className="border border-slate-200 rounded-xl px-3 py-2 bg-white text-slate-650 text-xs font-bold focus:outline-none cursor-pointer"
+                className="border border-slate-200 rounded-xl px-3 py-2 bg-white text-slate-655 text-xs font-bold focus:outline-none cursor-pointer"
               >
                 <option value="all">All Days</option>
                 <option value="Mon">Monday</option>
@@ -426,7 +426,7 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
               <select
                 value={teacherFilter}
                 onChange={e => setTeacherFilter(e.target.value)}
-                className="border border-slate-200 rounded-xl px-3 py-2 bg-white text-slate-650 text-xs font-bold focus:outline-none cursor-pointer"
+                className="border border-slate-200 rounded-xl px-3 py-2 bg-white text-slate-655 text-xs font-bold focus:outline-none cursor-pointer"
               >
                 <option value="all">All Teachers</option>
                 {uniqueTeachers.map(t => <option key={t} value={t}>{t}</option>)}
@@ -435,7 +435,7 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
               <select
                 value={subjectFilter}
                 onChange={e => setSubjectFilter(e.target.value)}
-                className="border border-slate-200 rounded-xl px-3 py-2 bg-white text-slate-650 text-xs font-bold focus:outline-none cursor-pointer"
+                className="border border-slate-200 rounded-xl px-3 py-2 bg-white text-slate-655 text-xs font-bold focus:outline-none cursor-pointer"
               >
                 <option value="all">All Subjects</option>
                 {uniqueSubjects.map(s => <option key={s} value={s}>{s}</option>)}
@@ -497,7 +497,7 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
                       <p className="text-[11px] text-slate-500 leading-relaxed italic">{c.description}</p>
 
                       {/* Class Details Grid */}
-                      <div className="grid grid-cols-2 gap-3 border-t border-slate-50 pt-3 text-[11px] font-semibold text-slate-650">
+                      <div className="grid grid-cols-2 gap-3 border-t border-slate-50 pt-3 text-[11px] font-semibold text-slate-655">
                         <div className="flex items-center gap-1.5">
                           <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span>Room {c.roomNumber}</span>
@@ -538,13 +538,13 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
                     <div className="bg-slate-50/50 p-3.5 border-t border-slate-100 flex items-center justify-between gap-2 shrink-0">
                       <button
                         onClick={() => setSelectedTeacher(c)}
-                        className="flex-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-650 font-bold text-[10px] py-2.5 rounded-lg transition-colors cursor-pointer text-center"
+                        className="flex-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-655 font-bold text-[10px] py-2.5 rounded-lg transition-colors cursor-pointer text-center"
                       >
                         Teacher Info
                       </button>
                       <button
                         onClick={() => setSelectedSubject(c)}
-                        className="flex-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-650 font-bold text-[10px] py-2.5 rounded-lg transition-colors cursor-pointer text-center"
+                        className="flex-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-655 font-bold text-[10px] py-2.5 rounded-lg transition-colors cursor-pointer text-center"
                       >
                         Subject Info
                       </button>
@@ -618,14 +618,14 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => setSelectedTeacher(c)}
-                          className="p-1.5 hover:bg-white border border-transparent hover:border-slate-200 text-slate-450 hover:text-slate-650 rounded-lg transition-all cursor-pointer"
+                          className="p-1.5 hover:bg-white border border-transparent hover:border-slate-200 text-slate-450 hover:text-slate-655 rounded-lg transition-all cursor-pointer"
                           title="View Teacher Profile"
                         >
                           <User className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => setSelectedSubject(c)}
-                          className="p-1.5 hover:bg-white border border-transparent hover:border-slate-200 text-slate-450 hover:text-slate-650 rounded-lg transition-all cursor-pointer"
+                          className="p-1.5 hover:bg-white border border-transparent hover:border-slate-200 text-slate-450 hover:text-slate-655 rounded-lg transition-all cursor-pointer"
                           title="View Syllabus & Books"
                         >
                           <FileText className="w-3.5 h-3.5" />
@@ -686,11 +686,11 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
                           </tr>
                         )}
                         <tr className="border-b border-slate-150 last:border-0 hover:bg-slate-50/30 transition-colors">
-                          <td className="py-3 px-3 border-r border-slate-150 font-extrabold text-slate-450 bg-slate-50/20">{row.id}</td>
+                          <td className="py-3 px-3 border-r border-slate-150 font-extrabold text-slate-455 bg-slate-50/20">{row.id}</td>
                           <td className="py-3 px-3 border-r border-slate-150 font-mono text-[9px] font-semibold text-slate-500 whitespace-nowrap">{row.time}</td>
                           
                           {row.days.map((day, dIdx) => {
-                            const scColor = subjectColors[day.shorthand] || { bg: 'bg-white', text: 'text-slate-650' };
+                            const scColor = subjectColors[day.shorthand] || { bg: 'bg-white', text: 'text-slate-655' };
                             return (
                               <td 
                                 key={dIdx} 
@@ -767,7 +767,7 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
                       return (
                         <React.Fragment key={row.id}>
                           {insertBreak && (
-                            <tr className="bg-slate-50/50 border-b border-slate-150 font-black text-[10px] tracking-widest text-slate-450 uppercase">
+                            <tr className="bg-slate-50/50 border-b border-slate-150 font-black text-[10px] tracking-widest text-slate-455 uppercase">
                               <td colSpan={2} className="py-2.5 px-3 border-r border-slate-150 text-center">
                                 11:00 AM - 11:15 AM
                               </td>
@@ -777,11 +777,11 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
                             </tr>
                           )}
                           <tr className="border-b border-slate-150 last:border-0 hover:bg-slate-50/30 transition-colors">
-                            <td className="py-3 px-3 border-r border-slate-150 font-extrabold text-slate-450 bg-slate-50/20">{row.id}</td>
+                            <td className="py-3 px-3 border-r border-slate-150 font-extrabold text-slate-455 bg-slate-50/20">{row.id}</td>
                             <td className="py-3 px-3 border-r border-slate-150 font-mono text-[10px] font-semibold text-slate-500 whitespace-nowrap">{row.time}</td>
                             
                             {row.days.map((day, dIdx) => {
-                              const scColor = subjectColors[day.shorthand] || { bg: 'bg-white', text: 'text-slate-650' };
+                              const scColor = subjectColors[day.shorthand] || { bg: 'bg-white', text: 'text-slate-655' };
                               return (
                                 <td 
                                   key={dIdx} 
@@ -810,7 +810,7 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
             <div className="bg-slate-50 border-t border-slate-100 px-6 py-4 flex justify-end gap-3 shrink-0">
               <button
                 onClick={() => setShowTimetableModal(false)}
-                className="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-100 text-slate-650 font-bold text-xs rounded-xl cursor-pointer transition-all"
+                className="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-100 text-slate-655 font-bold text-xs rounded-xl cursor-pointer transition-all"
               >
                 Close Timetable
               </button>
@@ -889,7 +889,7 @@ export default function StudentClassesClient({ student, subjectClasses }: Studen
               <div className="bg-slate-50 border-t border-slate-100 px-5 py-3 flex justify-end shrink-0">
                 <button
                   onClick={() => setSelectedTeacher(null)}
-                  className="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-100 text-slate-650 font-bold text-xs rounded-xl cursor-pointer transition-all"
+                  className="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-100 text-slate-655 font-bold text-xs rounded-xl cursor-pointer transition-all"
                 >
                   Close
                 </button>
