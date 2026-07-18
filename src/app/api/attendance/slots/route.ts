@@ -53,6 +53,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(slot);
   } catch (error) {
     const err = error as Error;
-    return NextResponse.json({ error: err.message || 'Failed to create slot.' }, { status: 400 });
+    const isConflict = err.message.includes('Attendance already exists');
+    return NextResponse.json(
+      { error: err.message || 'Failed to create slot.' },
+      { status: isConflict ? 409 : 400 }
+    );
   }
 }

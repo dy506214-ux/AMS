@@ -19,21 +19,19 @@ export async function createAttendanceSlot(data: CreateSlotInput) {
     throw new Error('Teacher not found.');
   }
 
-  // Check if duplicate slot already exists (same teacher, class, section, date, and time)
-  const duplicate = await prisma.attendanceSlot.findUnique({
+  // Check if duplicate slot already exists (same teacher, class, section, date, and type)
+  const duplicate = await prisma.attendanceSlot.findFirst({
     where: {
-      teacherId_classId_sectionId_date_time: {
-        teacherId: data.teacherId,
-        classId: data.classId,
-        sectionId: data.sectionId,
-        date: data.date,
-        time: data.time
-      }
+      teacherId: data.teacherId,
+      classId: data.classId,
+      sectionId: data.sectionId,
+      date: data.date,
+      type: data.type
     }
   });
 
   if (duplicate) {
-    throw new Error('Attendance slot already exists.');
+    throw new Error('Attendance already exists for this class and section today.');
   }
 
   // Insert into AttendanceSlot table
@@ -47,7 +45,7 @@ export async function createAttendanceSlot(data: CreateSlotInput) {
       time: data.time,
       duration: data.duration,
       type: data.type,
-      status: 'active'
+      status: 'ACTIVE'
     }
   });
 }

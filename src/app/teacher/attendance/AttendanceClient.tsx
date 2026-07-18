@@ -85,6 +85,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
   }, []);
 
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [todayDate, setTodayDate] = useState(new Date().toISOString().split('T')[0]);
   const [time, setTime] = useState('09:00');
   const [duration, setDuration] = useState(30);
   const [slotType, setSlotType] = useState('Morning');
@@ -165,7 +166,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
   const loadTodaySlots = useCallback(async () => {
     setIsLoadingSlots(true);
     try {
-      const res = await fetch(`/api/attendance/slots?date=${date}`);
+      const res = await fetch(`/api/attendance/slots?date=${todayDate}`);
       if (res.ok) {
         const data = await res.json();
         setTodaySlots(data);
@@ -177,7 +178,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
     } finally {
       setIsLoadingSlots(false);
     }
-  }, [date, showToast]);
+  }, [todayDate, showToast]);
 
   // Load students for active slot
   const loadStudentsForActiveSlot = useCallback(async (slotId: string) => {
@@ -202,6 +203,21 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
   useEffect(() => {
     loadTodaySlots();
   }, [loadTodaySlots]);
+
+  // Monitor system date change and rollover automatically
+  useEffect(() => {
+    const checkDate = () => {
+      const currentToday = new Date().toISOString().split('T')[0];
+      if (currentToday !== todayDate) {
+        setTodayDate(currentToday);
+        setDate(currentToday); // reset setup form date
+        setActiveSlot(null);
+        setStudents([]);
+      }
+    };
+    const interval = setInterval(checkDate, 5000);
+    return () => clearInterval(interval);
+  }, [todayDate]);
 
   // Handle Slot Creation
   const handleCreateSlot = async () => {
@@ -234,7 +250,11 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
         // Auto-select the newly created slot
         handleSelectSlot(data);
       } else {
-        showToast(data.error || 'Failed to create slot.', 'error');
+        if (res.status === 409) {
+          showToast(`Attendance for Class ${selectedClass} - Section ${selectedSection} (${slotType} Slot) has already been created for today.`, 'error');
+        } else {
+          showToast(data.error || 'Failed to create slot.', 'error');
+        }
       }
     } catch {
       showToast('Network error creating slot.', 'error');
@@ -281,7 +301,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
 
   // Handle Student Status Toggle
   const handleStatusChange = (studentId: string, status: 'present' | 'absent') => {
-    if (activeSlot?.status === 'completed') return; // Locked mode
+    if (activeSlot?.status === 'completed' || activeSlot?.status === 'SAVED') return; // Locked mode
     setStudents(prev => prev.map(student => {
       if (student.studentId === studentId) {
         return { ...student, status };
@@ -292,7 +312,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
 
   // Toggle all students to same status
   const handleToggleAll = (status: 'present' | 'absent') => {
-    if (activeSlot?.status === 'completed') return;
+    if (activeSlot?.status === 'completed' || activeSlot?.status === 'SAVED') return;
     setStudents(prev => prev.map(student => ({ ...student, status })));
     showToast(`Marked all as ${status.toUpperCase()}.`, 'info');
   };
@@ -300,6 +320,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
   // Save Attendance Submit
   const handleSaveAttendance = async () => {
     if (!activeSlot) return;
+    if (isSavingAttendance) return; // Prevent duplicate clicks
 
     const unmarked = students.some(s => s.status === 'unmarked');
     if (unmarked) {
@@ -323,9 +344,9 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
       });
 
       if (res.ok) {
-        showToast('Attendance records saved successfully!', 'success');
-        // Refresh active slot and reload slots list
-        const updatedSlot = { ...activeSlot, status: 'completed' };
+        showToast('✔ Attendance saved successfully.', 'success');
+        // Refresh active slot and reload slots list immediately without page reload
+        const updatedSlot = { ...activeSlot, status: 'SAVED' };
         setActiveSlot(updatedSlot);
         loadTodaySlots();
         loadStudentsForActiveSlot(activeSlot.id);
@@ -594,21 +615,26 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
                       <div className={`p-2 rounded-lg ${isActive ? 'bg-sky-500 text-white' : 'bg-slate-100 text-slate-500'}`}>
                         <Clock className="w-4 h-4" />
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-xs font-extrabold text-slate-800">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-xs font-black text-slate-900">
+                          Class {slot.classId} • Section {slot.sectionId}
+                        </span>
+                        <span className="text-[10px] font-bold text-slate-650">
                           {slot.time} - {getEndTime12h(slot.time, slot.duration)}
                         </span>
-                        <span className="text-[10px] font-semibold text-slate-450 mt-0.5">{slot.type} Slot</span>
+                        <span className="text-[10px] font-semibold text-slate-400">
+                          {slot.type} Slot
+                        </span>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3">
                       <span className={`px-2.5 py-0.5 text-[9px] font-extrabold rounded-full uppercase tracking-wider border ${
-                        slot.status === 'completed'
-                          ? 'bg-slate-100 border-slate-250 text-slate-500'
+                        slot.status === 'completed' || slot.status === 'SAVED'
+                          ? 'bg-emerald-50/10 border-emerald-500/20 text-emerald-600'
                           : 'bg-emerald-50 border-emerald-150 text-emerald-600 animate-pulse'
                       }`}>
-                        {slot.status === 'completed' ? 'Completed' : 'Active'}
+                        {slot.status === 'completed' || slot.status === 'SAVED' ? '✅ SAVED' : '🟢 ACTIVE'}
                       </span>
                       <ChevronRight className="w-4 h-4 text-slate-400" />
                     </div>
@@ -618,8 +644,8 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
             ) : (
               <div className="py-12 border border-dashed border-slate-200 rounded-xl text-center text-slate-400 flex flex-col items-center justify-center">
                 <AlertCircle className="w-8 h-8 mx-auto mb-1 stroke-1 text-slate-350" />
-                <p className="font-bold text-xs text-slate-500">No Slots Created Today</p>
-                <p className="text-[10px] text-slate-400 mt-0.5">Please configure and create a slot above to mark registers.</p>
+                <p className="font-bold text-xs text-slate-500">No attendance slots created for today.</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">Create today's attendance slot to begin marking attendance.</p>
               </div>
             )}
           </div>
@@ -708,85 +734,107 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
             </div>
 
             {/* Lock Mode Banner */}
-            {activeSlot.status === 'completed' && (
+            {(activeSlot.status === 'completed' || activeSlot.status === 'SAVED') && (
               <div className="bg-slate-900 text-white px-3.5 py-1.5 rounded-xl flex items-center gap-2 border border-slate-800 shadow-xs">
                 <Lock className="w-4 h-4 text-sky-400" />
                 <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-350">Locked / Read Only</span>
               </div>
             )}
 
-            {/* Search and Filters */}
-            <div className="flex items-center gap-3 w-full md:w-auto">
-              <div className="relative flex-1 md:w-64">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
-                <input
-                  type="text"
-                  placeholder="Search by name or roll no..."
-                  value={searchQuery}
-                  onChange={e => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="w-full border border-slate-150 rounded-xl pl-9 pr-4 py-2.5 bg-white text-slate-800 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 transition-all"
-                />
-              </div>
+            {/* Search, Filters, and Bulk Actions */}
+            <div className="flex flex-col items-end gap-2 w-full md:w-auto">
+              <div className="flex items-center gap-3 w-full md:w-auto">
+                <div className="relative flex-1 md:w-64">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+                  <input
+                    type="text"
+                    placeholder="Search by name or roll no..."
+                    value={searchQuery}
+                    onChange={e => {
+                      setSearchQuery(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="w-full border border-slate-150 rounded-xl pl-9 pr-4 py-2.5 bg-white text-slate-800 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 transition-all"
+                  />
+                </div>
 
-              {/* Status/Gender Filter Button */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                  className={`p-2.5 border rounded-xl flex items-center gap-1.5 text-xs font-bold cursor-pointer transition-all ${
-                    genderFilter !== 'all' || statusFilter !== 'all'
-                      ? 'bg-sky-50 border-sky-300 text-sky-600'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
-                  <Filter className="w-4 h-4" />
-                  <span className="hidden sm:inline">Filters</span>
-                </button>
+                {/* Status/Gender Filter Button */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                    className={`p-2.5 border rounded-xl flex items-center gap-1.5 text-xs font-bold cursor-pointer transition-all ${
+                      genderFilter !== 'all' || statusFilter !== 'all'
+                        ? 'bg-sky-50 border-sky-300 text-sky-600'
+                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <Filter className="w-4 h-4" />
+                    <span className="hidden sm:inline">Filters</span>
+                  </button>
 
-                {showFilterDropdown && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white border border-slate-150 rounded-xl shadow-lg p-4 z-40 flex flex-col gap-3 animate-scaleUp">
-                    <div>
-                      <span className="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Gender</span>
-                      <div className="flex gap-1.5">
-                        {['all', 'Male', 'Female'].map((g) => (
-                          <button
-                            key={g}
-                            onClick={() => { setGenderFilter(g as any); setCurrentPage(1); }}
-                            className={`flex-1 py-1.5 rounded-lg border text-[10px] font-bold transition-all cursor-pointer ${
-                              genderFilter === g
-                                ? 'bg-sky-500 border-sky-500 text-white'
-                                : 'bg-white border-slate-150 text-slate-600 hover:bg-slate-50'
-                            }`}
-                          >
-                            {g}
-                          </button>
-                        ))}
+                  {showFilterDropdown && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white border border-slate-150 rounded-xl shadow-lg p-4 z-40 flex flex-col gap-3 animate-scaleUp">
+                      <div>
+                        <span className="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Gender</span>
+                        <div className="flex gap-1.5">
+                          {['all', 'Male', 'Female'].map((g) => (
+                            <button
+                              key={g}
+                              onClick={() => { setGenderFilter(g as any); setCurrentPage(1); }}
+                              className={`flex-1 py-1.5 rounded-lg border text-[10px] font-bold transition-all cursor-pointer ${
+                                genderFilter === g
+                                  ? 'bg-sky-500 border-sky-500 text-white'
+                                  : 'bg-white border-slate-150 text-slate-655 hover:bg-slate-50'
+                              }`}
+                            >
+                              {g}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Status</span>
+                        <div className="flex flex-col gap-1">
+                          {['all', 'present', 'absent', 'unmarked'].map((s) => (
+                            <button
+                              key={s}
+                              onClick={() => { setStatusFilter(s as any); setCurrentPage(1); }}
+                              className={`text-left px-3 py-1.5 rounded-lg border text-[10px] font-bold transition-all cursor-pointer ${
+                                statusFilter === s
+                                  ? 'bg-slate-900 border-slate-900 text-white'
+                                  : 'bg-white border-slate-150 text-slate-650 hover:bg-slate-50'
+                              }`}
+                            >
+                              {s.toUpperCase()}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
-
-                    <div>
-                      <span className="block text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Status</span>
-                      <div className="flex flex-col gap-1">
-                        {['all', 'present', 'absent', 'unmarked'].map((s) => (
-                          <button
-                            key={s}
-                            onClick={() => { setStatusFilter(s as any); setCurrentPage(1); }}
-                            className={`text-left px-3 py-1.5 rounded-lg border text-[10px] font-bold transition-all cursor-pointer ${
-                              statusFilter === s
-                                ? 'bg-slate-900 border-slate-900 text-white'
-                                : 'bg-white border-slate-150 text-slate-600 hover:bg-slate-50'
-                            }`}
-                          >
-                            {s.toUpperCase()}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
+
+              {/* Bulk Attendance Actions */}
+              {activeSlot.status !== 'completed' && activeSlot.status !== 'SAVED' && (
+                <div className="flex items-center gap-2 mt-1">
+                  <button
+                    onClick={() => handleToggleAll('present')}
+                    title="Mark all students as Present"
+                    className="px-4 py-1.5 border border-emerald-250 bg-white hover:bg-emerald-50/20 text-emerald-600 font-extrabold text-[10px] rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+                  >
+                    <Check className="w-3.5 h-3.5" /> All Present
+                  </button>
+                  <button
+                    onClick={() => handleToggleAll('absent')}
+                    title="Mark all students as Absent"
+                    className="px-4 py-1.5 border border-rose-250 bg-white hover:bg-rose-50/20 text-rose-600 font-extrabold text-[10px] rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+                  >
+                    <X className="w-3.5 h-3.5" /> All Absent
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -809,7 +857,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
                     <th className="py-4 px-6">Student Name</th>
                     <th className="py-4 px-6 w-24">Gender</th>
                     <th className="py-4 px-6 w-28">Status Badge</th>
-                    {activeSlot.status !== 'completed' && (
+                    {activeSlot.status !== 'completed' && activeSlot.status !== 'SAVED' && (
                       <th className="py-4 px-6 text-center w-36">Mark Attendance</th>
                     )}
                   </tr>
@@ -854,7 +902,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
                             </span>
                           </td>
                           
-                          {activeSlot.status !== 'completed' && (
+                          {activeSlot.status !== 'completed' && activeSlot.status !== 'SAVED' && (
                             <td className="py-2.5 px-6">
                               <div className="flex justify-center items-center gap-1.5">
                                 {/* Present Button */}
@@ -887,7 +935,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
                     })
                   ) : (
                     <tr>
-                      <td colSpan={activeSlot.status !== 'completed' ? 7 : 6} className="py-12 text-center text-slate-400">
+                      <td colSpan={activeSlot.status !== 'completed' && activeSlot.status !== 'SAVED' ? 7 : 6} className="py-12 text-center text-slate-400">
                         <AlertCircle className="w-8 h-8 mx-auto mb-1 stroke-1 text-slate-350" />
                         <p className="font-bold text-xs text-slate-500">No students matching filters found</p>
                         <p className="text-[10px] text-slate-400 mt-0.5">Adjust your filters or try another search.</p>
@@ -1003,9 +1051,9 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
                 <h4 className="font-bold text-slate-800 text-xs">Actions</h4>
               </div>
 
-              {activeSlot.status !== 'completed' ? (
+              {activeSlot.status !== 'completed' && activeSlot.status !== 'SAVED' ? (
                 <button
-                  onClick={() => setShowConfirmModal(true)}
+                  onClick={handleSaveAttendance}
                   disabled={isSavingAttendance}
                   className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-blue-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer text-xs"
                 >
@@ -1021,7 +1069,7 @@ export default function AttendanceClient({ assignedStudents }: AttendanceClientP
                 </button>
               ) : (
                 <div className="w-full bg-slate-200 text-slate-400 font-bold py-3 px-4 rounded-xl text-center text-xs flex items-center justify-center gap-2 border border-slate-250">
-                  <Lock className="w-4 h-4" /> Locked / Submitted
+                  <Check className="w-4 h-4 text-emerald-500" /> Attendance Saved
                 </div>
               )}
 
