@@ -49,7 +49,16 @@ export default function LandingPage() {
   const [solutionsDropdownOpen, setSolutionsDropdownOpen] = React.useState(false);
   const [hoveredNavItem, setHoveredNavItem] = React.useState<string | null>(null);
   const [activeSlide, setActiveSlide] = React.useState(0);
+  const [isScrolled, setIsScrolled] = React.useState(false);
   const { showToast } = useToast();
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   React.useEffect(() => {
     const timer = setInterval(() => {
@@ -106,36 +115,20 @@ export default function LandingPage() {
       </div>
 
       <header className="fixed top-0 left-0 right-0 z-50 w-full text-black">
-        {/* Scrolling Ticker at the absolute top of the landing page */}
-        <div className="w-full bg-white border-b border-slate-200/60 py-1.5 overflow-hidden z-10 relative">
-          <div className="overflow-hidden whitespace-nowrap w-full block">
-            <div className="flex animate-marquee-seamless text-red-700 font-sans font-extrabold text-[9px] sm:text-[11px] uppercase tracking-widest select-none">
-              {/* First half */}
-              <div className="flex gap-16 pr-16 shrink-0">
-                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
-                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
-                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
-                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
-              </div>
-              {/* Second half (identical for seamless loop) */}
-              <div className="flex gap-16 pr-16 shrink-0">
-                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
-                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
-                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
-                <span>ATTENDANCE MANAGEMENT ERP SYSTEM</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full bg-white/90 border-b border-slate-200/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4 lg:gap-8 transition-all duration-300 relative">
+        <div className={`w-full px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4 lg:gap-8 transition-all duration-300 relative ${
+          isScrolled 
+            ? 'bg-white/90 backdrop-blur-md border-b border-slate-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.05)]' 
+            : 'bg-transparent border-b border-transparent shadow-none'
+        }`}>
           
           {/* Logo Brand Segment */}
           <Link href="/" className="flex items-center gap-3 shrink-0">
             <img 
               src="/ams-logo-transparent.png" 
               alt="AMS Attendance Management System" 
-              className="h-10 sm:h-12 w-auto object-contain" 
+              className={`h-10 sm:h-12 w-auto object-contain transition-all duration-300 ${
+                isScrolled ? '' : 'brightness-0 invert'
+              }`} 
             />
           </Link>
 
@@ -146,18 +139,18 @@ export default function LandingPage() {
               href="#hero" 
               onMouseEnter={() => setHoveredNavItem('hero')}
               onMouseLeave={() => setHoveredNavItem(null)}
-              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 whitespace-nowrap ${
+              className={`flex items-center gap-2 text-[15px] font-bold uppercase tracking-wider transition-all relative py-2 px-1 whitespace-nowrap ${
                 (hoveredNavItem === 'hero' || (hoveredNavItem === null && activeSection === 'hero'))
-                  ? 'text-[#0066fe] font-bold' 
-                  : 'text-black hover:text-[#0066fe]'
+                  ? (isScrolled ? 'text-slate-950 font-extrabold' : 'text-white font-extrabold drop-shadow-[0_1.5px_3px_rgba(0,0,0,0.8)]') 
+                  : (isScrolled ? 'text-slate-700 hover:text-slate-950' : 'text-white/80 hover:text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]')
               }`}
             >
-              <Home className="w-4 h-4" />
+              <Home className="w-4.5 h-4.5 text-current" />
               <span>Home</span>
               {(hoveredNavItem === 'hero' || (hoveredNavItem === null && activeSection === 'hero')) && (
                 <motion.div 
                   layoutId="activeNavLine" 
-                  className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                  className={`absolute bottom-[-15px] left-0 right-0 h-[3px] rounded-full ${isScrolled ? 'bg-slate-950' : 'bg-white shadow-[0_1px_3px_rgba(0,0,0,0.5)]'}`} 
                 />
               )}
             </a>
@@ -167,18 +160,18 @@ export default function LandingPage() {
               href="#features" 
               onMouseEnter={() => setHoveredNavItem('features')}
               onMouseLeave={() => setHoveredNavItem(null)}
-              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 whitespace-nowrap ${
+              className={`flex items-center gap-2 text-[15px] font-bold uppercase tracking-wider transition-all relative py-2 px-1 whitespace-nowrap ${
                 (hoveredNavItem === 'features' || (hoveredNavItem === null && activeSection === 'features'))
-                  ? 'text-[#0066fe] font-bold' 
-                  : 'text-black hover:text-[#0066fe]'
+                  ? (isScrolled ? 'text-slate-950 font-extrabold' : 'text-white font-extrabold drop-shadow-[0_1.5px_3px_rgba(0,0,0,0.8)]') 
+                  : (isScrolled ? 'text-slate-700 hover:text-slate-950' : 'text-white/80 hover:text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]')
               }`}
             >
-              <LayoutGrid className="w-4 h-4" />
+              <LayoutGrid className="w-4.5 h-4.5 text-current" />
               <span>Features</span>
               {(hoveredNavItem === 'features' || (hoveredNavItem === null && activeSection === 'features')) && (
                 <motion.div 
                   layoutId="activeNavLine" 
-                  className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                  className={`absolute bottom-[-15px] left-0 right-0 h-[3px] rounded-full ${isScrolled ? 'bg-slate-950' : 'bg-white shadow-[0_1px_3px_rgba(0,0,0,0.5)]'}`} 
                 />
               )}
             </a>
@@ -196,18 +189,22 @@ export default function LandingPage() {
               }}
             >
               <button 
-                className={`flex items-center gap-2 text-sm font-semibold transition-all py-2 relative whitespace-nowrap ${
-                  (hoveredNavItem === 'solutions' || solutionsDropdownOpen) ? 'text-[#0066fe] font-bold' : 'text-black hover:text-[#0066fe]'
+                className={`flex items-center gap-2 text-[15px] font-bold uppercase tracking-wider transition-all py-2 relative whitespace-nowrap ${
+                  (hoveredNavItem === 'solutions' || solutionsDropdownOpen)
+                    ? (isScrolled ? 'text-slate-950 font-extrabold' : 'text-white font-extrabold drop-shadow-[0_1.5px_3px_rgba(0,0,0,0.8)]') 
+                    : (isScrolled ? 'text-slate-700 hover:text-slate-950' : 'text-white/80 hover:text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]')
                 }`}
                 onClick={() => setSolutionsDropdownOpen(!solutionsDropdownOpen)}
               >
-                <Layers className="w-4 h-4" />
+                <Layers className="w-4.5 h-4.5 text-current" />
                 <span>Solutions</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${solutionsDropdownOpen ? 'rotate-180 text-[#0066fe]' : 'text-black'}`} />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${solutionsDropdownOpen ? 'rotate-180' : ''} ${
+                  isScrolled ? 'text-current' : 'text-white'
+                }`} />
                 {(hoveredNavItem === 'solutions' || solutionsDropdownOpen) && (
                   <motion.div 
                     layoutId="activeNavLine" 
-                    className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                    className={`absolute bottom-[-15px] left-0 right-0 h-[3px] rounded-full ${isScrolled ? 'bg-slate-950' : 'bg-white shadow-[0_1px_3px_rgba(0,0,0,0.5)]'}`} 
                   />
                 )}
               </button>
@@ -267,18 +264,18 @@ export default function LandingPage() {
               href="#workflow" 
               onMouseEnter={() => setHoveredNavItem('workflow')}
               onMouseLeave={() => setHoveredNavItem(null)}
-              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 whitespace-nowrap ${
+              className={`flex items-center gap-2 text-[15px] font-bold uppercase tracking-wider transition-all relative py-2 px-1 whitespace-nowrap ${
                 (hoveredNavItem === 'workflow' || (hoveredNavItem === null && activeSection === 'workflow'))
-                  ? 'text-[#0066fe] font-bold' 
-                  : 'text-black hover:text-[#0066fe]'
+                  ? (isScrolled ? 'text-slate-950 font-extrabold' : 'text-white font-extrabold drop-shadow-[0_1.5px_3px_rgba(0,0,0,0.8)]') 
+                  : (isScrolled ? 'text-slate-700 hover:text-slate-950' : 'text-white/80 hover:text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]')
               }`}
             >
-              <Settings className="w-4 h-4" />
+              <Settings className="w-4.5 h-4.5 text-current" />
               <span>How It Works</span>
               {(hoveredNavItem === 'workflow' || (hoveredNavItem === null && activeSection === 'workflow')) && (
                 <motion.div 
                   layoutId="activeNavLine" 
-                  className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                  className={`absolute bottom-[-15px] left-0 right-0 h-[3px] rounded-full ${isScrolled ? 'bg-slate-950' : 'bg-white shadow-[0_1px_3px_rgba(0,0,0,0.5)]'}`} 
                 />
               )}
             </a>
@@ -294,16 +291,18 @@ export default function LandingPage() {
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
                 showToast('Pricing details are tailored for your school. Contact support to get a quote!', 'info');
               }}
-              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 whitespace-nowrap ${
-                hoveredNavItem === 'pricing' ? 'text-[#0066fe] font-bold' : 'text-black hover:text-[#0066fe]'
+              className={`flex items-center gap-2 text-[15px] font-bold uppercase tracking-wider transition-all relative py-2 px-1 whitespace-nowrap ${
+                hoveredNavItem === 'pricing'
+                  ? (isScrolled ? 'text-slate-950 font-extrabold' : 'text-white font-extrabold drop-shadow-[0_1.5px_3px_rgba(0,0,0,0.8)]') 
+                  : (isScrolled ? 'text-slate-700 hover:text-slate-950' : 'text-white/80 hover:text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]')
               }`}
             >
-              <Tag className="w-4 h-4" />
+              <Tag className="w-4.5 h-4.5 text-current" />
               <span>Pricing</span>
               {hoveredNavItem === 'pricing' && (
                 <motion.div 
                   layoutId="activeNavLine" 
-                  className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                  className={`absolute bottom-[-15px] left-0 right-0 h-[3px] rounded-full ${isScrolled ? 'bg-slate-950' : 'bg-white shadow-[0_1px_3px_rgba(0,0,0,0.5)]'}`} 
                 />
               )}
             </a>
@@ -318,16 +317,18 @@ export default function LandingPage() {
                 const el = document.getElementById('footer');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className={`flex items-center gap-2 text-sm font-semibold transition-all relative py-2 px-1 whitespace-nowrap ${
-                hoveredNavItem === 'contact' ? 'text-[#0066fe] font-bold' : 'text-black hover:text-[#0066fe]'
+              className={`flex items-center gap-2 text-[15px] font-bold uppercase tracking-wider transition-all relative py-2 px-1 whitespace-nowrap ${
+                hoveredNavItem === 'contact'
+                  ? (isScrolled ? 'text-slate-950 font-extrabold' : 'text-white font-extrabold drop-shadow-[0_1.5px_3px_rgba(0,0,0,0.8)]') 
+                  : (isScrolled ? 'text-slate-700 hover:text-slate-950' : 'text-white/80 hover:text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]')
               }`}
             >
-              <Mail className="w-4 h-4" />
+              <Mail className="w-4.5 h-4.5 text-current" />
               <span>Contact</span>
               {hoveredNavItem === 'contact' && (
                 <motion.div 
                   layoutId="activeNavLine" 
-                  className="absolute bottom-[-15px] left-0 right-0 h-[2px] bg-[#0066fe] rounded-full" 
+                  className={`absolute bottom-[-15px] left-0 right-0 h-[3px] rounded-full ${isScrolled ? 'bg-slate-950' : 'bg-white shadow-[0_1px_3px_rgba(0,0,0,0.5)]'}`} 
                 />
               )}
             </a>
@@ -338,25 +339,37 @@ export default function LandingPage() {
             {/* Login Button */}
             <Link
               href="/login"
-              className="hidden sm:flex items-center gap-2 text-sm font-semibold px-4 py-2.5 border border-black/20 rounded-xl text-black hover:bg-slate-50 hover:border-black/30 transition-all active:scale-[0.98] whitespace-nowrap"
+              className={`hidden sm:flex items-center gap-2 text-sm font-bold uppercase tracking-wider px-4 py-2.5 border rounded-xl transition-all active:scale-[0.98] whitespace-nowrap ${
+                isScrolled 
+                  ? 'border-slate-950/20 text-slate-950 hover:bg-slate-950/5' 
+                  : 'border-white/30 text-white hover:bg-white/10 backdrop-blur-sm drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]'
+              }`}
             >
-              <User className="w-4 h-4 text-black" />
+              <User className="w-4.5 h-4.5" />
               <span>Login</span>
             </Link>
             
             {/* Get Started Button */}
             <Link
               href="/login"
-              className="hidden sm:flex items-center gap-2 text-sm font-semibold bg-[#0066fe] hover:bg-blue-600 px-5 py-2.5 rounded-xl text-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md shadow-blue-500/20 whitespace-nowrap"
+              className={`hidden sm:flex items-center gap-2 text-sm font-bold uppercase tracking-wider px-5 py-2.5 rounded-xl transition-all active:scale-[0.98] whitespace-nowrap hover:scale-[1.03] ${
+                isScrolled
+                  ? 'bg-slate-950 text-white hover:bg-slate-900 shadow-md shadow-slate-950/10'
+                  : 'bg-gradient-to-r from-[#0F6FFF] to-[#00C2FF] text-white shadow-lg shadow-[#0F6FFF]/25 hover:shadow-[#0F6FFF]/35'
+              }`}
             >
-              <Rocket className="w-4 h-4 text-white" />
+              <Rocket className="w-4.5 h-4.5 text-white" />
               <span>Get Started</span>
             </Link>
 
             {/* Mobile Hamburger menu toggle button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="xl:hidden p-2.5 text-black hover:text-[#0066fe] rounded-xl bg-slate-50 border border-slate-200 focus:outline-none transition-all"
+              className={`xl:hidden p-2.5 rounded-xl border focus:outline-none transition-all ${
+                isScrolled
+                  ? 'text-slate-950 border-slate-950/10 bg-white/5 hover:text-slate-900'
+                  : 'text-white border-white/20 bg-white/5 hover:text-white/80'
+              }`}
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -488,15 +501,15 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section id="hero" className="relative w-full min-h-[550px] sm:min-h-[640px] md:min-h-[750px] lg:min-h-[820px] xl:min-h-[880px] bg-transparent text-white overflow-hidden pt-32 pb-16 flex items-center justify-center">
-        {/* Full-size Video Background (Contained in Hero Box Only - Hidden on mobile/tablet for performance) */}
-        <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0 hidden md:block">
+      <section id="hero" className="relative w-full min-h-[550px] sm:min-h-[640px] md:min-h-[750px] lg:min-h-[820px] xl:min-h-[880px] bg-transparent text-white overflow-hidden pt-36 pb-20 flex items-center justify-center">
+        {/* Full-size Video Background */}
+        <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
           <video
-            src="/VN20260719_140353.mp4"
             autoPlay
             muted
             loop
             playsInline
+            preload="auto"
             className="absolute w-full h-full object-cover"
             style={{
               position: 'absolute',
@@ -505,17 +518,18 @@ export default function LandingPage() {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              transform: 'translate3d(-50%, -50%, 0)',
+              transform: 'translate(-50%, -50%)',
               willChange: 'transform',
-              backfaceVisibility: 'hidden',
-              filter: 'brightness(0.65) contrast(1.15) saturate(1.10)',
             }}
-          />
-          {/* Premium Gradient Overlay (Dimmed at top for Navbar, translucent at bottom) */}
+          >
+            <source src="/bg-video-optimized.mp4" type="video/mp4" />
+            <source src="/bg-video-optimized.webm" type="video/webm" />
+          </video>
+          {/* Light black transparent overlay */}
           <div 
             className="absolute inset-0 z-10 pointer-events-none"
             style={{
-              background: 'linear-gradient(to bottom, rgba(5, 15, 35, 0.45) 0%, rgba(5, 15, 35, 0.20) 100%)',
+              background: 'rgba(0, 0, 0, 0.35)',
             }}
           />
         </div>
@@ -523,126 +537,99 @@ export default function LandingPage() {
         {/* Background Gradients & Decorations */}
         <div className="absolute top-0 right-0 w-[50%] h-[100%] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-sky-500/10 via-sky-600/5 to-transparent pointer-events-none z-0" />
 
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full flex items-center justify-center">
-          <div className="grid grid-cols-1 lg:grid-cols-[58%_42%] xl:grid-cols-[60%_40%] gap-6 sm:gap-8 items-center justify-center w-full py-4">
-            {/* Left Content */}
-            <motion.div
-              className="flex flex-col gap-4 sm:gap-6 text-center lg:text-left justify-center w-full max-w-[700px] mx-auto lg:mx-0"
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full flex flex-col lg:flex-row items-center lg:items-center justify-between gap-12 pt-8">
+          {/* Left Content Column */}
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left justify-center w-full max-w-[850px]">
+            {/* Version badge */}
+            <motion.div 
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 border border-sky-500/20 rounded-full w-fit mb-6"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 border border-sky-500/20 rounded-full w-fit mx-auto lg:mx-0">
-                <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
-                <span className="text-xs text-sky-400 font-semibold tracking-wide uppercase">New Version 2.0</span>
-              </div>
-              <h1 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight leading-tight text-white premium-heading-shadow max-w-[700px] mx-auto lg:mx-0">
-                Simple, Fast & Reliable <br />
-                <span className="text-gradient-sky bg-clip-text">Attendance Management</span> <br />
-                for Schools
-              </h1>
-              <p className="hidden md:block text-sm sm:text-base lg:text-lg text-slate-200 max-w-[600px] mx-auto lg:mx-0">
-                AMS helps schools manage attendance efficiently with dedicated Admin, Teacher, and Student panels. Light, focused, and secure.
-              </p>
-              <div className="flex flex-col xs:flex-row items-center justify-center lg:justify-start gap-3 w-full xs:w-auto mt-2">
-                <Link
-                  href="/login"
-                  className="w-full xs:w-auto text-center justify-center bg-sky-500 hover:bg-sky-400 text-white font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 group"
-                >
-                  Get Started <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link
-                  href="/login"
-                  className="w-full xs:w-auto text-center justify-center bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2"
-                >
-                  Login <ArrowRight className="w-5 h-5 opacity-60" />
-                </Link>
-              </div>
-
-              {/* Trust/Social Proof */}
-              <div className="hidden md:flex flex-row items-center gap-4 border-t border-white/10 pt-4 mt-2">
-                <div className="flex -space-x-3">
-                  {[
-                    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100',
-                    'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=100',
-                    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100',
-                    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100'
-                  ].map((src, i) => (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img
-                      key={i}
-                      src={src}
-                      alt="User avatar"
-                      className="w-10 h-10 rounded-full border-2 border-white object-cover"
-                    />
-                  ))}
-                </div>
-                <div className="text-sm text-slate-300">
-                  <span className="font-semibold text-white">Trusted by Schools</span> across the country
-                </div>
-              </div>
+              <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
+              <span className="text-xs text-sky-400 font-semibold tracking-wide uppercase">New Version 2.0</span>
             </motion.div>
 
-            {/* Right Graphic/Image */}
-            <motion.div
-              className="relative w-full flex items-center justify-center"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+            {/* Heading */}
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="hero-heading text-white mb-6 uppercase tracking-[-2px] leading-[1.05]"
             >
-              <div className="relative rounded-[24px] overflow-hidden shadow-2xl border border-white/10 w-full max-w-[300px] sm:max-w-[360px] md:max-w-[420px] lg:max-w-[465px] xl:max-w-[500px] mx-auto shrink-0 bg-white/5 p-1.5 backdrop-blur-md">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/founder.jpg"
-                  alt="Founder DHIRENDRA TECH INNOVATIVE OF INCUBATION"
-                  className="w-full h-64 sm:h-80 md:h-[380px] lg:h-[440px] xl:h-[480px] object-cover scale-100 transition-transform duration-700 rounded-[18px]"
-                />
-                
-                {/* Founder Info Overlay Badge matching 3rd mockup exactly (now inside the image box with sky blue background) */}
-                <div className="absolute bottom-4 left-4 right-4 bg-[#0ea5e9]/95 backdrop-blur-xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2.5 sm:p-3.5 rounded-[18px] flex items-center justify-between gap-1.5 sm:gap-4 z-20 overflow-hidden">
-                  <div className="flex items-center gap-2 sm:gap-4 overflow-hidden">
-                    {/* Square profile avatar box with AI Bulb image */}
-                    <div className="w-9 h-9 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl border border-white/30 overflow-hidden shrink-0 shadow-inner">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src="https://media.istockphoto.com/id/2164746643/photo/artificial-intelligence-idea-ai-light-bulb-idea-concept.jpg?s=1024x1024&w=is&k=20&c=OeQ_698xSL0y7OzrJcqG5YUJGbXuqhYbVOjN6rZZqRM="
-                        alt="AI Light Bulb Idea"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+              ATTENDANCE MANAGEMENT SYSTEM
+            </motion.h1>
 
-                    {/* Vertical line divider */}
-                    <div className="w-[1px] sm:w-[1.5px] h-6 sm:h-11 bg-white/20 shrink-0" />
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className="text-base sm:text-lg lg:text-xl text-slate-100 mb-8 max-w-[650px] leading-relaxed font-normal"
+            >
+              Manage school attendance smarter with a fast, secure, and cloud-powered platform built for Administrators, Teachers, and Students.
+            </motion.p>
 
-                    {/* Middle Text Info */}
-                    <div className="flex flex-col text-left overflow-hidden">
-                      <span className="text-[8px] xs:text-[9px] sm:text-xs md:text-sm lg:text-base font-black tracking-wide text-white uppercase leading-tight max-w-[120px] xs:max-w-[180px] sm:max-w-none block truncate sm:whitespace-normal">
-                        DHIRENDRA <span className="hidden xs:inline">[ INNOVATIVE OF INCUBATION ]</span>
-                      </span>
-                      <div className="w-8 sm:w-12 h-[1px] sm:h-[2px] bg-white mt-1 sm:mt-2 rounded-full" />
-                      <div className="flex items-center flex-wrap gap-1 sm:gap-2 mt-1 sm:mt-1.5 leading-none">
-                        <span className="text-[7px] sm:text-xs text-white/90 font-semibold tracking-wide">
-                          Bachelor&apos;s of Computer Applications
-                        </span>
-                        <span className="text-[7px] sm:text-xs text-sky-100 font-extrabold tracking-wide">
-                          ( Software Engineer )
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Web Founder Pill Button */}
-                  <div className="inline-flex items-center gap-1 px-1.5 py-1 sm:px-3 sm:py-2 bg-white/10 border border-white/20 text-white rounded-full shrink-0 shadow-sm">
-                    <Globe className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" />
-                    <span className="text-[6px] sm:text-[9.5px] font-black uppercase tracking-widest leading-none">
-                      WEB FOUNDER
-                    </span>
-                  </div>
-                </div>
-              </div>
+            {/* Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
+            >
+              <Link
+                href="/login"
+                aria-label="Get Started with AMS"
+                className="w-full sm:w-[180px] h-[60px] rounded-[16px] bg-gradient-to-r from-[#0F6FFF] to-[#00C2FF] text-white font-bold flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(15,111,255,0.3)] hover:shadow-[0_15px_35px_rgba(15,111,255,0.45)] hover:scale-[1.05] active:scale-[0.98] transition-all duration-300 group"
+              >
+                <span>Get Started</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                href="/login"
+                aria-label="Login to AMS Portal"
+                className="w-full sm:w-[180px] h-[60px] rounded-[16px] bg-white/10 border border-white/20 text-white font-bold flex items-center justify-center gap-2 hover:bg-white/20 hover:scale-[1.05] active:scale-[0.98] transition-all duration-300 backdrop-blur-sm shadow-[0_10px_30px_rgba(0,0,0,0.15)]"
+              >
+                <span>Login</span>
+                <ArrowRight className="w-5 h-5 opacity-60 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
             </motion.div>
           </div>
         </div>
+
+        {/* Absolute Positioned Corner Floating Badge/Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="absolute bottom-8 right-8 lg:right-12 z-30 hidden lg:flex items-center gap-3 select-none"
+        >
+          <motion.div
+            animate={{ y: [0, -8, 0] }}
+            transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut" }}
+            className="w-[260px] rounded-[20px] backdrop-blur-xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.4)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] p-4 flex items-center gap-3.5"
+            style={{
+              background: 'linear-gradient(135deg, rgba(15,23,42,0.45) 0%, rgba(15,23,42,0.2) 100%)',
+            }}
+          >
+            <img 
+              src="/ams-logo-transparent.png" 
+              alt="AMS Shield Logo" 
+              className="w-10 h-10 object-contain shrink-0 brightness-0 invert" 
+            />
+            <div className="w-[1px] h-8 bg-white/15 shrink-0" />
+            <div className="flex flex-col gap-0.5">
+              <div className="text-[10px] font-extrabold uppercase tracking-wider text-white leading-tight">
+                Attendance Management System
+              </div>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]" />
+                <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Active Server</span>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Features Section */}

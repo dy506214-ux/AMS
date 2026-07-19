@@ -111,3 +111,30 @@ body {
   width: max-content;
   animation: marquee 25s linear infinite;
 }
+
+/* Premium Hero Heading Responsive Sizing */
+.hero-heading {
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1.05;
+  white-space: nowrap;
+  font-size: clamp(20px, 6.2vw, 32px); /* Scaling font on narrow mobile screens to avoid wrapping or overflow */
+}
+
+@media (min-width: 640px) {
+  .hero-heading {
+    font-size: 46px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-heading {
+    font-size: 60px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-heading {
+    font-size: 72px;
+  }
+}
