@@ -489,26 +489,26 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section id="hero" className="relative w-full min-h-[550px] sm:min-h-[640px] md:min-h-[750px] lg:min-h-[820px] xl:min-h-[880px] bg-transparent text-white overflow-hidden pt-32 pb-16 flex items-center justify-center">
-        {/* Full-size YouTube Video Background (Contained in Hero Box Only - Hidden on mobile/tablet for performance) */}
+        {/* Full-size Video Background (Contained in Hero Box Only - Hidden on mobile/tablet for performance) */}
         <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0 hidden md:block">
-          <iframe
-            className="absolute"
-            src="https://www.youtube.com/embed/NG-d6To9tl8?autoplay=1&mute=1&loop=1&playlist=NG-d6To9tl8&controls=0&showinfo=0&rel=0&playsinline=1&enablejsapi=1"
-            frameBorder="0"
-            allow="autoplay; encrypted-media"
-            allowFullScreen
+          <video
+            src="/VN20260719_140353.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute w-full h-full object-cover"
             style={{
               position: 'absolute',
               top: '50%',
               left: '50%',
-              width: '100vw',
-              height: '56.25vw',
-              minWidth: '177.77vh',
-              minHeight: '100vh',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
               transform: 'translate3d(-50%, -50%, 0)',
               willChange: 'transform',
               backfaceVisibility: 'hidden',
-              filter: 'brightness(1.10) contrast(1.15) saturate(1.15)',
+              filter: 'brightness(0.65) contrast(1.15) saturate(1.10)',
             }}
           />
           {/* Premium Gradient Overlay (Dimmed at top for Navbar, translucent at bottom) */}
