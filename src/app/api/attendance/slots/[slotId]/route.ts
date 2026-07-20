@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/services/auth';
 import { prisma } from '@/lib/db/prisma';
+import { softDeleteAttendanceSlot } from '@/lib/services/attendanceSlot';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function DELETE(
   request: NextRequest,
@@ -31,9 +35,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized to delete this slot.' }, { status: 401 });
     }
 
-    await prisma.attendanceSlot.delete({
-      where: { id: slotId }
-    });
+    await softDeleteAttendanceSlot(slotId, user.id, user.name);
 
     return NextResponse.json({ success: true });
   } catch (error) {

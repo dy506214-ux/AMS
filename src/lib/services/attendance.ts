@@ -107,6 +107,13 @@ export async function markAttendance(
   await prisma.$transaction(upserts);
 }
 
+export function getLocalDateString(d: Date = new Date()): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export async function markAttendanceForSlot(
   slotId: string,
   records: { studentId: string; status: 'present' | 'absent' | 'late' | 'leave' | 'medical' }[],
@@ -148,19 +155,35 @@ export async function markAttendanceForSlot(
     });
   });
 
-  await prisma.$transaction(upserts);
-
-  // Update slot status to SAVED
-  await prisma.attendanceSlot.update({
+  const slotUpdate = prisma.attendanceSlot.update({
     where: { id: slotId },
     data: {
       status: 'SAVED',
       updatedAt: new Date()
     }
   });
+
+  const auditCreate = prisma.attendanceAudit.create({
+    data: {
+      slotId,
+      action: 'Updated',
+      performedBy: teacherId,
+      role: 'Teacher',
+      teacherId,
+      classId: slot.classId,
+      sectionId: slot.sectionId,
+      slotType: slot.type,
+      attendanceDate: slot.date,
+      serverTime: new Date().toISOString(),
+      newValue: JSON.stringify({ status: 'SAVED', markedCount: records.length })
+    }
+  });
+
+  // Single atomic database transaction for all records, slot status, and audit log
+  await prisma.$transaction([...upserts, slotUpdate, auditCreate]);
 }
 
-export async function getTodayAttendanceSummary(date: string = new Date().toISOString().split('T')[0]): Promise<{
+export async function getTodayAttendanceSummary(date: string = getLocalDateString()): Promise<{
   totalStudents: number;
   totalPresent: number;
   totalAbsent: number;

@@ -274,9 +274,15 @@ export async function deleteAttendanceSlotAction(slotId: string) {
       return { error: 'Unauthorized to delete this slot.' };
     }
 
-    await prisma.attendanceSlot.delete({
-      where: { id: slotId }
-    });
+    await prisma.$transaction([
+      prisma.attendance.updateMany({
+        where: { slotId },
+        data: { slotId: null }
+      }),
+      prisma.attendanceSlot.delete({
+        where: { id: slotId }
+      })
+    ]);
 
     revalidatePath('/teacher');
     revalidatePath('/teacher/attendance');

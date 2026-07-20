@@ -3,6 +3,9 @@ import { verifyToken } from '@/lib/services/auth';
 import { markAttendanceForSlot } from '@/lib/services/attendance';
 import { prisma } from '@/lib/db/prisma';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slotId: string }> }

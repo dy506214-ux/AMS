@@ -54,7 +54,8 @@ export async function getTodaySlotsForTeacher(teacherId: string, date: string) {
   const slots = await prisma.attendanceSlot.findMany({
     where: {
       teacherId,
-      date
+      date,
+      isArchived: false
     },
     orderBy: {
       time: 'asc'
@@ -87,6 +88,100 @@ export async function getTodaySlotsForTeacher(teacherId: string, date: string) {
   );
 
   return slotsWithCounts;
+}
+
+export async function softDeleteAttendanceSlot(slotId: string, userId: string, userName?: string) {
+  const slot = await prisma.attendanceSlot.findUnique({
+    where: { id: slotId }
+  });
+
+  if (!slot) {
+    throw new Error('Attendance slot not found.');
+  }
+
+  const now = new Date();
+
+  return prisma.$transaction([
+    prisma.attendanceSlot.update({
+      where: { id: slotId },
+      data: {
+        isArchived: true,
+        deletedAt: now,
+        deletedBy: userId
+      }
+    }),
+    prisma.attendance.updateMany({
+      where: { slotId },
+      data: {
+        isArchived: true,
+        deletedAt: now,
+        deletedBy: userId
+      }
+    }),
+    prisma.attendanceAudit.create({
+      data: {
+        slotId,
+        action: 'Soft-Deleted',
+        performedBy: userName || userId,
+        role: 'Teacher',
+        teacherId: slot.teacherId,
+        classId: slot.classId,
+        sectionId: slot.sectionId,
+        slotType: slot.type,
+        attendanceDate: slot.date,
+        serverTime: now.toISOString(),
+        oldValue: JSON.stringify({ isArchived: false }),
+        newValue: JSON.stringify({ isArchived: true, deletedAt: now, deletedBy: userId })
+      }
+    })
+  ]);
+}
+
+export async function restoreAttendanceSlot(slotId: string, userId: string, userName?: string) {
+  const slot = await prisma.attendanceSlot.findUnique({
+    where: { id: slotId }
+  });
+
+  if (!slot) {
+    throw new Error('Attendance slot not found.');
+  }
+
+  const now = new Date();
+
+  return prisma.$transaction([
+    prisma.attendanceSlot.update({
+      where: { id: slotId },
+      data: {
+        isArchived: false,
+        deletedAt: null,
+        deletedBy: null
+      }
+    }),
+    prisma.attendance.updateMany({
+      where: { slotId },
+      data: {
+        isArchived: false,
+        deletedAt: null,
+        deletedBy: null
+      }
+    }),
+    prisma.attendanceAudit.create({
+      data: {
+        slotId,
+        action: 'Restored',
+        performedBy: userName || userId,
+        role: 'Admin',
+        teacherId: slot.teacherId,
+        classId: slot.classId,
+        sectionId: slot.sectionId,
+        slotType: slot.type,
+        attendanceDate: slot.date,
+        serverTime: now.toISOString(),
+        oldValue: JSON.stringify({ isArchived: true }),
+        newValue: JSON.stringify({ isArchived: false })
+      }
+    })
+  ]);
 }
 
 export async function getSlotById(slotId: string) {

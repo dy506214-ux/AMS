@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/services/auth';
 import { createAttendanceSlot, getTodaySlotsForTeacher } from '@/lib/services/attendanceSlot';
+import { getLocalDateString } from '@/lib/services/attendance';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
@@ -12,7 +16,7 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = new URL(request.url);
-  const date = searchParams.get('date') || new Date().toISOString().split('T')[0];
+  const date = searchParams.get('date') || getLocalDateString();
 
   try {
     const slots = await getTodaySlotsForTeacher(user.id, date);

@@ -510,18 +510,12 @@ export default function LandingPage() {
             loop
             playsInline
             preload="auto"
-            className="absolute w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              width: '100%',
-              height: '100%',
               objectFit: 'cover',
-              transform: 'translate(-50%, -50%)',
-              willChange: 'transform',
             }}
           >
+            <source src="/VN20260719_140353.mp4" type="video/mp4" />
             <source src="/bg-video-optimized.mp4" type="video/mp4" />
             <source src="/bg-video-optimized.webm" type="video/webm" />
           </video>

@@ -64,12 +64,23 @@ model Attendance {
   markedByTeacher   Teacher         @relation(fields: [markedByTeacherId], references: [id], onDelete: Cascade)
   slotId            String?
   slot              AttendanceSlot? @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  isArchived        Boolean         @default(false)
+  deletedAt         DateTime?
+  deletedBy         String?
+  latitude          String?
+  longitude         String?
+  device            String?
+  scannerId         String?
+  remarks           String?
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 
   @@unique([studentId, date, slotId]) // Unique student, date, and slot
   @@index([markedByTeacherId])
   @@index([slotId])
+  @@index([studentId])
+  @@index([date])
+  @@index([isArchived])
 }
 
 model AttendanceSlot {
@@ -83,13 +94,19 @@ model AttendanceSlot {
   time        String       // e.g. "09:00 AM"
   duration    Int          @default(30) // duration in minutes
   type        String       // e.g. Morning, Afternoon, Evening, Extra Class, Practical, etc.
-  status      String       @default("active") // "active" | "completed"
+  status      String       @default("active") // "active" | "completed" | "SAVED" | "LOCKED"
+  isArchived  Boolean      @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
+  isLocked    Boolean      @default(false)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   attendances Attendance[]
 
   @@unique([teacherId, classId, sectionId, date, time])
   @@index([teacherId])
+  @@index([date])
+  @@index([isArchived])
 }
 
 model Announcement {
@@ -138,16 +155,27 @@ model Mark {
 
 model AttendanceAudit {
   id             String   @id @default(uuid())
+  attendanceId   String?
+  slotId         String?
+  action         String   @default("Created") // "Created" | "Updated" | "Soft-Deleted" | "Restored" | "Locked" | "Unlocked" | "Exported" | "Viewed"
+  performedBy    String?
+  role           String?
   teacherId      String
   classId        String
   sectionId      String
   slotType       String
   attendanceDate String
   serverTime     String
-  createdAt      DateTime
+  oldValue       String?
+  newValue       String?
+  createdAt      DateTime @default(now())
   savedAt        DateTime @default(now())
   ipAddress      String?
   deviceId       String?
+
+  @@index([slotId])
+  @@index([performedBy])
+  @@index([attendanceDate])
 }
 
 
